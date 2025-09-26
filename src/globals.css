@@ -114,23 +114,20 @@
 .footer-wave-effect {
   background: radial-gradient(
     ellipse at center,
-    hsl(var(--primary-foreground) / 0.1) 0%,
-    transparent 70%
+    oklch(0.85 0.05 240 / 0.4) 0%,
+    oklch(0.75 0.08 240 / 0.3) 30%,
+    oklch(0.5 0.1 240 / 0.2) 60%,
+    transparent 100%
   );
-  animation: wave-motion 15s ease-in-out infinite alternate;
+  background-size: 200% 100%; /* Make background twice as wide */
+  animation: wave-motion 5s ease-in-out infinite alternate;
 }
 
 @keyframes wave-motion {
   0% {
-    transform: scale(1) translateY(0);
-    opacity: 0.2;
-  }
-  50% {
-    transform: scale(1.1) translateY(-10px);
-    opacity: 0.3;
+    background-position: 0% 50%;
   }
   100% {
-    transform: scale(1) translateY(0);
-    opacity: 0.2;
+    background-position: 100% 50%;
   }
 }
