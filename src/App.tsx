@@ -15,7 +15,8 @@ import About from "./pages/About.tsx";
 import Contact from "./pages/Contact.tsx";
 import FAQ from "./pages/FAQ.tsx";
 import Shipping from "./pages/Shipping.tsx";
-import Returns from "./pages/Returns.tsx"; // Import the new Returns page
+import Returns from "./pages/Returns.tsx";
+import Warranty from "./pages/Warranty.tsx"; // Import the new Warranty page
 
 
 const queryClient = new QueryClient();
@@ -37,7 +38,8 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/shipping" element={<Shipping />} />
-          <Route path="/returns" element={<Returns />} /> {/* Add the new Returns route */}
+          <Route path="/returns" element={<Returns />} />
+          <Route path="/warranty" element={<Warranty />} /> {/* Add the new Warranty route */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

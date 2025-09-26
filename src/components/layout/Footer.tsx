@@ -251,6 +251,14 @@ const Footer = () => {
               </li>
               <li>
                 <Link
+                  to="/warranty"
+                  className="hover:text-primary-foreground/60 transition-colors"
+                >
+                  Warranty Information
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/privacy"
                   className="hover:text-primary-foreground/60 transition-colors"
                 >
