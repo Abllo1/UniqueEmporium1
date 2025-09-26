@@ -67,7 +67,7 @@ const AboutValues = () => {
       </motion.div>
 
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12 max-w-4xl mx-auto" // Changed to 2 columns and added max-width for optimization
+        className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12 max-w-4xl mx-auto"
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
@@ -76,7 +76,23 @@ const AboutValues = () => {
         {values.map((value, index) => (
           <motion.div key={index} variants={fadeInUp}>
             <Card className="p-8 h-full text-left">
-              <value.icon className="h-8 w-8 text-primary mb-4" />
+              <motion.div
+                className="h-8 w-8 text-primary mb-4"
+                animate={{
+                  y: [0, -5, 0], // Vertical float
+                  rotateX: [0, 5, 0], // Subtle X-axis rotation
+                  rotateZ: [0, 2, 0], // Subtle Z-axis rotation
+                }}
+                transition={{
+                  duration: 3,
+                  ease: "easeInOut" as Easing,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  delay: index * 0.1, // Stagger the icon animation
+                }}
+              >
+                <value.icon className="h-full w-full" />
+              </motion.div>
               <h3 className="text-lg font-semibold mb-4 text-foreground">{value.title}</h3>
               <p className="text-xs text-muted-foreground">{value.description}</p>
             </Card>
