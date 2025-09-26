@@ -6,7 +6,6 @@ import { motion, AnimatePresence, Easing } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Heart, ArrowLeft, Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging } from "lucide-react";
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
-import { toast } from "sonner"; // Import toast
 
 // Placeholder product data for favorites
 const favoriteProducts: Product[] = [
@@ -84,21 +83,6 @@ const fadeInUp = {
 const Favorites = () => {
   const hasFavorites = favoriteProducts.length > 0;
 
-  const handleAddToCart = (product: Product) => {
-    toast.success(`${product.name} added to cart!`);
-    console.log("Add to Cart:", product.name);
-  };
-
-  const handleAddToFavorites = (product: Product) => {
-    toast.success(`${product.name} added to favorites!`);
-    console.log("Add to Favorites:", product.name);
-  };
-
-  const handleAddToCompare = (product: Product) => {
-    toast.info(`${product.name} added to comparison!`);
-    console.log("Add to Compare:", product.name);
-  };
-
   return (
     <div className="min-h-screen w-full bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -130,12 +114,7 @@ const Favorites = () => {
             >
               {favoriteProducts.map((product) => (
                 <motion.div key={product.id} variants={fadeInUp}>
-                  <ProductCard
-                    product={product}
-                    onAddToCart={handleAddToCart}
-                    onAddToFavorites={handleAddToFavorites}
-                    onAddToCompare={handleAddToCompare}
-                  />
+                  <ProductCard product={product} />
                 </motion.div>
               ))}
             </motion.div>

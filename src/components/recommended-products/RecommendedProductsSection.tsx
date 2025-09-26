@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
-import { toast } from "sonner"; // Import toast
 
 const recommendedProducts: Product[] = [
   {
@@ -149,22 +148,6 @@ const RecommendedProductsSection = () => {
     emblaApi.on("select", onSelect);
   }, [emblaApi, onSelect]);
 
-  // Placeholder action handlers
-  const handleAddToCart = (product: Product) => {
-    toast.success(`${product.name} added to cart!`);
-    console.log("Add to Cart:", product.name);
-  };
-
-  const handleAddToFavorites = (product: Product) => {
-    toast.success(`${product.name} added to favorites!`);
-    console.log("Add to Favorites:", product.name);
-  };
-
-  const handleAddToCompare = (product: Product) => {
-    toast.info(`${product.name} added to comparison!`);
-    console.log("Add to Compare:", product.name);
-  };
-
   return (
     <section className="py-12 bg-background">
       <motion.div
@@ -192,12 +175,7 @@ const RecommendedProductsSection = () => {
           <div className="flex gap-2 sm:gap-4">
             {recommendedProducts.map((product) => (
               <div key={product.id} className="flex-shrink-0 w-[calc(50%-4px)] sm:w-[280px]">
-                <ProductCard
-                  product={product}
-                  onAddToCart={handleAddToCart}
-                  onAddToFavorites={handleAddToFavorites}
-                  onAddToCompare={handleAddToCompare}
-                />
+                <ProductCard product={product} />
               </div>
             ))}
           </div>

@@ -31,9 +31,6 @@ export interface Product {
 interface ProductCardProps {
   product: Product;
   disableEntryAnimation?: boolean;
-  onAddToCart: (product: Product) => void;
-  onAddToFavorites: (product: Product) => void;
-  onAddToCompare: (product: Product) => void;
 }
 
 const fadeInUp = {
@@ -41,7 +38,7 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as Easing } },
 };
 
-const ProductCard = ({ product, disableEntryAnimation = false, onAddToCart, onAddToFavorites, onAddToCompare }: ProductCardProps) => {
+const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
@@ -216,10 +213,10 @@ const ProductCard = ({ product, disableEntryAnimation = false, onAddToCart, onAd
                 transition={{ duration: 0.2 }}
                 className="absolute inset-0 hidden md:flex items-center justify-center space-x-4 bg-black/60 z-20"
               >
-                <Button variant="secondary" size="icon" className="text-sm font-medium" onClick={(e) => { e.stopPropagation(); onAddToCompare(product); }}>
+                <Button variant="secondary" size="icon" className="text-sm font-medium">
                   <Scale className="h-4 w-4" />
                 </Button>
-                <Button className="text-sm font-medium" onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}>
+                <Button className="text-sm font-medium">
                   <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
                 </Button>
               </motion.div>
@@ -228,12 +225,12 @@ const ProductCard = ({ product, disableEntryAnimation = false, onAddToCart, onAd
 
           {/* Mobile "Add to Cart" and "Compare" Buttons */}
           <div className="md:hidden absolute bottom-2 left-2 z-10">
-            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8" onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}>
+            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8">
               <ShoppingCart className="h-4 w-4" />
             </Button>
           </div>
           <div className="md:hidden absolute bottom-2 right-2 z-10">
-            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8" onClick={(e) => { e.stopPropagation(); onAddToCompare(product); }}>
+            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8">
               <Scale className="h-4 w-4" />
             </Button>
           </div>
@@ -301,7 +298,7 @@ const ProductCard = ({ product, disableEntryAnimation = false, onAddToCart, onAd
             </Link>
 
             {/* Favorite Button */}
-            <Button variant="ghost" size="icon" className="ml-auto" onClick={(e) => { e.stopPropagation(); onAddToFavorites(product); }}>
+            <Button variant="ghost" size="icon" className="ml-auto">
               <Heart className="h-4 w-4" />
             </Button>
           </div>
