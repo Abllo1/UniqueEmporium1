@@ -5,6 +5,7 @@ import HeroIntroBanner from "@/components/hero-intro-banner/HeroIntroBanner.tsx"
 import CategoriesSection from "@/components/categories-section/CategoriesSection.tsx";
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx"; // Import Product interface
 import WhyChooseUsSection from "@/components/why-choose-us/WhyChooseUsSection.tsx"; // Import new component
+import RecommendedProductsSection from "../components/recommended-products/RecommendedProductsSection.tsx"; // Changed to relative path
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion, Easing } from "framer-motion";
@@ -177,6 +178,9 @@ const Index = () => {
 
       {/* Why Choose Us Section */}
       <WhyChooseUsSection />
+
+      {/* Recommended Products Section */}
+      <RecommendedProductsSection />
     </div>
   );
 };
