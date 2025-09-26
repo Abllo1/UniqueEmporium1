@@ -3,68 +3,113 @@
 import HeroCarousel from "@/components/hero-carousel/HeroCarousel.tsx";
 import HeroIntroBanner from "@/components/hero-intro-banner/HeroIntroBanner.tsx";
 import CategoriesSection from "@/components/categories-section/CategoriesSection.tsx";
-import ProductCard from "@/components/products/ProductCard.tsx"; // Added .tsx extension
+import ProductCard, { Product } from "@/components/products/ProductCard.tsx"; // Import Product interface
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion, Easing } from "framer-motion";
+import { Cpu, MemoryStick, HardDrive } from "lucide-react"; // Changed Memory to MemoryStick
 
 // Placeholder product data
-const featuredProducts = [
+const featuredProducts: Product[] = [ // Explicitly typed as Product[]
   {
     id: "fp1",
     name: "ZenBook Pro 14 OLED",
+    category: "Laptops",
     images: ["/placeholder.svg", "/placeholder.svg"],
     price: 1899.00,
+    originalPrice: 2000.00,
+    discountPercentage: 5, // Added discountPercentage
     rating: 4.8,
     reviews: 150,
     tag: "Best Seller",
     tagVariant: "destructive",
+    limitedStock: true,
+    specs: [
+      { icon: Cpu, label: "Processor", value: "Intel i7" },
+      { icon: MemoryStick, label: "RAM", value: "16GB" }, // Changed Memory to MemoryStick
+      { icon: HardDrive, label: "Storage", value: "512GB SSD" },
+    ],
   },
   {
     id: "fp2",
     name: "SoundWave Max Headphones",
+    category: "Audio",
     images: ["/placeholder.svg", "/placeholder.svg"],
     price: 349.99,
     rating: 4.5,
     reviews: 230,
     tag: "New Arrival",
     tagVariant: "default",
+    specs: [
+      { icon: Cpu, label: "Type", value: "Over-ear" },
+      { icon: MemoryStick, label: "Connectivity", value: "Bluetooth 5.2" }, // Changed Memory to MemoryStick
+      { icon: HardDrive, label: "Battery", value: "30 Hrs" },
+    ],
   },
   {
     id: "fp3",
     name: "UltraView 32-inch Monitor",
+    category: "Monitors",
     images: ["/placeholder.svg", "/placeholder.svg"],
     price: 799.00,
+    originalPrice: 850.00,
+    discountPercentage: 6, // Added discountPercentage
     rating: 4.7,
     reviews: 95,
+    specs: [
+      { icon: Cpu, label: "Resolution", value: "4K UHD" },
+      { icon: MemoryStick, label: "Refresh Rate", value: "144Hz" }, // Changed Memory to MemoryStick
+      { icon: HardDrive, label: "Panel Type", value: "IPS" },
+    ],
   },
   {
     id: "fp4",
     name: "ErgoGrip Wireless Mouse",
+    category: "Accessories",
     images: ["/placeholder.svg", "/placeholder.svg"],
     price: 59.99,
     rating: 4.6,
     reviews: 310,
     tag: "Top Rated",
     tagVariant: "secondary",
+    specs: [
+      { icon: Cpu, label: "Connectivity", value: "2.4GHz Wireless" },
+      { icon: MemoryStick, label: "DPI", value: "16000" }, // Changed Memory to MemoryStick
+      { icon: HardDrive, label: "Buttons", value: "8 Programmable" },
+    ],
   },
   {
     id: "fp5",
     name: "SmartHome Hub Pro",
+    category: "Smart Home",
     images: ["/placeholder.svg", "/placeholder.svg"],
     price: 129.00,
     rating: 4.2,
     reviews: 80,
+    limitedStock: true,
+    specs: [
+      { icon: Cpu, label: "Compatibility", value: "Multi-protocol" },
+      { icon: MemoryStick, label: "Voice Asst.", value: "Alexa, Google" }, // Changed Memory to MemoryStick
+      { icon: HardDrive, label: "Security", value: "AES-128" },
+    ],
   },
   {
     id: "fp6",
     name: "PowerCharge 100W GaN Charger",
+    category: "Accessories",
     images: ["/placeholder.svg", "/placeholder.svg"],
     price: 49.99,
+    originalPrice: 60.00,
+    discountPercentage: 17, // Added discountPercentage
     rating: 4.9,
     reviews: 450,
     tag: "Limited Stock",
     tagVariant: "destructive",
+    specs: [
+      { icon: Cpu, label: "Output", value: "100W Max" },
+      { icon: MemoryStick, label: "Ports", value: "2x USB-C, 1x USB-A" }, // Changed Memory to MemoryStick
+      { icon: HardDrive, label: "Tech", value: "GaN" },
+    ],
   },
 ];
 
