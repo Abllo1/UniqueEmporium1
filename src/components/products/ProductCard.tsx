@@ -44,8 +44,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
 
   const specsRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | null>(null);
-  // isScrolling state is not strictly needed for the logic, but can be useful for debugging/UI feedback
-  // const [isScrolling, setIsScrolling] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -73,11 +72,11 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
     const clientWidth = container.clientWidth;
 
     if (scrollWidth <= clientWidth) {
-      // setIsScrolling(false); // No need to scroll if content fits
-      return;
+      setIsScrolling(false);
+      return; // No need to scroll if content fits
     }
 
-    // setIsScrolling(true);
+    setIsScrolling(true);
     let scrollPos = container.scrollLeft;
     const scrollSpeed = 0.5; // Pixels per frame
 
@@ -100,19 +99,30 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
     }
-    // setIsScrolling(false);
+    setIsScrolling(false);
   }, []);
 
-  // This useEffect will start auto-scrolling when the component mounts
   useEffect(() => {
+    // Start scrolling when component mounts and product.specs exist
     if (product.specs && product.specs.length > 0) {
       startAutoScroll();
     }
 
+    // Clean up on unmount
     return () => {
       stopAutoScroll();
     };
-  }, [product.specs, startAutoScroll, stopAutoScroll]); // Dependencies ensure it restarts if specs change
+  }, [product.specs, startAutoScroll, stopAutoScroll]);
+
+  const handleMouseEnterSpecs = () => {
+    stopAutoScroll();
+  };
+
+  const handleMouseLeaveSpecs = () => {
+    if (product.specs && product.specs.length > 0) {
+      startAutoScroll();
+    }
+  };
 
   const discount = product.originalPrice && product.price < product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -125,8 +135,8 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
       whileInView={disableEntryAnimation ? null : "visible"}
       viewport={{ once: true, amount: 0.2 }}
       className="relative h-[420px] flex flex-col"
-      onMouseEnter={() => setHovered(true)} // Keep this for image carousel hover effects
-      onMouseLeave={() => setHovered(false)} // Keep this for image carousel hover effects
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <Card className="relative flex h-full flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
         {product.tag && (
@@ -285,8 +295,8 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
           <div
             ref={specsRef}
             className="flex overflow-x-auto no-scrollbar rounded-b-lg border-t border-border bg-muted/50 py-3 px-2 flex-shrink-0"
-            onMouseEnter={stopAutoScroll} // Pause scrolling on hover
-            onMouseLeave={startAutoScroll} // Resume scrolling on mouse leave
+            onMouseEnter={handleMouseEnterSpecs}
+            onMouseLeave={handleMouseLeaveSpecs}
           >
             {product.specs.map((spec, index) => (
               <div key={index} className="flex-shrink-0 min-w-[100px] py-1 px-2 flex items-center">
