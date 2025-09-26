@@ -4,6 +4,7 @@ import React from "react";
 import { motion, Easing } from "framer-motion";
 import { ShieldCheck, Truck, Headset, DollarSign, RefreshCw, Award } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge"; // Import Badge component
 
 interface Reason {
   icon: React.ElementType;
@@ -62,30 +63,37 @@ const fadeInUp = {
 
 const WhyChooseUsSection = () => {
   return (
-    <section className="py-16 bg-background">
+    <section className="py-20 bg-gradient-to-br from-accent/5 to-primary/5">
       <motion.div
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
       >
-        <motion.h2
-          className="font-poppins font-bold text-xl md:text-4xl text-foreground"
-          variants={fadeInUp}
-        >
-          Why Choose ElectroPro?
-        </motion.h2>
-        <motion.p
-          className="text-sm text-muted-foreground mt-2 mb-8 md:mb-12"
-          variants={fadeInUp}
-        >
-          Experience the difference with our commitment to quality, service, and innovation.
-        </motion.p>
+        {/* Header (Title, Description, Badge) */}
+        <div className="text-center mb-16">
+          <motion.div variants={fadeInUp}>
+            <Badge variant="secondary" className="mb-4 text-sm">Our Promise</Badge>
+          </motion.div>
+          <motion.h2
+            className="font-poppins font-bold text-sm md:text-5xl lg:text-2xl text-foreground mb-6"
+            variants={fadeInUp}
+          >
+            Why Choose ElectroPro?
+          </motion.h2>
+          <motion.p
+            className="text-xs lg:text-sm text-muted-foreground max-w-3xl mx-auto"
+            variants={fadeInUp}
+          >
+            Experience the difference with our commitment to quality, service, and innovation.
+          </motion.p>
+        </div>
+
 
         {/* Banner Image */}
         <motion.div
-          className="relative w-full max-w-5xl mx-auto h-48 md:h-64 rounded-xl overflow-hidden shadow-lg mb-12"
+          className="relative w-full max-w-5xl mx-auto h-48 md:h-64 rounded-xl overflow-hidden shadow-lg mt-12 mb-12"
           variants={fadeInUp}
         >
           <img
@@ -95,10 +103,11 @@ const WhyChooseUsSection = () => {
           />
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          {/* Large Illustrative Image (Desktop Only) */}
+        {/* Main Content Grid (Image + Reasons) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          {/* Left Column (Large Illustrative Image - Desktop Only) */}
           <motion.div
-            className="hidden md:block relative h-96 rounded-xl overflow-hidden shadow-xl"
+            className="hidden lg:block relative h-96 rounded-xl overflow-hidden shadow-xl"
             variants={fadeInUp}
           >
             <img
@@ -108,16 +117,16 @@ const WhyChooseUsSection = () => {
             />
           </motion.div>
 
-          {/* Reasons Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Right Column (Reasons Grid) */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-6">
             {reasons.map((reason, index) => (
               <motion.div
                 key={index}
-                className="flex flex-col items-center text-center p-6 border rounded-lg shadow-sm bg-card"
+                className="flex flex-col items-center text-center p-4 sm:p-4 lg:p-3 border rounded-lg shadow-sm bg-card h-full"
                 variants={fadeInUp}
               >
                 <motion.div
-                  className="mb-4"
+                  className="mb-2 sm:mb-4 lg:mb-2"
                   animate={{
                     y: [0, -5, 0], // Vertical float
                     rotateX: [0, 5, 0], // Subtle X-axis rotation
@@ -131,10 +140,10 @@ const WhyChooseUsSection = () => {
                     delay: index * 0.1, // Stagger the icon animation
                   }}
                 >
-                  <reason.icon className="h-10 w-10 text-primary" />
+                  <reason.icon className="h-6 w-6 sm:h-8 sm:w-8 lg:h-5 lg:w-5 text-primary mx-auto" />
                 </motion.div>
-                <h3 className="text-lg font-semibold mb-2 text-card-foreground">{reason.title}</h3>
-                <p className="text-sm text-muted-foreground">{reason.description}</p>
+                <h3 className="text-sm sm:text-lg lg:text-sm font-semibold mb-1 sm:mb-2 lg:mb-1 text-card-foreground">{reason.title}</h3>
+                <p className="text-[10px] sm:text-sm lg:text-xs text-muted-foreground">{reason.description}</p>
               </motion.div>
             ))}
           </div>
