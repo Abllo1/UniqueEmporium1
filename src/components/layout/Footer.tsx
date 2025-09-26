@@ -363,12 +363,12 @@ const Footer = () => {
           <p>&copy; {new Date().getFullYear()} ElectroPro. All rights reserved.</p>
           <p>
             <a
-              href="https://www.dyad.sh/"
+              href="#" // Updated href
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-primary-foreground transition-colors"
             >
-              Made with Dyad
+              Built with ❤️ by [Web-Aura] {/* Updated text */}
             </a>
           </p>
         </div>
