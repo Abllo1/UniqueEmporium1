@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion, Easing } from "framer-motion";
 import { Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging } from "lucide-react"; // Added Monitor, BatteryCharging
+import { toast } from "sonner"; // Import toast
 
 // Placeholder product data
 const featuredProducts: Product[] = [ // Explicitly typed as Product[]
@@ -78,7 +79,7 @@ const featuredProducts: Product[] = [ // Explicitly typed as Product[]
     tagVariant: "secondary",
     specs: [
       { icon: Cpu, label: "Connectivity", value: "2.4GHz Wireless" },
-      { icon: MemoryStick, label: "DPI", value: "16000" }, // Changed Memory to MemoryStick
+      { icon: MemoryStick, label: "DPI", value: "1600" }, // Changed Memory to MemoryStick
       { icon: HardDrive, label: "Buttons", value: "8 Programmable" },
     ],
   },
@@ -134,6 +135,21 @@ const fadeInUp = {
 };
 
 const Index = () => {
+  const handleAddToCart = (product: Product) => {
+    toast.success(`${product.name} added to cart!`);
+    console.log("Add to Cart:", product.name);
+  };
+
+  const handleAddToFavorites = (product: Product) => {
+    toast.success(`${product.name} added to favorites!`);
+    console.log("Add to Favorites:", product.name);
+  };
+
+  const handleAddToCompare = (product: Product) => {
+    toast.info(`${product.name} added to comparison!`);
+    console.log("Add to Compare:", product.name);
+  };
+
   return (
     <div className="relative min-h-screen w-full">
       <HeroCarousel />
@@ -164,7 +180,14 @@ const Index = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
             {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} disableEntryAnimation={true} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                disableEntryAnimation={true}
+                onAddToCart={handleAddToCart}
+                onAddToFavorites={handleAddToFavorites}
+                onAddToCompare={handleAddToCompare}
+              />
             ))}
           </div>
 

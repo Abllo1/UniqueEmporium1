@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Scale, ArrowLeft, X, Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging, Wifi, HardHat } from "lucide-react";
 import CompareProductCard from "../components/compare-page/CompareProductCard"; // Changed to relative path
 import { Product } from "@/components/products/ProductCard.tsx"; // Re-using the Product interface
+import { toast } from "sonner"; // Import toast
 
 // Placeholder product data for comparison
 const initialCompareProducts: Product[] = [
@@ -102,10 +103,22 @@ const Compare = () => {
 
   const handleRemoveProduct = (productId: string) => {
     setProductsToCompare((prev) => prev.filter((p) => p.id !== productId));
+    toast.info("Product removed from comparison.");
   };
 
   const handleClearAll = () => {
     setProductsToCompare([]);
+    toast.info("All products cleared from comparison.");
+  };
+
+  const handleAddToCart = (product: Product) => {
+    toast.success(`${product.name} added to cart!`);
+    console.log("Add to Cart:", product.name);
+  };
+
+  const handleAddToFavorites = (product: Product) => {
+    toast.success(`${product.name} added to favorites!`);
+    console.log("Add to Favorites:", product.name);
   };
 
   const hasProducts = productsToCompare.length > 0;
@@ -144,7 +157,12 @@ const Compare = () => {
             >
               {productsToCompare.map((product) => (
                 <motion.div key={product.id} variants={fadeInUp} className="flex-shrink-0 w-[280px] md:w-auto">
-                  <CompareProductCard product={product} onRemove={handleRemoveProduct} />
+                  <CompareProductCard
+                    product={product}
+                    onRemove={handleRemoveProduct}
+                    onAddToCart={handleAddToCart}
+                    onAddToFavorites={handleAddToFavorites}
+                  />
                 </motion.div>
               ))}
             </motion.div>

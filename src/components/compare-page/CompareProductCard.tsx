@@ -8,10 +8,13 @@ import { Star, Heart, ShoppingCart, Scale, X, Cpu, MemoryStick, HardDrive, Monit
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Product } from "@/components/products/ProductCard.tsx"; // Re-using the Product interface
+import { toast } from "sonner"; // Import toast
 
 interface CompareProductCardProps {
   product: Product;
   onRemove: (productId: string) => void;
+  onAddToCart: (product: Product) => void; // Added
+  onAddToFavorites: (product: Product) => void; // Added
   disableEntryAnimation?: boolean;
 }
 
@@ -20,7 +23,7 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as Easing } },
 };
 
-const CompareProductCard = ({ product, onRemove, disableEntryAnimation = false }: CompareProductCardProps) => {
+const CompareProductCard = ({ product, onRemove, onAddToCart, onAddToFavorites, disableEntryAnimation = false }: CompareProductCardProps) => {
   const discount = product.originalPrice && product.price < product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
@@ -121,10 +124,10 @@ const CompareProductCard = ({ product, onRemove, disableEntryAnimation = false }
 
         {/* Action Buttons */}
         <div className="p-4 border-t border-border flex flex-col gap-2">
-          <Button className="w-full">
+          <Button className="w-full" onClick={() => onAddToCart(product)}>
             <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
           </Button>
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" onClick={() => onAddToFavorites(product)}>
             <Heart className="mr-2 h-4 w-4" /> Add to Favorites
           </Button>
         </div>

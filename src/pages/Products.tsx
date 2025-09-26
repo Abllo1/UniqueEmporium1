@@ -8,6 +8,7 @@ import { Search, Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging, Wifi, La
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
 import { motion, AnimatePresence, Easing } from "framer-motion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner"; // Import toast
 
 // Placeholder product data (keeping it here for now as it's already in the file)
 const allProducts: Product[] = Array.from({ length: 20 }).map((_, index) => ({
@@ -149,6 +150,22 @@ const Products = () => {
     setSortBy("default");
     setSearchParams({}); // Clear all search params
     setIsMobileFilterPanelOpen(false); // Close panel on clear
+  };
+
+  // Placeholder action handlers
+  const handleAddToCart = (product: Product) => {
+    toast.success(`${product.name} added to cart!`);
+    console.log("Add to Cart:", product.name);
+  };
+
+  const handleAddToFavorites = (product: Product) => {
+    toast.success(`${product.name} added to favorites!`);
+    console.log("Add to Favorites:", product.name);
+  };
+
+  const handleAddToCompare = (product: Product) => {
+    toast.info(`${product.name} added to comparison!`);
+    console.log("Add to Compare:", product.name);
   };
 
   return (
@@ -295,7 +312,14 @@ const Products = () => {
       {displayedProducts.length > 0 ? (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-5">
           {displayedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} disableEntryAnimation={true} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              disableEntryAnimation={true}
+              onAddToCart={handleAddToCart}
+              onAddToFavorites={handleAddToFavorites}
+              onAddToCompare={handleAddToCompare}
+            />
           ))}
         </div>
       ) : (
