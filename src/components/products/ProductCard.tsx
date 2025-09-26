@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence, Easing } from "framer-motion";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,10 +42,6 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
 
-  const specsRef = useRef<HTMLDivElement>(null);
-  const animationFrameRef = useRef<number | null>(null);
-  const [isScrolling, setIsScrolling] = useState(false);
-
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
 
@@ -63,66 +59,6 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
       emblaApi.off("select", onSelect);
     };
   }, [emblaApi, onSelect]);
-
-  const startAutoScroll = useCallback(() => {
-    if (!specsRef.current) return;
-
-    const container = specsRef.current;
-    const scrollWidth = container.scrollWidth;
-    const clientWidth = container.clientWidth;
-
-    if (scrollWidth <= clientWidth) {
-      setIsScrolling(false);
-      return; // No need to scroll if content fits
-    }
-
-    setIsScrolling(true);
-    let scrollPos = container.scrollLeft;
-    const scrollSpeed = 0.5; // Pixels per frame
-
-    const animateScroll = () => {
-      if (!container) return;
-
-      scrollPos += scrollSpeed;
-      if (scrollPos >= scrollWidth - clientWidth) {
-        scrollPos = 0; // Loop back to start
-      }
-      container.scrollLeft = scrollPos;
-      animationFrameRef.current = requestAnimationFrame(animateScroll);
-    };
-
-    animationFrameRef.current = requestAnimationFrame(animateScroll);
-  }, []);
-
-  const stopAutoScroll = useCallback(() => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-    setIsScrolling(false);
-  }, []);
-
-  useEffect(() => {
-    // Start scrolling when component mounts and product.specs exist
-    if (product.specs && product.specs.length > 0) {
-      startAutoScroll();
-    }
-
-    // Clean up on unmount
-    return () => {
-      stopAutoScroll();
-    };
-  }, [product.specs, startAutoScroll, stopAutoScroll]);
-
-  const handleMouseEnterSpecs = () => {
-    stopAutoScroll();
-  };
-
-  const handleMouseLeaveSpecs = () => {
-    if (product.specs && product.specs.length > 0) {
-      startAutoScroll();
-    }
-  };
 
   const discount = product.originalPrice && product.price < product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -292,12 +228,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
 
         {/* Horizontal Scrolling Specifications Section */}
         {product.specs && product.specs.length > 0 && (
-          <div
-            ref={specsRef}
-            className="flex overflow-x-auto no-scrollbar rounded-b-lg border-t border-border bg-muted/50 py-3 px-2 flex-shrink-0"
-            onMouseEnter={handleMouseEnterSpecs}
-            onMouseLeave={handleMouseLeaveSpecs}
-          >
+          <div className="flex overflow-x-auto md:overflow-x-hidden no-scrollbar rounded-b-lg border-t border-border bg-muted/50 py-3 px-2 flex-shrink-0">
             {product.specs.map((spec, index) => (
               <div key={index} className="flex-shrink-0 min-w-[100px] py-1 px-2 flex items-center">
                 <spec.icon className="w-4 h-4 text-primary mr-1" />
