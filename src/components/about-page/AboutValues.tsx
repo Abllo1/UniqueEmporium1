@@ -75,7 +75,7 @@ const AboutValues = () => {
       >
         {values.map((value, index) => (
           <motion.div key={index} variants={fadeInUp}>
-            <Card className="p-8 h-full text-left">
+            <Card className="p-8 h-full text-left rounded-2xl">
               <motion.div
                 className="h-8 w-8 text-primary mb-4"
                 animate={{
