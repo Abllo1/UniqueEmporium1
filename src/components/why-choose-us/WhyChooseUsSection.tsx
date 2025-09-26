@@ -74,7 +74,7 @@ const WhyChooseUsSection = () => {
         {/* Header (Title, Description, Badge) */}
         <div className="text-center mb-16">
           <motion.div variants={fadeInUp}>
-            <Badge variant="secondary" className="mb-4 text-sm">Our Promise</Badge>
+            <Badge variant="outline" className="mb-4 text-xs">Your Trusted Tech Partner</Badge>
           </motion.div>
           <motion.h2
             className="font-poppins font-bold text-sm md:text-5xl lg:text-2xl text-foreground mb-6"
