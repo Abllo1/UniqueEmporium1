@@ -224,7 +224,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
 
         {/* Horizontal Scrolling Specifications Section */}
         {product.specs && product.specs.length > 0 && (
-          <div className="flex overflow-x-auto no-scrollbar rounded-b-lg border-t border-border bg-muted/50 py-3 px-2 flex-shrink-0">
+          <div className="flex overflow-x-auto md:overflow-x-hidden no-scrollbar rounded-b-lg border-t border-border bg-muted/50 py-3 px-2 flex-shrink-0">
             {product.specs.map((spec, index) => (
               <div key={index} className="flex-shrink-0 min-w-[100px] py-1 px-2 flex items-center">
                 <spec.icon className="w-4 h-4 text-primary mr-1" />
