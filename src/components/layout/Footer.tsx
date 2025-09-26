@@ -360,7 +360,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-2 border-t border-primary-foreground/20 pt-8 text-center text-sm text-primary-foreground/60 md:flex-row">
-          <p>Built with ❤️ by [Web-Aura]</p>
+          <p>&copy; {new Date().getFullYear()} ElectroPro. All rights reserved.</p>
           <p>
             <a
               href="https://www.dyad.sh/"
