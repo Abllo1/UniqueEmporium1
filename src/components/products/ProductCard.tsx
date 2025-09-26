@@ -146,7 +146,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
           </div>
 
           {/* Rating Overlay */}
-          <div className="absolute top-3 right-3 z-10">
+          <div className="absolute top-3 right-3 z-10 md:bottom-3 md:top-auto"> {/* Modified classes here */}
             <Badge variant="secondary" className="flex items-center gap-1 text-xs md:text-sm font-medium">
               <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
               {product.rating.toFixed(1)}
