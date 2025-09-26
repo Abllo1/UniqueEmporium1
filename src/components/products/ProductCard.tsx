@@ -255,7 +255,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
                     {product.originalPrice.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })}
                   </p>
                   {discount > 0 && (
-                    <Badge variant="destructive" className="text-[0.6rem] font-medium px-1.5 py-0.5">
+                    <Badge variant="destructive" className="text-xs md:text-sm font-medium px-1.5 py-0.5">
                       -{discount}%
                     </Badge>
                   )}
@@ -279,7 +279,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
                     {product.originalPrice.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })}
                   </p>
                   {discount > 0 && (
-                    <Badge variant="destructive" className="text-[0.6rem] font-medium px-1.5 py-0.5">
+                    <Badge variant="destructive" className="text-xs md:text-sm font-medium px-1.5 py-0.5">
                       -{discount}%
                     </Badge>
                   )}
