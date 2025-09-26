@@ -67,7 +67,7 @@ const AboutValues = () => {
       </motion.div>
 
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-12"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-12 max-w-4xl mx-auto" // Changed to 2 columns and added max-width for optimization
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
