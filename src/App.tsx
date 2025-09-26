@@ -3,15 +3,15 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
-import Header from "./components/layout/Header.tsx";
-import Favorites from "./pages/Favorites.tsx";
-import Compare from "./pages/Compare.tsx";
-import Cart from "./pages/Cart.tsx";
-import Products from "./pages/Products.tsx";
-import About from "./pages/About.tsx";
-import Contact from "./pages/Contact.tsx";
+import Index from "./pages/Index.tsx"; // Re-adding .tsx extension
+import NotFound from "./pages/NotFound.tsx"; // Re-adding .tsx extension
+import Header from "./components/layout/Header.tsx"; // Re-adding .tsx extension
+import Favorites from "./pages/Favorites.tsx"; // Re-adding .tsx extension
+import Compare from "./pages/Compare.tsx"; // Re-adding .tsx extension
+import Cart from "./pages/Cart.tsx"; // Re-adding .tsx extension
+import Products from "./pages/Products.tsx"; // Re-adding .tsx extension
+import About from "./pages/About.tsx"; // Re-adding .tsx extension
+import Contact from "./pages/Contact.tsx"; // Re-adding .tsx extension
 
 
 const queryClient = new QueryClient();

@@ -1,13 +1,15 @@
 "use client";
 
 import HeroCarousel from "@/components/hero-carousel/HeroCarousel.tsx";
-import HeroIntroBanner from "@/components/hero-intro-banner/HeroIntroBanner.tsx"; // Import the new component
+import HeroIntroBanner from "@/components/hero-intro-banner/HeroIntroBanner.tsx";
+import CategoriesSection from "@/components/categories-section/CategoriesSection.tsx"; // Re-adding .tsx extension
 
 const Index = () => {
   return (
     <div className="relative min-h-screen w-full">
       <HeroCarousel />
-      <HeroIntroBanner /> {/* Add the new HeroIntroBanner component here */}
+      <HeroIntroBanner />
+      <CategoriesSection />
       {/* Placeholder for the "Featured Products" section that the CTA button scrolls to */}
       <section id="featured-products" className="min-h-screen bg-gray-50 p-8">
         <div className="mx-auto max-w-7xl text-center">
