@@ -74,7 +74,7 @@ const AboutValues = () => {
         viewport={{ once: true, amount: 0.3 }}
       >
         {values.map((value, index) => (
-          <motion.div key={index} variants={fadeInUp}>
+          <motion.div key={index} variants={fadeInUp} className="w-[250px] mx-auto sm:w-auto"> {/* Added w-[250px] and mx-auto for mobile, sm:w-auto to reset on larger screens */}
             <Card className="p-8 h-full flex flex-col items-center text-center rounded-2xl">
               <value.icon className="h-10 w-10 text-primary mb-4" />
               <h3 className="text-lg font-semibold mb-4 text-foreground">{value.title}</h3>
