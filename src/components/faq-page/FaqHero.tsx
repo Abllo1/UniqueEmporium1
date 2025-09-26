@@ -11,7 +11,7 @@ const fadeInUp = {
 
 const FaqHero = () => {
   return (
-    <section className="py-20 px-4 max-w-6xl mx-auto text-center">
+    <section className="py-12 md:py-20 px-4 max-w-6xl mx-auto text-center">
       <motion.div
         variants={fadeInUp}
         initial="hidden"
@@ -21,10 +21,10 @@ const FaqHero = () => {
         <Badge variant="outline" className="mb-4 text-sm rounded-md">
           Got Questions?
         </Badge>
-        <h1 className="font-poppins text-2xl md:text-6xl font-bold mb-6 text-foreground">
+        <h1 className="font-poppins text-3xl md:text-6xl font-bold mb-4 md:mb-6 text-foreground">
           Frequently Asked Questions
         </h1>
-        <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto">
+        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
           Find quick answers to the most common questions about our products, services, and policies.
         </p>
       </motion.div>
