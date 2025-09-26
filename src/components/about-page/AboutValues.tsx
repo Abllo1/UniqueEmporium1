@@ -76,7 +76,23 @@ const AboutValues = () => {
         {values.map((value, index) => (
           <motion.div key={index} variants={fadeInUp}>
             <Card className="p-4 h-[130px] flex flex-col items-center justify-center text-center rounded-2xl">
-              <value.icon className="h-8 w-8 text-primary mb-2" />
+              <motion.div
+                className="h-8 w-8 text-primary mb-2"
+                animate={{
+                  y: [0, -5, 0], // Vertical float
+                  rotateX: [0, 5, 0], // Subtle X-axis rotation
+                  rotateZ: [0, 2, 0], // Subtle Z-axis rotation
+                }}
+                transition={{
+                  duration: 3,
+                  ease: "easeInOut" as Easing,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  delay: index * 0.1, // Stagger the icon animation
+                }}
+              >
+                <value.icon className="h-full w-full" />
+              </motion.div>
               <h3 className="text-base font-semibold mb-1 text-foreground">{value.title}</h3>
               <p className="text-xs text-muted-foreground">{value.description}</p>
             </Card>
