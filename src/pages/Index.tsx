@@ -4,6 +4,7 @@ import HeroCarousel from "@/components/hero-carousel/HeroCarousel.tsx";
 import HeroIntroBanner from "@/components/hero-intro-banner/HeroIntroBanner.tsx";
 import CategoriesSection from "@/components/categories-section/CategoriesSection.tsx";
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx"; // Import Product interface
+import WhyChooseUsSection from "@/components/why-choose-us/WhyChooseUsSection.tsx"; // Import new component
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion, Easing } from "framer-motion";
@@ -173,6 +174,9 @@ const Index = () => {
           </motion.div>
         </motion.div>
       </section>
+
+      {/* Why Choose Us Section */}
+      <WhyChooseUsSection />
     </div>
   );
 };
