@@ -110,7 +110,7 @@ const Favorites = () => {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+              className="grid grid-cols-2 gap-2 md:grid-cols-2 md:gap-8 lg:grid-cols-3 xl:grid-cols-4"
             >
               {favoriteProducts.map((product) => (
                 <motion.div key={product.id} variants={fadeInUp}>
