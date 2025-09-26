@@ -4,21 +4,21 @@ import React, { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence, Easing } from "framer-motion";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, Heart, ShoppingCart, ChevronLeft, ChevronRight, Scale, Cpu, MemoryStick, HardDrive } from "lucide-react"; // Changed Memory to MemoryStick
+import { Star, Heart, ShoppingCart, ChevronLeft, ChevronRight, Scale, Cpu, MemoryStick, HardDrive } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import FloatingTag from "@/components/common/FloatingTag.tsx";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 
-export interface Product { // Exported interface for use in Index.tsx
+export interface Product {
   id: string;
   name: string;
   category: string;
   images: string[];
   price: number;
   originalPrice?: number;
-  discountPercentage?: number; // Added discountPercentage to interface
+  discountPercentage?: number;
   rating: number;
   reviews: number;
   tag?: string;
@@ -157,9 +157,6 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
                 transition={{ duration: 0.2 }}
                 className="absolute inset-0 hidden md:flex items-center justify-center space-x-4 bg-black/60 z-20"
               >
-                <Button variant="secondary" size="icon" className="text-sm font-medium">
-                  <Heart className="h-4 w-4" />
-                </Button>
                 <Button variant="secondary" size="icon" className="text-sm font-medium">
                   <Scale className="h-4 w-4" />
                 </Button>
