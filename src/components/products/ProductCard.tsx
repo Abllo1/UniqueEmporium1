@@ -146,7 +146,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
           </div>
 
           {/* Rating Overlay */}
-          <div className="absolute top-3 right-3 z-10 md:bottom-3 md:top-auto"> {/* Modified classes here */}
+          <div className="absolute top-3 right-3 z-10 md:bottom-3 md:top-auto">
             <Badge variant="secondary" className="flex items-center gap-1 text-xs md:text-sm font-medium">
               <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
               {product.rating.toFixed(1)}
@@ -242,23 +242,26 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
             {product.name}
           </h3>
 
-          {/* Price Display */}
+          {/* Price Display (Main Price always visible, Original Price/Discount hidden on mobile) */}
           <div className="flex items-center gap-2 mb-2">
             <p className="font-bold text-base text-primary">
               {product.price.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })}
             </p>
-            {product.originalPrice && product.price < product.originalPrice && (
-              <>
-                <p className="text-xs text-gray-400 line-through">
-                  {product.originalPrice.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })}
-                </p>
-                {discount > 0 && (
-                  <Badge variant="destructive" className="text-[0.6rem] font-medium px-1.5 py-0.5">
-                    -{discount}%
-                  </Badge>
-                )}
-              </>
-            )}
+            {/* Original price and discount for desktop */}
+            <span className="hidden md:flex items-center gap-2">
+              {product.originalPrice && product.price < product.originalPrice && (
+                <>
+                  <p className="text-xs text-gray-400 line-through">
+                    {product.originalPrice.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })}
+                  </p>
+                  {discount > 0 && (
+                    <Badge variant="destructive" className="text-[0.6rem] font-medium px-1.5 py-0.5">
+                      -{discount}%
+                    </Badge>
+                  )}
+                </>
+              )}
+            </span>
           </div>
 
           {/* Limited Stock Message */}
@@ -268,9 +271,28 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
 
           {/* Footer Actions */}
           <div className="mt-auto flex items-center justify-between pt-2">
+            {/* Mobile-only original price and discount */}
+            <div className="flex items-center gap-2 md:hidden">
+              {product.originalPrice && product.price < product.originalPrice && (
+                <>
+                  <p className="text-xs text-gray-400 line-through">
+                    {product.originalPrice.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })}
+                  </p>
+                  {discount > 0 && (
+                    <Badge variant="destructive" className="text-[0.6rem] font-medium px-1.5 py-0.5">
+                      -{discount}%
+                    </Badge>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* View Details Link (Desktop Only) */}
             <Link to={`/products/${product.id}`} className="hidden md:inline-flex">
               <span className="text-xs text-muted-foreground hover:underline">View Details</span>
             </Link>
+
+            {/* Favorite Button */}
             <Button variant="ghost" size="icon" className="ml-auto">
               <Heart className="h-4 w-4" />
             </Button>
