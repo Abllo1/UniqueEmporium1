@@ -7,7 +7,7 @@ import ProductCard, { Product } from "@/components/products/ProductCard.tsx"; //
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion, Easing } from "framer-motion";
-import { Cpu, MemoryStick, HardDrive } from "lucide-react"; // Changed Memory to MemoryStick
+import { Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging } from "lucide-react"; // Added Monitor, BatteryCharging
 
 // Placeholder product data
 const featuredProducts: Product[] = [ // Explicitly typed as Product[]
@@ -28,6 +28,8 @@ const featuredProducts: Product[] = [ // Explicitly typed as Product[]
       { icon: Cpu, label: "Processor", value: "Intel i7" },
       { icon: MemoryStick, label: "RAM", value: "16GB" }, // Changed Memory to MemoryStick
       { icon: HardDrive, label: "Storage", value: "512GB SSD" },
+      { icon: Monitor, label: "Display", value: "14\" OLED 4K" }, // Added
+      { icon: BatteryCharging, label: "Battery", value: "15 Hrs" }, // Added
     ],
   },
   {

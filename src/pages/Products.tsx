@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Cpu, MemoryStick, HardDrive } from "lucide-react"; // Import icons for specs
+import { Search, Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging, Wifi } from "lucide-react"; // Import icons for specs
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx"; // Import ProductCard and Product interface
 
 // Placeholder product data for the Products page
@@ -25,6 +25,9 @@ const allProducts: Product[] = Array.from({ length: 20 }).map((_, index) => ({
     { icon: Cpu, label: "CPU", value: `i${7 + (index % 3)}` },
     { icon: MemoryStick, label: "RAM", value: `${8 * (1 + (index % 2))}GB` },
     { icon: HardDrive, label: "Storage", value: `${256 * (1 + (index % 2))}GB SSD` },
+    { icon: Monitor, label: "Display", value: `1${4 + (index % 3)}"` }, // Added
+    { icon: BatteryCharging, label: "Battery", value: `${10 + (index % 5)} Hrs` }, // Added
+    { icon: Wifi, label: "Wireless", value: `Wi-Fi 6` }, // Added
   ],
 }));
 
