@@ -10,68 +10,11 @@ import { ShoppingBag, CheckCircle2 } from "lucide-react";
 import CheckoutHeader from "@/components/checkout/CheckoutHeader.tsx";
 import CheckoutProgress from "@/components/checkout/CheckoutProgress.tsx";
 import OrderSummaryCard from "@/components/checkout/OrderSummaryCard.tsx";
-
-// Placeholder forms (will be created in subsequent steps)
-const ShippingForm = ({ onNext, onBack, setShippingDetails }: any) => (
-  <motion.div
-    initial={{ opacity: 0, x: 100 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: -100 }}
-    transition={{ duration: 0.3, ease: "easeOut" as Easing }}
-    className="p-6 bg-card rounded-lg shadow-md"
-  >
-    <h2 className="text-2xl font-bold mb-4">Shipping Information</h2>
-    <p className="text-muted-foreground mb-6">Form fields will go here.</p>
-    <Button onClick={() => onNext({ /* mock data */ })}>Continue to Payment</Button>
-  </motion.div>
-);
-
-const PaymentForm = ({ onNext, onBack, setPaymentDetails }: any) => (
-  <motion.div
-    initial={{ opacity: 0, x: 100 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: -100 }}
-    transition={{ duration: 0.3, ease: "easeOut" as Easing }}
-    className="p-6 bg-card rounded-lg shadow-md"
-  >
-    <h2 className="text-2xl font-bold mb-4">Payment Information</h2>
-    <p className="text-muted-foreground mb-6">Form fields will go here.</p>
-    <div className="flex justify-between">
-      <Button variant="outline" onClick={onBack}>Back to Shipping</Button>
-      <Button onClick={() => onNext({ /* mock data */ })}>Review Order</Button>
-    </div>
-  </motion.div>
-);
-
-const OrderReview = ({ onPlaceOrder, onBack, shippingDetails, paymentDetails }: any) => (
-  <motion.div
-    initial={{ opacity: 0, x: 100 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: -100 }}
-    transition={{ duration: 0.3, ease: "easeOut" as Easing }}
-    className="p-6 bg-card rounded-lg shadow-md"
-  >
-    <h2 className="text-2xl font-bold mb-4">Order Review</h2>
-    <p className="text-muted-foreground mb-6">Review your order details below.</p>
-    <div className="space-y-4 mb-6">
-      <div>
-        <h3 className="font-semibold text-lg">Shipping Address</h3>
-        <p>{shippingDetails?.fullName}</p>
-        <p>{shippingDetails?.address1}</p>
-        <p>{shippingDetails?.city}, {shippingDetails?.state} {shippingDetails?.zipCode}</p>
-      </div>
-      <div>
-        <h3 className="font-semibold text-lg">Payment Method</h3>
-        <p>Card ending in **** **** **** {paymentDetails?.cardNumber?.slice(-4)}</p>
-        <p>Card Holder: {paymentDetails?.cardHolderName}</p>
-      </div>
-    </div>
-    <div className="flex justify-between">
-      <Button variant="outline" onClick={onBack}>Back to Payment</Button>
-      <Button onClick={onPlaceOrder}>Place Order</Button>
-    </div>
-  </motion.div>
-);
+import ShippingForm from "@/components/checkout/ShippingForm.tsx"; // Import new form
+import PaymentForm from "@/components/checkout/PaymentForm.tsx"; // Import new form
+import OrderReview from "@/components/checkout/OrderReview.tsx"; // Import new review component
+import { ShippingFormValues } from "@/components/checkout/ShippingForm.tsx";
+import { PaymentFormValues } from "@/components/checkout/PaymentForm.tsx";
 
 const EmptyCartState = () => (
   <motion.div
@@ -116,8 +59,8 @@ const Checkout = () => {
 
   const [currentStep, setCurrentStep] = useState(1); // 1: Shipping, 2: Payment, 3: Review
   const [orderPlaced, setOrderPlaced] = useState(false);
-  const [shippingDetails, setShippingDetails] = useState<any>(null);
-  const [paymentDetails, setPaymentDetails] = useState<any>(null);
+  const [shippingDetails, setShippingDetails] = useState<ShippingFormValues | null>(null);
+  const [paymentDetails, setPaymentDetails] = useState<PaymentFormValues | null>(null);
 
   useEffect(() => {
     if (cartItems.length === 0 && !orderPlaced) {
@@ -126,12 +69,12 @@ const Checkout = () => {
     }
   }, [cartItems, orderPlaced, navigate]);
 
-  const handleNextStep = (data: any) => {
+  const handleNextStep = (data: ShippingFormValues | PaymentFormValues) => {
     if (currentStep === 1) {
-      setShippingDetails(data);
+      setShippingDetails(data as ShippingFormValues);
       setCurrentStep(2);
     } else if (currentStep === 2) {
-      setPaymentDetails(data);
+      setPaymentDetails(data as PaymentFormValues);
       setCurrentStep(3);
     }
   };
@@ -179,12 +122,12 @@ const Checkout = () => {
           <div className={isMobile ? "col-span-1" : "col-span-2"}>
             <AnimatePresence mode="wait">
               {currentStep === 1 && (
-                <ShippingForm key="shipping" onNext={handleNextStep} onBack={handlePreviousStep} setShippingDetails={setShippingDetails} />
+                <ShippingForm key="shipping" onNext={handleNextStep} />
               )}
               {currentStep === 2 && (
-                <PaymentForm key="payment" onNext={handleNextStep} onBack={handlePreviousStep} setPaymentDetails={setPaymentDetails} />
+                <PaymentForm key="payment" onNext={handleNextStep} onBack={handlePreviousStep} />
               )}
-              {currentStep === 3 && (
+              {currentStep === 3 && shippingDetails && paymentDetails && (
                 <OrderReview
                   key="review"
                   onPlaceOrder={handlePlaceOrder}
