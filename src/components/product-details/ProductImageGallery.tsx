@@ -50,7 +50,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
   };
 
   return (
-    <div className="relative w-full rounded-xl overflow-hidden shadow-lg bg-muted"> {/* Changed bg-card border to bg-muted */}
+    <div className="relative w-full rounded-xl overflow-hidden shadow-lg bg-muted">
       {/* Main Image Area */}
       <div className="relative h-[300px] sm:h-[400px] md:h-[500px] bg-muted flex items-center justify-center">
         <AnimatePresence initial={false} mode="wait">
@@ -69,7 +69,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
                   <img
                     src={image}
                     alt={`Product image ${index + 1} of ${productName}`}
-                    className="w-full h-full object-cover" // Changed object-contain to object-cover
+                    className="w-full h-full object-cover"
                   />
                 </div>
               ))}
@@ -87,7 +87,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
             <Button
               variant="ghost"
               size="icon"
-              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 text-foreground hover:bg-white z-10 h-6 w-6 p-2" // Adjusted classes
+              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 text-foreground hover:bg-white z-10 h-6 w-6 p-2"
               onClick={scrollPrev}
             >
               <ChevronLeft className="h-4 w-4" />
@@ -95,7 +95,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 text-foreground hover:bg-white z-10 h-6 w-6 p-2" // Adjusted classes
+              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 text-foreground hover:bg-white z-10 h-6 w-6 p-2"
               onClick={scrollNext}
             >
               <ChevronRight className="h-4 w-4" />
@@ -105,15 +105,15 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
 
         {/* Image Counter (changed from dots indicator) */}
         {images.length > 1 && (
-          <div className="absolute bottom-4 left-4 z-10 px-3 py-1 rounded-full bg-black/50 text-white text-sm"> {/* Adjusted classes */}
+          <div className="absolute bottom-4 left-4 z-10 px-3 py-1 rounded-full bg-black/50 text-white text-sm">
             {selectedIndex + 1} / {images.length}
           </div>
         )}
       </div>
 
-      {/* Thumbnail Gallery (Desktop Only) */}
+      {/* Thumbnail Gallery */}
       {images.length > 1 && (
-        <div className="hidden md:flex p-4 space-x-3 overflow-x-auto no-scrollbar bg-card border-t">
+        <div className="flex p-4 space-x-3 overflow-x-auto no-scrollbar bg-card border-t"> {/* Removed 'hidden md:flex' */}
           {images.map((image, index) => (
             <motion.button
               key={index}
