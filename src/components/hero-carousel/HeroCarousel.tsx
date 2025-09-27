@@ -4,7 +4,9 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, Easing, RepeatType } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ElectroProLogo3D from "./ElectroProLogo3D.tsx"; // Added .tsx extension
+import ElectroProLogo3D from "./ElectroProLogo3D.tsx";
+import { mockProducts, ProductDetails } from "@/data/products.ts"; // Import mockProducts and ProductDetails
+import { Link } from "react-router-dom"; // Import Link for CTA button
 
 interface CarouselItem {
   id: string;
@@ -13,46 +15,30 @@ interface CarouselItem {
   subHeadline: string;
   productName: string;
   productDescription: string;
-  price: number; // Changed to number
+  price: number;
   ctaText: string;
   ctaLink: string;
 }
 
-const carouselItems: CarouselItem[] = [
-  {
-    id: "1",
-    image: "/placeholder.svg", // Replace with actual image paths
-    headline: "Cutting-Edge Electronics for a Connected World.",
-    subHeadline: "From powerful laptops to smart devices – explore the future of technology.",
-    productName: "ZenBook Pro 14 OLED",
-    productDescription: "Unleash your creativity with stunning visuals and powerful performance.",
-    price: 950000.00, // Numeric value
-    ctaText: "Shop Laptops Now",
-    ctaLink: "#featured-products",
-  },
-  {
-    id: "2",
-    image: "/placeholder.svg", // Replace with actual image paths
-    headline: "Experience Innovation. Redefine Your Digital Life.",
-    subHeadline: "Discover the latest in smart home, audio, and personal tech.",
-    productName: "SoundWave Max Headphones",
-    productDescription: "Immersive audio and supreme comfort for the ultimate listening experience.",
-    price: 175000.00, // Numeric value
-    ctaText: "Explore Audio Gear",
-    ctaLink: "#featured-products",
-  },
-  {
-    id: "3",
-    image: "/placeholder.svg", // Replace with actual image paths
-    headline: "Power Your Passion. Elevate Your Productivity.",
-    subHeadline: "High-performance monitors and accessories for professionals and gamers.",
-    productName: "UltraView 32-inch Monitor",
-    productDescription: "Stunning 4K display with vibrant colors and lightning-fast refresh rates.",
-    price: 400000.00, // Numeric value
-    ctaText: "View Monitors",
-    ctaLink: "#featured-products",
-  },
-];
+// Select specific products from mockProducts for the carousel
+const selectedProductsForCarousel: ProductDetails[] = [
+  mockProducts.find(p => p.id === "zenbook-pro-14-oled"),
+  mockProducts.find(p => p.id === "soundwave-noise-cancelling-headphones"),
+  mockProducts.find(p => p.id === "prodisplay-xdr"),
+  mockProducts.find(p => p.id === "gaming-beast-desktop-pc"),
+].filter((product): product is ProductDetails => product !== undefined);
+
+const carouselItems: CarouselItem[] = selectedProductsForCarousel.map(product => ({
+  id: product.id,
+  image: product.images[0], // Use the first image for the carousel
+  headline: `Discover the ${product.name} – ${product.category} Excellence.`, // Dynamic headline
+  subHeadline: product.fullDescription.split('.')[0] + '.', // First sentence of full description
+  productName: product.name,
+  productDescription: product.fullDescription.split('.')[0] + '.', // Short description
+  price: product.price,
+  ctaText: `Shop ${product.category} Now`,
+  ctaLink: `/products/${product.id}`, // Link to product details page
+}));
 
 const HeroCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -107,16 +93,8 @@ const HeroCarousel = () => {
     tap: { scale: 0.95 },
   };
 
-  const handleCTAClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const targetId = currentItem.ctaLink.substring(1); // Remove '#'
-    const targetElement = document.getElementById(targetId);
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: "smooth" });
-    } else {
-      console.log(`Scrolling to ${currentItem.ctaLink}`);
-      // Fallback or toast if target not found
-    }
+  const formatCurrency = (amount: number) => {
+    return amount.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
   };
 
   return (
@@ -177,7 +155,7 @@ const HeroCarousel = () => {
               {currentItem.productDescription}
             </p>
             <p className="mt-2 font-bold text-xl text-accent md:text-2xl">
-              {currentItem.price.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })}
+              {formatCurrency(currentItem.price)}
             </p>
           </motion.div>
 
@@ -192,9 +170,11 @@ const HeroCarousel = () => {
           >
             <Button
               className="px-6 py-2 text-base md:px-8 md:py-3 md:text-lg"
-              onClick={handleCTAClick}
+              asChild // Use asChild to render Link inside Button
             >
-              {currentItem.ctaText}
+              <Link to={currentItem.ctaLink}>
+                {currentItem.ctaText}
+              </Link>
             </Button>
           </motion.div>
         </div>
