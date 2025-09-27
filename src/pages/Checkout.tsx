@@ -89,6 +89,7 @@ const Checkout = () => {
     clearCart(); // Clear cart after successful order
     setIsOrderPlaced(true);
     setIsPlacingOrder(false);
+    window.scrollTo(0, 0); // Scroll to top after order is placed
   };
 
   if (cartItems.length === 0 && !isOrderPlaced) {
