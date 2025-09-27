@@ -161,7 +161,7 @@ const ProductDetails = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
         >
-          <RecommendedProductsSection /> {/* This component already exists and uses mock data */}
+          <RecommendedProductsSection currentProductId={product.id} /> {/* Pass currentProductId */}
         </motion.div>
 
         {/* Recently Viewed Products Section */}

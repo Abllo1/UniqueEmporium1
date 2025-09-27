@@ -3,121 +3,21 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, Easing } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging } from "lucide-react";
+import { ChevronLeft, ChevronRight, Lightbulb } from "lucide-react"; // Changed icon to Lightbulb for recommendations
 import useEmblaCarousel from "embla-carousel-react";
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
+import { mockProducts, getProductById, ProductDetails as ProductDetailsType } from "@/data/products.ts"; // Import mockProducts and getProductById
 
-const recommendedProducts: Product[] = [
-  {
-    id: "rec1",
-    name: "Gaming Beast Laptop",
-    category: "Laptops",
-    images: ["/placeholder.svg", "/placeholder.svg"],
-    price: 1200000.00,
-    originalPrice: 1300000.00,
-    discountPercentage: 8,
-    rating: 4.9,
-    reviewCount: 200, // Changed from 'reviews'
-    tag: "Gaming",
-    tagVariant: "destructive",
-    limitedStock: false,
-    specs: [
-      { icon: Cpu, label: "CPU", value: "Intel i9" },
-      { icon: MemoryStick, label: "RAM", value: "32GB" },
-      { icon: HardDrive, label: "Storage", value: "1TB SSD" },
-      { icon: Monitor, label: "Display", value: "17\" QHD 165Hz" },
-      { icon: BatteryCharging, label: "Battery", value: "8 Hrs" },
-    ],
-  },
-  {
-    id: "rec2",
-    name: "Noise Cancelling Earbuds",
-    category: "Audio",
-    images: ["/placeholder.svg", "/placeholder.svg"],
-    price: 85000.00,
-    rating: 4.7,
-    reviewCount: 180, // Changed from 'reviews'
-    tag: "New",
-    tagVariant: "default",
-    specs: [
-      { icon: Cpu, label: "Type", value: "In-ear" },
-      { icon: MemoryStick, label: "ANC", value: "Hybrid" },
-      { icon: HardDrive, label: "Battery", value: "24 Hrs" },
-    ],
-  },
-  {
-    id: "rec3",
-    name: "Curved Ultrawide Monitor",
-    category: "Monitors",
-    images: ["/placeholder.svg", "/placeholder.svg"],
-    price: 550000.00,
-    originalPrice: 600000.00,
-    discountPercentage: 9,
-    rating: 4.8,
-    reviewCount: 110, // Changed from 'reviews'
-    specs: [
-      { icon: Cpu, label: "Resolution", value: "UWQHD" },
-      { icon: MemoryStick, label: "Refresh Rate", value: "120Hz" },
-      { icon: HardDrive, label: "Curvature", value: "1800R" },
-    ],
-  },
-  {
-    id: "rec4",
-    name: "Mechanical RGB Keyboard",
-    category: "Accessories",
-    images: ["/placeholder.svg", "/placeholder.svg"],
-    price: 70000.00,
-    rating: 4.6,
-    reviewCount: 250, // Changed from 'reviews'
-    tag: "Popular",
-    tagVariant: "secondary",
-    specs: [
-      { icon: Cpu, label: "Switch", value: "Brown" },
-      { icon: MemoryStick, label: "Backlight", value: "Per-key RGB" },
-      { icon: HardDrive, label: "Layout", value: "Full-size" },
-    ],
-  },
-  {
-    id: "rec5",
-    name: "Smart Doorbell Camera",
-    category: "Smart Home",
-    images: ["/placeholder.svg", "/placeholder.svg"],
-    price: 110000.00,
-    rating: 4.5,
-    reviewCount: 90, // Changed from 'reviews'
-    limitedStock: true,
-    specs: [
-      { icon: Cpu, label: "Resolution", value: "1080p" },
-      { icon: MemoryStick, label: "Field of View", value: "160°" },
-      { icon: HardDrive, label: "Storage", value: "Cloud/Local" },
-    ],
-  },
-  {
-    id: "rec6",
-    name: "Portable SSD 2TB",
-    category: "Storage",
-    images: ["/placeholder.svg", "/placeholder.svg"],
-    price: 150000.00,
-    originalPrice: 165000.00,
-    discountPercentage: 9,
-    rating: 4.7,
-    reviewCount: 130, // Changed from 'reviews'
-    tag: "Sale",
-    tagVariant: "destructive",
-    specs: [
-      { icon: Cpu, label: "Capacity", value: "2TB" },
-      { icon: MemoryStick, label: "Interface", value: "USB 3.2 Gen2" },
-      { icon: HardDrive, label: "Speed", value: "1000MB/s" },
-    ],
-  },
-];
+interface RecommendedProductsSectionProps {
+  currentProductId: string; // New prop to receive the ID of the currently viewed product
+}
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as Easing } },
 };
 
-const RecommendedProductsSection = () => {
+const RecommendedProductsSection = ({ currentProductId }: RecommendedProductsSectionProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: false,
@@ -135,6 +35,7 @@ const RecommendedProductsSection = () => {
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
 
   const onSelect = useCallback((emblaApi: any) => {
     setCanScrollPrev(emblaApi.canScrollPrev());
@@ -148,6 +49,67 @@ const RecommendedProductsSection = () => {
     emblaApi.on("select", onSelect);
   }, [emblaApi, onSelect]);
 
+  useEffect(() => {
+    const generateRecommendations = () => {
+      const currentProduct = getProductById(currentProductId);
+      if (!currentProduct) {
+        setRecommendedProducts([]);
+        return;
+      }
+
+      const recommendations: Product[] = [];
+      const recommendationIds = new Set<string>();
+
+      // 1. Category Match (excluding current product)
+      const categoryMatches = mockProducts.filter(
+        (p) => p.category === currentProduct.category && p.id !== currentProduct.id
+      );
+      categoryMatches.forEach((p) => {
+        if (!recommendationIds.has(p.id)) {
+          recommendations.push(p);
+          recommendationIds.add(p.id);
+        }
+      });
+
+      // 2. Related Attributes: Same tag.variant
+      if (currentProduct.tagVariant) {
+        const tagMatches = mockProducts.filter(
+          (p) => p.tagVariant === currentProduct.tagVariant && p.id !== currentProduct.id
+        );
+        tagMatches.forEach((p) => {
+          if (!recommendationIds.has(p.id)) {
+            recommendations.push(p);
+            recommendationIds.add(p.id);
+          }
+        });
+      }
+
+      // 3. Related Attributes: Price within 20% range
+      const priceRange = 0.20;
+      const minPrice = currentProduct.price * (1 - priceRange);
+      const maxPrice = currentProduct.price * (1 + priceRange);
+
+      const priceMatches = mockProducts.filter(
+        (p) => p.id !== currentProduct.id && p.price >= minPrice && p.price <= maxPrice
+      );
+      priceMatches.forEach((p) => {
+        if (!recommendationIds.has(p.id)) {
+          recommendations.push(p);
+          recommendationIds.add(p.id);
+        }
+      });
+
+      // Limit to 10 items
+      setRecommendedProducts(recommendations.slice(0, 10));
+    };
+
+    generateRecommendations();
+  }, [currentProductId]); // Re-run when currentProductId changes
+
+  if (recommendedProducts.length === 0) {
+    return null; // Don't render the section if no recommendations
+  }
+
   return (
     <section className="py-12 bg-background">
       <motion.div
@@ -159,7 +121,9 @@ const RecommendedProductsSection = () => {
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-foreground">Recommended for You</h2>
+          <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
+            <Lightbulb className="h-6 w-6 text-primary" /> Recommended for You
+          </h2>
           <div className="flex gap-2">
             <Button variant="outline" size="icon" onClick={scrollPrev} disabled={!canScrollPrev}>
               <ChevronLeft className="h-4 w-4" />

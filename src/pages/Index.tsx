@@ -82,9 +82,6 @@ const Index = () => {
 
       {/* Why Choose Us Section */}
       <WhyChooseUsSection />
-
-      {/* Recommended Products Section */}
-      <RecommendedProductsSection />
     </div>
   );
 };
