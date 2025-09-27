@@ -6,7 +6,8 @@ import { ProductDetails as ProductDetailsType } from "@/data/products.ts";
 import ProductDescriptionTab from "./ProductDescriptionTab.tsx";
 import ProductSpecsTab from "./ProductSpecsTab.tsx";
 import ProductReviewsTab from "./ProductReviewsTab.tsx";
-import { motion, AnimatePresence, Easing } from "framer-motion"; // Import AnimatePresence
+import { motion, AnimatePresence, Easing } from "framer-motion";
+import { cn } from "@/lib/utils"; // Import cn for conditional classes
 
 interface ProductTabsProps {
   product: ProductDetailsType;
@@ -22,36 +23,60 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
 
   return (
     <Tabs defaultValue="description" onValueChange={setActiveTab} className="w-full">
-      <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="description">Description</TabsTrigger>
-        <TabsTrigger value="specifications">Specifications</TabsTrigger>
-        <TabsTrigger value="reviews">Reviews ({product.reviews.length})</TabsTrigger>
+      <TabsList className="flex w-full justify-center border-b bg-transparent p-0"> {/* Adjusted TabsList for flex layout */}
+        <TabsTrigger
+          value="description"
+          className={cn(
+            "py-4 px-1 border-b-2 border-transparent font-medium text-sm text-muted-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none transition-colors duration-200",
+            "flex-1" // Make tabs take equal width
+          )}
+        >
+          Description
+        </TabsTrigger>
+        <TabsTrigger
+          value="specifications"
+          className={cn(
+            "py-4 px-1 border-b-2 border-transparent font-medium text-sm text-muted-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none transition-colors duration-200",
+            "flex-1" // Make tabs take equal width
+          )}
+        >
+          Specifications
+        </TabsTrigger>
+        <TabsTrigger
+          value="reviews"
+          className={cn(
+            "py-4 px-1 border-b-2 border-transparent font-medium text-sm text-muted-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none transition-colors duration-200",
+            "flex-1" // Make tabs take equal width
+          )}
+        >
+          Reviews ({product.reviews.length})
+        </TabsTrigger>
       </TabsList>
-      <AnimatePresence mode="wait"> {/* Use AnimatePresence for tab content transitions */}
+      <AnimatePresence mode="wait">
         {activeTab === "description" && (
-          <TabsContent value="description" className="mt-6">
+          <TabsContent value="description" className="py-6"> {/* Changed mt-6 to py-6 */}
             <motion.div
               variants={tabContentVariants}
               initial="hidden"
               animate="visible"
-              exit="hidden" // Add exit animation
+              exit="hidden"
               key="description-tab"
             >
               <ProductDescriptionTab
                 description={product.fullDescription}
-                keyFeatures={product.keyFeatures} // Pass keyFeatures
-                applications={product.applications} // Pass applications
+                keyFeatures={product.keyFeatures}
+                applications={product.applications}
               />
             </motion.div>
           </TabsContent>
         )}
         {activeTab === "specifications" && (
-          <TabsContent value="specifications" className="mt-6">
+          <TabsContent value="specifications" className="py-6"> {/* Changed mt-6 to py-6 */}
             <motion.div
               variants={tabContentVariants}
               initial="hidden"
               animate="visible"
-              exit="hidden" // Add exit animation
+              exit="hidden"
               key="specifications-tab"
             >
               <ProductSpecsTab detailedSpecs={product.detailedSpecs} />
@@ -59,15 +84,15 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
           </TabsContent>
         )}
         {activeTab === "reviews" && (
-          <TabsContent value="reviews" className="mt-6">
+          <TabsContent value="reviews" className="py-6"> {/* Changed mt-6 to py-6 */}
             <motion.div
               variants={tabContentVariants}
               initial="hidden"
               animate="visible"
-              exit="hidden" // Add exit animation
+              exit="hidden"
               key="reviews-tab"
             >
-              <ProductReviewsTab reviews={product.reviews} productId={product.id} /> {/* Pass productId */}
+              <ProductReviewsTab reviews={product.reviews} productId={product.id} />
             </motion.div>
           </TabsContent>
         )}

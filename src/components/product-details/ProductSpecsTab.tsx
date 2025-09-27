@@ -31,13 +31,15 @@ const ProductSpecsTab = ({ detailedSpecs }: ProductSpecsTabProps) => {
         <div className="space-y-8">
           {detailedSpecs.map((group, groupIndex) => (
             <motion.div key={group.group} variants={groupVariants} initial="hidden" animate="visible">
-              <h3 className="font-semibold text-lg text-foreground mb-4">{group.group}</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4">
+              <h3 className="font-poppins font-semibold text-lg text-foreground mb-4">{group.group}</h3> {/* Added font-poppins */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4"> {/* Adjusted grid-cols */}
                 {group.items.map((item, itemIndex) => (
-                  <motion.div key={item.label} variants={itemVariants} className="flex items-center">
-                    {item.icon && React.createElement(item.icon, { className: "h-4 w-4 text-primary mr-2 flex-shrink-0" })}
-                    <span className="font-medium text-foreground mr-2">{item.label}:</span>
-                    <span className="text-muted-foreground">{item.value}</span>
+                  <motion.div key={item.label} variants={itemVariants} className="flex justify-between items-center py-2 border-b border-border"> {/* Adjusted to flex justify-between */}
+                    <div className="flex items-center">
+                      {item.icon && React.createElement(item.icon, { className: "h-4 w-4 text-primary mr-2 flex-shrink-0" })}
+                      <span className="text-muted-foreground mr-2">{item.label}:</span> {/* Adjusted text color */}
+                    </div>
+                    <span className="text-foreground font-medium">{item.value}</span> {/* Adjusted text color and weight */}
                   </motion.div>
                 ))}
               </div>

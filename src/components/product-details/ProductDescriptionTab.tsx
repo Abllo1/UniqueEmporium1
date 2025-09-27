@@ -3,12 +3,12 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion, Easing } from "framer-motion";
-import { CheckCircle2 } from "lucide-react"; // Import CheckCircle2 icon
+import { CheckCircle2 } from "lucide-react";
 
 interface ProductDescriptionTabProps {
   description: string;
-  keyFeatures: string[]; // New prop
-  applications: string; // New prop
+  keyFeatures: string[];
+  applications: string;
 }
 
 const textVariants = {
@@ -31,7 +31,7 @@ const ProductDescriptionTab = ({ description, keyFeatures, applications }: Produ
           variants={textVariants}
           initial="hidden"
           animate="visible"
-          className="space-y-6 text-muted-foreground leading-relaxed"
+          className="space-y-6 text-foreground leading-relaxed" // Changed text-muted-foreground to text-foreground
         >
           {paragraphs.map((paragraph, index) => (
             <motion.p key={`desc-p-${index}`} variants={paragraphVariants}>
@@ -41,12 +41,12 @@ const ProductDescriptionTab = ({ description, keyFeatures, applications }: Produ
 
           {keyFeatures && keyFeatures.length > 0 && (
             <div className="mt-6">
-              <motion.h3 className="font-semibold text-lg text-foreground mb-3" variants={paragraphVariants}>
+              <motion.h3 className="font-poppins font-semibold text-lg text-foreground mb-3" variants={paragraphVariants}> {/* Added font-poppins */}
                 Key Features
               </motion.h3>
               <ul className="space-y-2">
                 {keyFeatures.map((feature, index) => (
-                  <motion.li key={`feature-${index}`} variants={paragraphVariants} className="flex items-start text-sm">
+                  <motion.li key={`feature-${index}`} variants={paragraphVariants} className="flex items-start text-sm text-foreground"> {/* Added text-foreground */}
                     <CheckCircle2 className="h-4 w-4 text-primary mr-2 flex-shrink-0 mt-1" />
                     <span>{feature}</span>
                   </motion.li>
@@ -57,7 +57,7 @@ const ProductDescriptionTab = ({ description, keyFeatures, applications }: Produ
 
           {applications && (
             <div className="mt-6">
-              <motion.h3 className="font-semibold text-lg text-foreground mb-3" variants={paragraphVariants}>
+              <motion.h3 className="font-poppins font-semibold text-lg text-foreground mb-3" variants={paragraphVariants}> {/* Added font-poppins */}
                 Applications
               </motion.h3>
               <motion.p variants={paragraphVariants}>

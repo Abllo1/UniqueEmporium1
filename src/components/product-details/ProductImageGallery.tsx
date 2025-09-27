@@ -4,19 +4,19 @@ import React, { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence, Easing } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react"; // Removed Box
+import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner"; // Import toast from sonner
+import { toast } from "sonner";
 
 interface ProductImageGalleryProps {
   images: string[];
-  productName: string; // productName is still useful for alt text
+  productName: string;
 }
 
 const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isZoomed, setIsZoomed] = useState(false); // State for image zoom (placeholder)
+  const [isZoomed, setIsZoomed] = useState(false);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -43,20 +43,19 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
   };
 
   const handleImageClick = () => {
-    // Placeholder for actual zoom functionality (e.g., open a modal with zoomable image)
-    setIsZoomed(!isZoomed); // Toggle for visual feedback
+    setIsZoomed(!isZoomed);
     if (!isZoomed) {
       toast.info("Zoom functionality coming soon!", { description: "Clicking the image will open a zoomable view." });
     }
   };
 
   return (
-    <div className="relative w-full rounded-xl overflow-hidden shadow-lg bg-card border">
+    <div className="relative w-full rounded-xl overflow-hidden shadow-lg bg-muted"> {/* Changed bg-card border to bg-muted */}
       {/* Main Image Area */}
       <div className="relative h-[300px] sm:h-[400px] md:h-[500px] bg-muted flex items-center justify-center">
         <AnimatePresence initial={false} mode="wait">
           <motion.div
-            key={selectedIndex} // Key changes to trigger animation on slide change
+            key={selectedIndex}
             className="embla h-full w-full relative cursor-pointer group"
             variants={imageVariants}
             initial="enter"
@@ -70,7 +69,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
                   <img
                     src={image}
                     alt={`Product image ${index + 1} of ${productName}`}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover" // Changed object-contain to object-cover
                   />
                 </div>
               ))}
@@ -88,39 +87,26 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
             <Button
               variant="ghost"
               size="icon"
-              className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 text-white hover:bg-black/70 z-10"
+              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 text-foreground hover:bg-white z-10 h-6 w-6 p-2" // Adjusted classes
               onClick={scrollPrev}
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 text-white hover:bg-black/70 z-10"
+              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 text-foreground hover:bg-white z-10 h-6 w-6 p-2" // Adjusted classes
               onClick={scrollNext}
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="h-4 w-4" />
             </Button>
           </>
         )}
 
-        {/* Image Dots */}
+        {/* Image Counter (changed from dots indicator) */}
         {images.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center space-x-2 z-10">
-            {images.map((_, index) => (
-              <button
-                key={index}
-                className={cn(
-                  "h-2 w-2 rounded-full bg-white/50 transition-colors duration-200",
-                  index === selectedIndex && "bg-white",
-                )}
-                onClick={() => emblaApi && emblaApi.scrollTo(index)}
-                aria-label={`View image ${index + 1}`}
-              />
-            ))}
-            <span className="ml-2 text-white text-sm">
-              {selectedIndex + 1} / {images.length}
-            </span>
+          <div className="absolute bottom-4 left-4 z-10 px-3 py-1 rounded-full bg-black/50 text-white text-sm"> {/* Adjusted classes */}
+            {selectedIndex + 1} / {images.length}
           </div>
         )}
       </div>
