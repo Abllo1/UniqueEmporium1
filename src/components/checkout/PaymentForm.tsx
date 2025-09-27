@@ -20,7 +20,7 @@ const paymentSchema = z.object({
   cvv: z.string().regex(/^\d{3,4}$/, "CVV must be 3 or 4 digits"),
 });
 
-type PaymentFormData = z.infer<typeof paymentSchema>;
+export type PaymentFormData = z.infer<typeof paymentSchema>; // Export type for use in Checkout page
 
 interface PaymentFormProps {
   onNext: (data: PaymentFormData) => void;

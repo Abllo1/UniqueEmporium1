@@ -117,8 +117,8 @@ const Checkout = () => {
         }
         return (
           <OrderReview
-            shippingInfo={orderData.shipping}
-            paymentInfo={orderData.payment}
+            shippingInfo={orderData.shipping!} // Add non-null assertion
+            paymentInfo={orderData.payment!}   // Add non-null assertion
             onPrevious={handlePreviousStep}
             onPlaceOrder={handlePlaceOrder}
             isPlacingOrder={isPlacingOrder}

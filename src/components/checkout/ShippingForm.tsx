@@ -26,7 +26,7 @@ const shippingSchema = z.object({
   zipCode: z.string().min(1, "Zip Code is required"),
 });
 
-type ShippingFormData = z.infer<typeof shippingSchema>;
+export type ShippingFormData = z.infer<typeof shippingSchema>; // Export type for use in Checkout page
 
 interface ShippingFormProps {
   onNext: (data: ShippingFormData) => void;
