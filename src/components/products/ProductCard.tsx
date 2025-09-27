@@ -11,7 +11,9 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useCart } from "@/context/CartContext.tsx"; // Fixed import path
+import { useCart } from "@/context/CartContext.tsx";
+import { useFavorites } from "@/context/FavoritesContext.tsx";
+import { useCompare } from "@/context/CompareContext.tsx"; // Import useCompare
 
 export interface Product {
   id: string;
@@ -45,7 +47,9 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
   const [hovered, setHovered] = useState(false);
   const specsScrollRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
-  const { addToCart } = useCart(); // Use CartContext
+  const { addToCart } = useCart();
+  const { addFavorite, removeFavorite, isFavorited } = useFavorites();
+  const { addToCompare, removeFromCompare, isInComparison } = useCompare(); // Use CompareContext
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
@@ -122,6 +126,27 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
     addToCart(product);
     setIsAddingToCart(false);
   };
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click if it has one
+    if (isFavorited(product.id)) {
+      removeFavorite(product.id);
+    } else {
+      addFavorite(product);
+    }
+  };
+
+  const handleToggleCompare = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click if it has one
+    if (isInComparison(product.id)) {
+      removeFromCompare(product.id);
+    } else {
+      addToCompare(product);
+    }
+  };
+
+  const favorited = isFavorited(product.id);
+  const inComparison = isInComparison(product.id);
 
   return (
     <motion.div
@@ -221,8 +246,8 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
                 transition={{ duration: 0.2 }}
                 className="absolute inset-0 hidden md:flex items-center justify-center space-x-4 bg-black/60 z-20"
               >
-                <Button variant="secondary" size="icon" className="text-sm font-medium">
-                  <Scale className="h-4 w-4" />
+                <Button variant="secondary" size="icon" className="text-sm font-medium" onClick={handleToggleCompare}>
+                  <Scale className={cn("h-4 w-4", inComparison && "fill-primary text-primary")} />
                 </Button>
                 <Button className="text-sm font-medium" onClick={handleAddToCart} disabled={isAddingToCart}>
                   {isAddingToCart ? (
@@ -247,8 +272,8 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
             </Button>
           </div>
           <div className="md:hidden absolute bottom-2 right-2 z-10">
-            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8">
-              <Scale className="h-4 w-4" />
+            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8" onClick={handleToggleCompare}>
+              <Scale className={cn("h-4 w-4", inComparison && "fill-primary text-primary")} />
             </Button>
           </div>
         </div>
@@ -315,8 +340,13 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
             </Link>
 
             {/* Favorite Button */}
-            <Button variant="ghost" size="icon" className="ml-auto">
-              <Heart className="h-4 w-4" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="ml-auto"
+              onClick={handleToggleFavorite}
+            >
+              <Heart className={cn("h-4 w-4", favorited && "fill-red-500 text-red-500")} />
             </Button>
           </div>
         </CardContent>

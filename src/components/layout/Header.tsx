@@ -13,6 +13,8 @@ import CartDrawer from "./CartDrawer.tsx";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
 import { useCart } from "@/context/CartContext.tsx";
+import { useFavorites } from "@/context/FavoritesContext.tsx";
+import { useCompare } from "@/context/CompareContext.tsx"; // Import useCompare
 
 interface HeaderProps {
   isCartDrawerOpen: boolean;
@@ -34,10 +36,8 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { totalItems } = useCart();
-
-  // Placeholder counts for badges (will be replaced by context later)
-  const favoriteCount = 3;
-  const compareCount = 1;
+  const { totalFavorites } = useFavorites();
+  const { totalCompareItems } = useCompare(); // Get totalCompareItems from CompareContext
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
@@ -130,14 +130,14 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
               <Button variant="ghost" size="icon">
                 <Heart className="h-5 w-5" />
               </Button>
-              <Badge count={favoriteCount} variant="destructive" />
+              <Badge count={totalFavorites} variant="destructive" />
             </Link>
 
             <Link to="/compare" className="relative">
               <Button variant="ghost" size="icon">
                 <Scale className="h-5 w-5" />
               </Button>
-              <Badge count={compareCount} variant="secondary" />
+              <Badge count={totalCompareItems} variant="secondary" /> {/* Use totalCompareItems */}
             </Link>
 
             <CartIcon onOpenCartDrawer={() => setIsCartDrawerOpen(true)} />
@@ -162,8 +162,8 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
       <MobileMenu
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
-        favoriteCount={favoriteCount}
-        compareCount={compareCount}
+        favoriteCount={totalFavorites}
+        compareCount={totalCompareItems} // Pass totalCompareItems
         itemCount={totalItems}
       />
 

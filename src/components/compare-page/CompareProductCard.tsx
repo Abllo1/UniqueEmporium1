@@ -8,6 +8,11 @@ import { Star, Heart, ShoppingCart, Scale, X, Cpu, MemoryStick, HardDrive, Monit
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Product } from "@/components/products/ProductCard.tsx"; // Re-using the Product interface
+import { useFavorites } from "@/context/FavoritesContext.tsx"; // Import useFavorites
+import { useCart } from "@/context/CartContext.tsx"; // Import useCart
+import { useState } from "react"; // Import useState for loading state
+import { Loader2 } from "lucide-react"; // Import Loader2
+import { cn } from "@/lib/utils"; // Import cn utility
 
 interface CompareProductCardProps {
   product: Product;
@@ -21,6 +26,10 @@ const fadeInUp = {
 };
 
 const CompareProductCard = ({ product, onRemove, disableEntryAnimation = false }: CompareProductCardProps) => {
+  const { addFavorite, removeFavorite, isFavorited } = useFavorites(); // Use FavoritesContext
+  const { addToCart } = useCart(); // Use CartContext
+  const [isAddingToCart, setIsAddingToCart] = useState(false); // State for add to cart loading
+
   const discount = product.originalPrice && product.price < product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
@@ -41,6 +50,25 @@ const CompareProductCard = ({ product, onRemove, disableEntryAnimation = false }
     const foundSpec = product.specs?.find(s => s.label === defaultSpec.label);
     return foundSpec || defaultSpec;
   });
+
+  const favorited = isFavorited(product.id);
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (favorited) {
+      removeFavorite(product.id);
+    } else {
+      addFavorite(product);
+    }
+  };
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsAddingToCart(true);
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
+    addToCart(product);
+    setIsAddingToCart(false);
+  };
 
   return (
     <motion.div
@@ -121,11 +149,19 @@ const CompareProductCard = ({ product, onRemove, disableEntryAnimation = false }
 
         {/* Action Buttons */}
         <div className="p-4 border-t border-border flex flex-col gap-2">
-          <Button className="w-full">
-            <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
+          <Button className="w-full" onClick={handleAddToCart} disabled={isAddingToCart}>
+            {isAddingToCart ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Adding...
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
+              </>
+            )}
           </Button>
-          <Button variant="outline" className="w-full">
-            <Heart className="mr-2 h-4 w-4" /> Add to Favorites
+          <Button variant="outline" className="w-full" onClick={handleToggleFavorite}>
+            <Heart className={cn("mr-2 h-4 w-4", favorited && "fill-red-500 text-red-500")} /> {favorited ? "Remove from Favorites" : "Add to Favorites"}
           </Button>
         </div>
       </Card>
