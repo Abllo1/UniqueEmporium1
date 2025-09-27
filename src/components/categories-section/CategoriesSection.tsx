@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, Easing } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Laptop, Tablet, Headphones, Monitor, Mouse, Home, LucideIcon } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile"; // Import useIsMobile
 
 interface Category {
   name: string;
@@ -40,6 +41,7 @@ const fadeInUp = {
 const CategoriesSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const isMobile = useIsMobile(); // Use the hook to detect mobile
 
   useEffect(() => {
     const scrollElement = scrollRef.current;
@@ -94,8 +96,11 @@ const CategoriesSection = () => {
         <motion.div
           className="flex space-x-4 overflow-x-auto pb-4 no-scrollbar"
           ref={scrollRef}
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
+          // Conditionally apply onMouseEnter/onMouseLeave based on isMobile
+          {...(!isMobile && {
+            onMouseEnter: () => setIsPaused(true),
+            onMouseLeave: () => setIsPaused(false),
+          })}
           variants={staggerContainer} // Apply stagger to the container for cards
           initial="hidden"
           whileInView="visible"
