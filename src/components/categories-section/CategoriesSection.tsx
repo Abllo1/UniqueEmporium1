@@ -45,7 +45,13 @@ const CategoriesSection = () => {
 
   useEffect(() => {
     const scrollElement = scrollRef.current;
-    if (!scrollElement || isPaused) return;
+    // On mobile, we always want it to scroll, so effectively treat isPaused as false.
+    // On desktop, respect the actual isPaused state (controlled by hover).
+    const shouldBePaused = !isMobile && isPaused;
+
+    if (!scrollElement || shouldBePaused) {
+      return;
+    }
 
     let animationFrameId: number;
     let lastTimestamp: DOMHighResTimeStamp;
@@ -56,7 +62,10 @@ const CategoriesSection = () => {
 
       if (elapsed > 16) { // Roughly 60fps
         scrollElement.scrollLeft += 1; // Adjust scroll speed here
-        if (scrollElement.scrollLeft >= scrollElement.scrollWidth - scrollElement.clientWidth) {
+        const maxScrollLeft = scrollElement.scrollWidth - scrollElement.clientWidth;
+
+        // Only loop if there's actual content to scroll (maxScrollLeft > 0)
+        if (maxScrollLeft > 0 && scrollElement.scrollLeft >= maxScrollLeft) {
           scrollElement.scrollLeft = 0; // Loop back to start
         }
         lastTimestamp = timestamp;
@@ -69,7 +78,7 @@ const CategoriesSection = () => {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isPaused]);
+  }, [isPaused, isMobile]); // Add isMobile to dependency array
 
   return (
     <section className="py-16 bg-background">
@@ -97,10 +106,8 @@ const CategoriesSection = () => {
           className="flex space-x-4 overflow-x-auto pb-4 no-scrollbar"
           ref={scrollRef}
           // Conditionally apply onMouseEnter/onMouseLeave based on isMobile
-          {...(!isMobile && {
-            onMouseEnter: () => setIsPaused(true),
-            onMouseLeave: () => setIsPaused(false),
-          })}
+          onMouseEnter={() => !isMobile && setIsPaused(true)}
+          onMouseLeave={() => !isMobile && setIsPaused(false)}
           variants={staggerContainer} // Apply stagger to the container for cards
           initial="hidden"
           whileInView="visible"
