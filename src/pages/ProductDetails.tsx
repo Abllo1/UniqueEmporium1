@@ -125,9 +125,7 @@ const ProductDetails = () => {
           >
             <ProductImageGallery
               images={product.images}
-              has3DModel={product.has3DModel}
               productName={product.name}
-              modelPath={product.modelPath}
             />
           </motion.div>
 
