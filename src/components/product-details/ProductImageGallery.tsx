@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { Dialog, DialogContent } from "@/components/ui/dialog"; // Import Dialog components
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -16,7 +17,7 @@ interface ProductImageGalleryProps {
 const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isZoomed, setIsZoomed] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false); // State to control the zoom dialog
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -43,10 +44,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
   };
 
   const handleImageClick = () => {
-    setIsZoomed(!isZoomed);
-    if (!isZoomed) {
-      toast.info("Zoom functionality coming soon!", { description: "Clicking the image will open a zoomable view." });
-    }
+    setIsZoomed(true); // Open the dialog for zoom
   };
 
   return (
@@ -61,7 +59,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
             initial="enter"
             animate="center"
             exit="exit"
-            onClick={handleImageClick}
+            onClick={handleImageClick} // This will now open the dialog
           >
             <div className="embla__container flex h-full">
               {images.map((image, index) => (
@@ -118,7 +116,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
             <motion.button
               key={index}
               className={cn(
-                "flex-shrink-0 h-10 w-10 md:h-20 md:w-20 rounded-md overflow-hidden border-2 transition-all duration-200", // Adjusted size for mobile
+                "flex-shrink-0 h-10 w-10 md:h-20 md:w-20 rounded-md overflow-hidden border-2 transition-all duration-200",
                 index === selectedIndex ? "border-primary shadow-md" : "border-transparent hover:border-muted-foreground",
               )}
               onClick={() => emblaApi && emblaApi.scrollTo(index)}
@@ -134,6 +132,17 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
           ))}
         </div>
       )}
+
+      {/* Zoom Dialog */}
+      <Dialog open={isZoomed} onOpenChange={setIsZoomed}>
+        <DialogContent className="max-w-4xl p-0 border-none bg-transparent">
+          <img
+            src={images[selectedIndex]}
+            alt={`Zoomed view of ${productName}`}
+            className="w-full h-full object-contain max-h-[90vh]"
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
