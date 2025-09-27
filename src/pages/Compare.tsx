@@ -6,8 +6,7 @@ import { motion, AnimatePresence, Easing } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Scale, ArrowLeft, X, Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging, Wifi, HardHat } from "lucide-react";
 import CompareProductCard from "../components/compare-page/CompareProductCard.tsx";
-import { Product } from "@/components/products/ProductCard.tsx";
-import { useCompare } from "@/context/CompareContext.tsx"; // Import useCompare
+import { useCompare } from "@/context/CompareContext.tsx";
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -26,7 +25,7 @@ const fadeInUp = {
 };
 
 const Compare = () => {
-  const { compareItems, removeFromCompare, clearCompare, COMPARE_LIMIT } = useCompare(); // Use CompareContext
+  const { compareItems, removeFromCompare, clearCompare, COMPARE_LIMIT } = useCompare();
   const hasProducts = compareItems.length > 0;
 
   return (
@@ -44,7 +43,7 @@ const Compare = () => {
             Product Comparison ({compareItems.length} of {COMPARE_LIMIT})
           </h1>
           {hasProducts && (
-            <Button variant="outline" onClick={clearCompare}> {/* Use clearCompare from context */}
+            <Button variant="outline" onClick={clearCompare}>
               <X className="mr-2 h-4 w-4" /> Clear All
             </Button>
           )}
@@ -63,7 +62,7 @@ const Compare = () => {
             >
               {compareItems.map((product) => (
                 <motion.div key={product.id} variants={fadeInUp} className="flex-shrink-0 w-[280px] md:w-auto">
-                  <CompareProductCard product={product} onRemove={removeFromCompare} /> {/* Pass removeFromCompare */}
+                  <CompareProductCard product={product} onRemove={removeFromCompare} />
                 </motion.div>
               ))}
             </motion.div>

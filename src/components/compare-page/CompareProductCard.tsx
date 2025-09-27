@@ -4,15 +4,14 @@ import React from "react";
 import { motion, Easing } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, Heart, ShoppingCart, Scale, X, Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging, Wifi, HardHat } from "lucide-react";
+import { Star, Heart, ShoppingCart, Scale, X, Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging, Wifi, HardHat, Loader2, LucideIcon } from "lucide-react"; // Import LucideIcon
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Product } from "@/components/products/ProductCard.tsx"; // Re-using the Product interface
-import { useFavorites } from "@/context/FavoritesContext.tsx"; // Import useFavorites
-import { useCart } from "@/context/CartContext.tsx"; // Import useCart
-import { useState } from "react"; // Import useState for loading state
-import { Loader2 } from "lucide-react"; // Import Loader2
-import { cn } from "@/lib/utils"; // Import cn utility
+import { useFavorites } from "@/context/FavoritesContext.tsx";
+import { useCart } from "@/context/CartContext.tsx";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { Product } from "@/data/types"; // Updated import
 
 interface CompareProductCardProps {
   product: Product;
@@ -26,16 +25,16 @@ const fadeInUp = {
 };
 
 const CompareProductCard = ({ product, onRemove, disableEntryAnimation = false }: CompareProductCardProps) => {
-  const { addFavorite, removeFavorite, isFavorited } = useFavorites(); // Use FavoritesContext
-  const { addToCart } = useCart(); // Use CartContext
-  const [isAddingToCart, setIsAddingToCart] = useState(false); // State for add to cart loading
+  const { addFavorite, removeFavorite, isFavorited } = useFavorites();
+  const { addToCart } = useCart();
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const discount = product.originalPrice && product.price < product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
 
   // Default specs if none are provided or if a spec icon is missing
-  const defaultSpecs = [
+  const defaultSpecs: { icon: LucideIcon; label: string; value: string }[] = [
     { icon: Cpu, label: "Processor", value: "N/A" },
     { icon: MemoryStick, label: "RAM", value: "N/A" },
     { icon: HardDrive, label: "Storage", value: "N/A" },
@@ -65,7 +64,7 @@ const CompareProductCard = ({ product, onRemove, disableEntryAnimation = false }
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsAddingToCart(true);
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 500));
     addToCart(product);
     setIsAddingToCart(false);
   };

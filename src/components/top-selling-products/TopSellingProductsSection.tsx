@@ -5,8 +5,9 @@ import { motion, Easing } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, TrendingUp } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
-import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
-import { mockProducts, ProductDetails } from "@/data/products.ts"; // Import mockProducts
+import ProductCard from "@/components/products/ProductCard.tsx";
+import { mockProducts } from "@/data/products-data"; // Updated import
+import { Product, ProductDetails } from "@/data/types"; // Updated import
 
 // Hand-pick some products to represent "Top Selling"
 const topSellingProductIds = [
@@ -66,7 +67,7 @@ const TopSellingProductsSection = () => {
   }, [emblaApi, onSelect]);
 
   if (productsToDisplay.length === 0) {
-    return null; // Don't render if no top-selling products
+    return null;
   }
 
   return (

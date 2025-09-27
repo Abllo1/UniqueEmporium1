@@ -3,13 +3,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, Easing } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Lightbulb } from "lucide-react"; // Changed icon to Lightbulb for recommendations
+import { ChevronLeft, ChevronRight, Lightbulb } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
-import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
-import { mockProducts, getProductById, ProductDetails as ProductDetailsType } from "@/data/products.ts"; // Import mockProducts and getProductById
+import ProductCard from "@/components/products/ProductCard.tsx";
+import { mockProducts } from "@/data/products-data"; // Updated import
+import { getProductById } from "@/data/products-utils"; // Updated import
+import { Product, ProductDetails } from "@/data/types"; // Updated import
 
 interface RecommendedProductsSectionProps {
-  currentProductId: string; // New prop to receive the ID of the currently viewed product
+  currentProductId: string;
 }
 
 const fadeInUp = {
@@ -21,7 +23,7 @@ const RecommendedProductsSection = ({ currentProductId }: RecommendedProductsSec
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: false,
-    dragFree: true, // Allows free dragging
+    dragFree: true,
     containScroll: "trimSnaps",
   });
 
@@ -104,10 +106,10 @@ const RecommendedProductsSection = ({ currentProductId }: RecommendedProductsSec
     };
 
     generateRecommendations();
-  }, [currentProductId]); // Re-run when currentProductId changes
+  }, [currentProductId]);
 
   if (recommendedProducts.length === 0) {
-    return null; // Don't render the section if no recommendations
+    return null;
   }
 
   return (

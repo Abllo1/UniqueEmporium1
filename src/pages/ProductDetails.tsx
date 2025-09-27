@@ -3,17 +3,19 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, Easing } from "framer-motion";
-import { getProductById, ProductDetails as ProductDetailsType, getRandomProducts, getRecentlyViewedProducts } from "@/data/products.ts";
+import { getProductById, getRecentlyViewedProducts } from "@/data/products-utils"; // Updated imports
+import { mockProducts } from "@/data/products-data"; // Updated import
+import { ProductDetails as ProductDetailsType } from "@/data/types"; // Updated import
 import ProductBreadcrumb from "@/components/product-details/ProductBreadcrumb.tsx";
 import ProductImageGallery from "@/components/product-details/ProductImageGallery.tsx";
 import ProductInfoSection from "@/components/product-details/ProductInfoSection.tsx";
 import ProductTabs from "@/components/product-details/ProductTabs.tsx";
 import RecommendedProductsSection from "@/components/recommended-products/RecommendedProductsSection.tsx";
 import RecentlyViewedProductsSection from "@/components/product-details/RecentlyViewedProductsSection.tsx";
-import Product3DModelViewer from "@/components/product-details/Product3DModelViewer.tsx"; // Import the new 3D viewer
+import Product3DModelViewer from "@/components/product-details/Product3DModelViewer.tsx";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Image, Box } from "lucide-react"; // Fixed: Changed Cube to Box icon
+import { ArrowLeft, Image, Box } from "lucide-react";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 50 },
@@ -30,7 +32,7 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [recentlyViewedProductIds, setRecentlyViewedProductIds] = useState<string[]>([]);
-  const [show3DView, setShow3DView] = useState(false); // State to toggle between image gallery and 3D viewer
+  const [show3DView, setShow3DView] = useState(false);
 
   useEffect(() => {
     setLoading(true);
