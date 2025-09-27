@@ -216,7 +216,7 @@ const Products = () => {
             <SelectContent>
               {sortOptions.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
-                  {option.name}
+                    {option.name}
                 </SelectItem>
               ))}
             </SelectContent>
