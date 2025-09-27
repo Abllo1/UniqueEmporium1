@@ -4,13 +4,14 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence, Easing, RepeatType } from "framer-motion";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, Heart, ShoppingCart, ChevronLeft, ChevronRight, Scale, Cpu, MemoryStick, HardDrive } from "lucide-react";
+import { Star, Heart, ShoppingCart, ChevronLeft, ChevronRight, Scale, Cpu, MemoryStick, HardDrive, Loader2 } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import FloatingTag from "@/components/common/FloatingTag.tsx";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { useIsMobile } from "@/hooks/use-mobile"; // Import useIsMobile
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useCart } from "@/context/CartContext.tsx"; // Fixed import path
 
 export interface Product {
   id: string;
@@ -42,8 +43,10 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
-  const specsScrollRef = useRef<HTMLDivElement>(null); // Ref for the specs row
-  const isMobile = useIsMobile(); // Determine if on mobile
+  const specsScrollRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  const { addToCart } = useCart(); // Use CartContext
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -67,23 +70,22 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
   useEffect(() => {
     let animationFrameId: number;
     let lastTimestamp: DOMHighResTimeStamp;
-    const scrollSpeed = 0.5; // Adjust scroll speed as needed
+    const scrollSpeed = 0.5;
 
     const scroll = (timestamp: DOMHighResTimeStamp) => {
       if (!specsScrollRef.current || !hovered || isMobile) {
-        cancelAnimationFrame(animationFrameId); // Ensure animation stops if conditions change mid-scroll
+        cancelAnimationFrame(animationFrameId);
         return;
       }
 
       if (!lastTimestamp) lastTimestamp = timestamp;
       const elapsed = timestamp - lastTimestamp;
 
-      if (elapsed > 16) { // Roughly 60fps
+      if (elapsed > 16) {
         const currentScrollLeft = specsScrollRef.current.scrollLeft;
         const maxScrollLeft = specsScrollRef.current.scrollWidth - specsScrollRef.current.clientWidth;
 
         if (maxScrollLeft <= 0 || currentScrollLeft >= maxScrollLeft) {
-          // Reached the end or no scroll needed, stop scrolling
           cancelAnimationFrame(animationFrameId);
           return;
         }
@@ -95,13 +97,11 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
     };
 
     if (hovered && !isMobile) {
-      // Start scrolling from the beginning when hover starts
       if (specsScrollRef.current) {
         specsScrollRef.current.scrollLeft = 0;
       }
       animationFrameId = requestAnimationFrame(scroll);
     } else if (specsScrollRef.current) {
-      // Stop scrolling and reset position when not hovered or on mobile
       cancelAnimationFrame(animationFrameId);
       specsScrollRef.current.scrollLeft = 0;
     }
@@ -109,11 +109,19 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [hovered, isMobile, product.specs]); // Re-run effect if specs change
+  }, [hovered, isMobile, product.specs]);
 
   const discount = product.originalPrice && product.price < product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click if it has one
+    setIsAddingToCart(true);
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
+    addToCart(product);
+    setIsAddingToCart(false);
+  };
 
   return (
     <motion.div
@@ -216,8 +224,13 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
                 <Button variant="secondary" size="icon" className="text-sm font-medium">
                   <Scale className="h-4 w-4" />
                 </Button>
-                <Button className="text-sm font-medium">
-                  <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
+                <Button className="text-sm font-medium" onClick={handleAddToCart} disabled={isAddingToCart}>
+                  {isAddingToCart ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                  )}
+                  {isAddingToCart ? "Adding..." : "Add to Cart"}
                 </Button>
               </motion.div>
             )}
@@ -225,8 +238,12 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
 
           {/* Mobile "Add to Cart" and "Compare" Buttons */}
           <div className="md:hidden absolute bottom-2 left-2 z-10">
-            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8">
-              <ShoppingCart className="h-4 w-4" />
+            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8" onClick={handleAddToCart} disabled={isAddingToCart}>
+              {isAddingToCart ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <ShoppingCart className="h-4 w-4" />
+              )}
             </Button>
           </div>
           <div className="md:hidden absolute bottom-2 right-2 z-10">
@@ -307,14 +324,14 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
         {/* Horizontal Scrolling Specifications Section */}
         {product.specs && product.specs.length > 0 && (
           <div
-            ref={specsScrollRef} // Attach ref here
-            className="flex overflow-x-auto no-scrollbar rounded-b-2xl border-t border-border bg-muted/50 py-3 px-2 flex-shrink-0 space-x-2" // Added hover animations
+            ref={specsScrollRef}
+            className="flex overflow-x-auto no-scrollbar rounded-b-2xl border-t border-border bg-muted/50 py-3 px-2 flex-shrink-0 space-x-2"
           >
             {product.specs.map((spec, index) => (
               <div
                 key={index}
                 className="flex-shrink-0 min-w-[100px] border rounded-md bg-background p-2 flex items-center
-                           transition-all duration-200 hover:-translate-y-1 hover:shadow-md" // Added hover animations
+                           transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
               >
                 <spec.icon className="w-4 h-4 text-primary mr-1" />
                 <div>

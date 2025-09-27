@@ -4,17 +4,18 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Badge from "./Badge.tsx"; // Added .tsx extension
+import Badge from "./Badge.tsx";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useCart } from "@/context/CartContext.tsx"; // Fixed import path
 
 interface CartIconProps {
-  itemCount: number;
   onOpenCartDrawer: () => void;
 }
 
-const CartIcon = ({ itemCount, onOpenCartDrawer }: CartIconProps) => {
+const CartIcon = ({ onOpenCartDrawer }: CartIconProps) => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const { totalItems } = useCart(); // Get totalItems from CartContext
 
   const handleClick = () => {
     if (isMobile) {
@@ -29,7 +30,7 @@ const CartIcon = ({ itemCount, onOpenCartDrawer }: CartIconProps) => {
       <Button variant="ghost" size="icon" onClick={handleClick}>
         <ShoppingBag className="h-5 w-5" />
       </Button>
-      <Badge count={itemCount} variant="destructive" />
+      <Badge count={totalItems} variant="destructive" /> {/* Use totalItems */}
     </div>
   );
 };

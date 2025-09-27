@@ -18,7 +18,8 @@ import Shipping from "./pages/Shipping.tsx";
 import Returns from "./pages/Returns.tsx";
 import Warranty from "./pages/Warranty.tsx";
 import Privacy from "./pages/Privacy.tsx";
-import Terms from "./pages/Terms.tsx"; // Import the new Terms page
+import Terms from "./pages/Terms.tsx";
+import { CartProvider } from "./context/CartContext.tsx"; // Fixed import path
 
 
 const queryClient = new QueryClient();
@@ -29,25 +30,27 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/compare" element={<Compare />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/shipping" element={<Shipping />} />
-          <Route path="/returns" element={<Returns />} />
-          <Route path="/warranty" element={<Warranty />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} /> {/* Add the new Terms route */}
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <Footer />
+        <CartProvider> {/* Wrap with CartProvider */}
+          <Header />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/compare" element={<Compare />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/shipping" element={<Shipping />} />
+            <Route path="/returns" element={<Returns />} />
+            <Route path="/warranty" element={<Warranty />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <Footer />
+        </CartProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

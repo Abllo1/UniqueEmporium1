@@ -5,13 +5,14 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Menu, X, Search, Heart, Scale, ChevronDown, Laptop, Tablet, Headphones, Home, Info, Mail, LayoutGrid } from "lucide-react";
-import Badge from "@/components/common/Badge.tsx"; // Added .tsx extension
-import CartIcon from "@/components/common/CartIcon.tsx"; // Added .tsx extension
-import SlideOutSearchBar from "./SlideOutSearchBar.tsx"; // Added .tsx extension
-import MobileMenu from "./MobileMenu.tsx"; // Added .tsx extension
-import CartDrawer from "./CartDrawer.tsx"; // Added .tsx extension
+import Badge from "@/components/common/Badge.tsx";
+import CartIcon from "@/components/common/CartIcon.tsx";
+import SlideOutSearchBar from "./SlideOutSearchBar.tsx";
+import MobileMenu from "./MobileMenu.tsx";
+import CartDrawer from "./CartDrawer.tsx";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
+import { useCart } from "@/context/CartContext.tsx"; // Fixed import path
 
 const categories = [
   { name: "Laptops", icon: Laptop, link: "/products?category=laptops" },
@@ -28,11 +29,11 @@ const Header = () => {
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { totalItems } = useCart(); // Get totalItems from CartContext
 
-  // Placeholder counts for badges
+  // Placeholder counts for badges (will be replaced by context later)
   const favoriteCount = 3;
   const compareCount = 1;
-  const itemCount = 2;
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
@@ -135,7 +136,7 @@ const Header = () => {
               <Badge count={compareCount} variant="secondary" />
             </Link>
 
-            <CartIcon itemCount={itemCount} onOpenCartDrawer={() => setIsCartDrawerOpen(true)} />
+            <CartIcon onOpenCartDrawer={() => setIsCartDrawerOpen(true)} /> {/* Pass onOpenCartDrawer */}
 
             {/* Mobile Menu Button */}
             <Button
@@ -159,7 +160,7 @@ const Header = () => {
         onClose={() => setIsMobileMenuOpen(false)}
         favoriteCount={favoriteCount}
         compareCount={compareCount}
-        itemCount={itemCount}
+        itemCount={totalItems} // Pass totalItems to MobileMenu
       />
 
       {/* Cart Drawer (Desktop Only) */}

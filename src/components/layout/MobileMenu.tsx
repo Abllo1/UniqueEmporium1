@@ -4,9 +4,10 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Heart, Scale, Laptop, Tablet, Headphones, Home, Info, Mail, LayoutGrid } from "lucide-react";
-import Badge from "@/components/common/Badge.tsx"; // Added .tsx extension
+import { Heart, Scale, Laptop, Tablet, Headphones, Home, Info, Mail, LayoutGrid, ShoppingBag } from "lucide-react";
+import Badge from "@/components/common/Badge.tsx";
 import { motion, Easing } from "framer-motion";
+import { useCart } from "@/context/CartContext.tsx"; // Fixed import path
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ const categories = [
 
 const MobileMenu = ({ isOpen, onClose, favoriteCount, compareCount, itemCount }: MobileMenuProps) => {
   const navigate = useNavigate();
+  const { totalItems } = useCart(); // Get totalItems from CartContext
 
   const handleLinkClick = (path: string) => {
     onClose();
@@ -82,6 +84,10 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, compareCount, itemCount }:
             <Button variant="ghost" className="justify-start text-lg relative" onClick={() => handleLinkClick("/compare")}>
               <Scale className="mr-2 h-5 w-5" /> Compare
               <Badge count={compareCount} variant="secondary" className="absolute right-4 top-1/2 -translate-y-1/2" />
+            </Button>
+            <Button variant="ghost" className="justify-start text-lg relative" onClick={() => handleLinkClick("/cart")}>
+              <ShoppingBag className="mr-2 h-5 w-5" /> Cart
+              <Badge count={totalItems} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />
             </Button>
           </div>
 
