@@ -28,7 +28,7 @@ const ProductDetails = () => {
   const [product, setProduct] = useState<ProductDetailsType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<string[]>([]);
+  const [recentlyViewedProductIds, setRecentlyViewedProductIds] = useState<string[]>([]); // Renamed state to clarify it holds IDs
 
   useEffect(() => {
     setLoading(true);
@@ -38,8 +38,8 @@ const ProductDetails = () => {
       if (fetchedProduct) {
         setProduct(fetchedProduct);
 
-        // Update recently viewed products in localStorage
-        setRecentlyViewedProducts((prev) => {
+        // Update recently viewed product IDs in localStorage
+        setRecentlyViewedProductIds((prevIds) => {
           const currentViewed = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || "[]") as string[];
           const updatedViewed = [productId, ...currentViewed.filter(id => id !== productId)].slice(0, MAX_RECENTLY_VIEWED);
           localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(updatedViewed));
@@ -57,10 +57,10 @@ const ProductDetails = () => {
     setLoading(false);
   }, [productId]);
 
-  // Load recently viewed products from localStorage on initial mount
+  // Load recently viewed product IDs from localStorage on initial mount
   useEffect(() => {
     const storedViewed = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || "[]") as string[];
-    setRecentlyViewedProducts(storedViewed);
+    setRecentlyViewedProductIds(storedViewed);
   }, []);
 
 
@@ -105,9 +105,8 @@ const ProductDetails = () => {
     );
   }
 
-  // Filter out the current product from the recently viewed list
-  const filteredRecentlyViewedIds = recentlyViewedProducts.filter(id => id !== product.id);
-  const actualRecentlyViewedProducts = getRecentlyViewedProducts(MAX_RECENTLY_VIEWED, product.id); // Using helper to get Product[]
+  // Get the actual product objects for recently viewed products
+  const actualRecentlyViewedProducts = getRecentlyViewedProducts(recentlyViewedProductIds, product.id);
 
   return (
     <div className="min-h-screen w-full bg-background">

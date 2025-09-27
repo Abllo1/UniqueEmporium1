@@ -104,8 +104,8 @@ export const mockProducts: ProductDetails[] = [
       },
     ],
     relatedProducts: ["soundwave-noise-cancelling-headphones", "ultrawide-monitor-32"],
-    // Removed has3DModel: true,
-    // Removed modelPath: "/models/zenbook_pro_14_oled.glb",
+    // Removed has3DModel?: boolean;
+    // Removed modelPath?: string;
   },
   {
     id: "surface-pro-9",
@@ -154,8 +154,8 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev27", author: "Sarah M.", rating: 4, date: "2023-11-25", title: "Great, but accessories are pricey", comment: "The device itself is fantastic, but the keyboard and pen add up.", isVerifiedBuyer: false },
     ],
     relatedProducts: ["ergogrip-wireless-mouse"],
-    // Removed has3DModel: true,
-    // Removed modelPath: "/models/surface_pro_9.glb",
+    // Removed has3DModel?: boolean;
+    // Removed modelPath?: string;
   },
   {
     id: "echo-dot-5th-gen",
@@ -198,8 +198,8 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev29", author: "Jessica R.", rating: 4, date: "2023-11-30", title: "Great, but sometimes mishears me", comment: "Mostly works perfectly, but occasionally struggles with my accent.", isVerifiedBuyer: true },
     ],
     relatedProducts: ["smarthome-hub-pro"],
-    // Removed has3DModel: true,
-    // Removed modelPath: "/models/echo_dot_5th_gen.glb",
+    // Removed has3DModel?: boolean;
+    // Removed modelPath?: string;
   },
   {
     id: "ergofit-wireless-keyboard",
@@ -243,7 +243,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev31", author: "Laura K.", rating: 4, date: "2023-12-05", title: "Good, but a bit bulky", comment: "Works great, but it's quite large on my desk.", isVerifiedBuyer: false },
     ],
     relatedProducts: ["ergogrip-wireless-mouse"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/ergofit_wireless_keyboard.glb",
   },
   {
@@ -289,7 +289,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev33", author: "Sophie H.", rating: 4, date: "2023-12-10", title: "Expensive, but worth it for pros", comment: "The price is steep, but the quality is unmatched for professional work.", isVerifiedBuyer: true },
     ],
     relatedProducts: ["zenbook-pro-14-oled"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/prodisplay_xdr.glb",
   },
   {
@@ -337,7 +337,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev35", author: "TechGuru", rating: 5, date: "2023-12-18", title: "Stunning performance and looks", comment: "Not just powerful, but also looks incredible with the RGB lighting.", isVerifiedBuyer: true },
     ],
     relatedProducts: ["prodisplay-xdr", "gaming-pro-wireless-mouse"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/gaming_beast_desktop_pc.glb",
   },
   {
@@ -399,7 +399,7 @@ export const mockProducts: ProductDetails[] = [
       },
     ],
     relatedProducts: ["zenbook-pro-14-oled", "ergofit-wireless-keyboard"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/soundwave_headphones.glb",
   },
   {
@@ -462,7 +462,7 @@ export const mockProducts: ProductDetails[] = [
       },
     ],
     relatedProducts: ["zenbook-pro-14-oled"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/ultrafast_1tb_external_ssd.glb",
   },
   {
@@ -523,7 +523,7 @@ export const mockProducts: ProductDetails[] = [
       },
     ],
     relatedProducts: ["echo-dot-5th-gen"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/smarthome_hub_pro.glb",
   },
   {
@@ -586,7 +586,7 @@ export const mockProducts: ProductDetails[] = [
       },
     ],
     relatedProducts: ["ergofit-wireless-keyboard"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/powercharge_100w_gan_charger.glb",
   },
   {
@@ -632,7 +632,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev37", author: "RemoteWorker", rating: 4, date: "2023-12-20", title: "Great for meetings", comment: "Much better than my laptop camera. Good value for 4K.", isVerifiedBuyer: true },
     ],
     relatedProducts: ["gaming-beast-desktop-pc"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/visionpro_4k_webcam.glb",
   },
   {
@@ -680,7 +680,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev39", author: "Traveler", rating: 4, date: "2024-01-01", title: "Great travel companion", comment: "Fits easily in my bag. Screen is good, but wish it was brighter outdoors.", isVerifiedBuyer: true },
     ],
     relatedProducts: ["ultrafast-1tb-external-ssd"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/swiftbook_air_13.glb",
   },
   {
@@ -727,7 +727,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev41", author: "Multitasker", rating: 4, date: "2024-01-08", title: "A bit too big, but powerful", comment: "Amazing for productivity, but it's definitely a two-hand device.", isVerifiedBuyer: true },
     ],
     relatedProducts: ["surface-pro-9"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/galaxy_tab_s9_ultra.glb",
   },
   {
@@ -775,7 +775,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev43", author: "FamilyUser", rating: 4, date: "2024-01-12", title: "Solid family computer", comment: "Handles all our needs, but the speakers could be better.", isVerifiedBuyer: false },
     ],
     relatedProducts: ["prodisplay-xdr"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/officemaster_all_in_one_pc.glb",
   },
   {
@@ -822,7 +822,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev45", author: "CasualGamer", rating: 4, date: "2024-01-18", title: "Great, but a bit pricey", comment: "Fantastic performance, but it's a premium price for a mouse.", isVerifiedBuyer: false },
     ],
     relatedProducts: ["gaming-beast-desktop-pc"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/gaming_pro_wireless_mouse.glb",
   },
   {
@@ -870,7 +870,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev47", author: "TechWearer", rating: 4, date: "2024-01-22", title: "Stylish and functional", comment: "Looks great and has all the features I need. Notifications are a bit small.", isVerifiedBuyer: false },
     ],
     relatedProducts: ["soundwave-noise-cancelling-headphones"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/smartwatch_xtreme.glb",
   },
   {
@@ -916,7 +916,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev49", author: "Presenter", rating: 4, date: "2024-01-28", title: "Handy for presentations", comment: "Works well for quick meetings, but the fan can be a bit loud.", isVerifiedBuyer: false },
     ],
     relatedProducts: ["smarthome-hub-pro"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/portable_projector_mini.glb",
   },
   {
@@ -966,7 +966,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev51", author: "DeveloperX", rating: 5, date: "2024-02-01", title: "Powerful workstation", comment: "Compiles code super fast. Great for virtual machines and heavy development.", isVerifiedBuyer: true },
     ],
     relatedProducts: ["zenbook-pro-14-oled"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/cyberbook_pro_16.glb",
   },
   {
@@ -1013,7 +1013,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev53", author: "MediaStreamer", rating: 4, date: "2024-02-08", title: "Great for Plex", comment: "Streams all my movies without a hitch. The interface could be a bit more modern.", isVerifiedBuyer: false },
     ],
     relatedProducts: ["ultrafast-1tb-external-ssd"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/homeserver_nas_4_bay.glb",
   },
   {
@@ -1061,7 +1061,7 @@ export const mockProducts: ProductDetails[] = [
       { id: "rev55", author: "ProductivityHack", rating: 4, date: "2024-02-12", title: "Great desk, minor wobble at max height", comment: "Mostly solid, but there's a slight wobble when fully extended. Still highly recommend.", isVerifiedBuyer: false },
     ],
     relatedProducts: ["ergofit-wireless-keyboard"],
-    // Removed has3DModel: true,
+    // Removed has3DModel?: boolean;
     // Removed modelPath: "/models/smartdesk_standing_desk.glb",
   },
 ];
@@ -1095,25 +1095,11 @@ export const getRandomProducts = (count: number, excludeId?: string): Product[] 
   }));
 };
 
-// Helper to get products for "Recently Viewed" (mocked for now)
-export const getRecentlyViewedProducts = (count: number, currentProductId?: string): Product[] => {
-  // In a real app, this would come from user history.
-  // For now, let's just pick some random ones, excluding the current product.
-  const allOtherProducts = mockProducts.filter(p => p.id !== currentProductId);
-  const shuffled = [...allOtherProducts].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count).map(p => ({
-    id: p.id,
-    name: p.name,
-    category: p.category,
-    images: p.images,
-    price: p.price,
-    originalPrice: p.originalPrice,
-    discountPercentage: p.discountPercentage,
-    rating: p.rating,
-    reviewCount: p.reviewCount,
-    tag: p.tag,
-    tagVariant: p.tagVariant,
-    limitedStock: p.limitedStock,
-    specs: p.specs,
-  }));
+// Helper to get products for "Recently Viewed" (now uses actual IDs)
+export const getRecentlyViewedProducts = (recentlyViewedIds: string[], currentProductId?: string): Product[] => {
+  // Filter out the current product from the list of IDs if it's there
+  const filteredIds = recentlyViewedIds.filter(id => id !== currentProductId);
+  // Get the actual product objects based on these IDs
+  const products = getProductsByIds(filteredIds);
+  return products;
 };
