@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, Easing } from "framer-motion";
-import { getProductById, getRecentlyViewedProducts } from "@/data/products-utils"; // Updated imports
-import { mockProducts } from "@/data/products-data"; // Updated import
-import { ProductDetails as ProductDetailsType } from "@/data/types"; // Updated import
+import { getProductById, getRecentlyViewedProducts } from "@/data/products-utils";
+import { mockProducts } from "@/data/products-data";
+import { ProductDetails as ProductDetailsType } from "@/data/types";
 import ProductBreadcrumb from "@/components/product-details/ProductBreadcrumb.tsx";
 import ProductImageGallery from "@/components/product-details/ProductImageGallery.tsx";
 import ProductInfoSection from "@/components/product-details/ProductInfoSection.tsx";
@@ -148,7 +148,7 @@ const ProductDetails = () => {
             )}
 
             {show3DView && product.has3DModel && product.modelPath ? (
-              <Product3DModelViewer modelPath={product.modelPath} />
+              <Product3DModelViewer modelPath={product.modelPath} productName={product.name} />
             ) : (
               <ProductImageGallery
                 images={product.images}
