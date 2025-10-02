@@ -12,6 +12,7 @@ import ProductInfoSection from "@/components/product-details/ProductInfoSection.
 import ProductTabs from "@/components/product-details/ProductTabs.tsx";
 import RecommendedProductsSection from "@/components/recommended-products/RecommendedProductsSection.tsx";
 import RecentlyViewedProductsSection from "@/components/product-details/RecentlyViewedProductsSection.tsx";
+import Product3DViewer from "@/components/Product3DViewer.tsx"; // Import Product3DViewer
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -128,6 +129,17 @@ const ProductDetails = () => {
               images={product.images}
               productName={product.name}
             />
+            {/* Insert Product3DViewer here */}
+            <motion.div
+              className="mt-8"
+              variants={fadeInUp}
+              initial="hidden"
+              animate="visible"
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" as Easing }}
+            >
+              <Product3DViewer />
+            </motion.div>
           </motion.div>
 
           {/* Product Info & Actions */}
