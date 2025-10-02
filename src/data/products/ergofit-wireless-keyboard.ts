@@ -43,6 +43,4 @@ export const ergofitWirelessKeyboard: ProductDetails = {
     { id: "rev31", author: "Laura K.", rating: 4, date: "2023-12-05", title: "Good, but a bit bulky", comment: "Works great, but it's quite large on my desk.", isVerifiedBuyer: false },
   ],
   relatedProducts: ["gaming-pro-wireless-mouse"],
-  has3DModel: true,
-  modelPath: "/models/ergofit_wireless_keyboard.glb",
 };

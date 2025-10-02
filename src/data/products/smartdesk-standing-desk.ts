@@ -45,6 +45,4 @@ export const smartdeskStandingDesk: ProductDetails = {
     { id: "rev55", author: "ProductivityHack", rating: 4, date: "2024-02-12", title: "Great desk, minor wobble at max height", comment: "Mostly solid, but there's a slight wobble when fully extended. Still highly recommend.", isVerifiedBuyer: false },
   ],
   relatedProducts: ["ergofit-wireless-keyboard"],
-  has3DModel: true,
-  modelPath: "/models/smartdesk_standing_desk.glb",
 };

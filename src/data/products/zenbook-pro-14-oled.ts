@@ -81,6 +81,4 @@ export const zenbookPro14Oled: ProductDetails = {
     },
   ],
   relatedProducts: ["soundwave-noise-cancelling-headphones", "ultrawide-monitor-32"],
-  has3DModel: true,
-  modelPath: "/models/zenbook_pro_14_oled.glb",
 };

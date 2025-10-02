@@ -48,6 +48,4 @@ export const cyberbookPro16: ProductDetails = {
     { id: "rev51", author: "DeveloperX", rating: 5, date: "2024-02-01", title: "Powerful workstation", comment: "Compiles code super fast. Great for virtual machines and heavy development.", isVerifiedBuyer: true },
   ],
   relatedProducts: ["zenbook-pro-14-oled"],
-  has3DModel: true,
-  modelPath: "/models/cyberbook_pro_16.glb",
 };

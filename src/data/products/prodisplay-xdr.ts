@@ -44,6 +44,4 @@ export const prodisplayXdr: ProductDetails = {
     { id: "rev33", author: "Sophie H.", rating: 4, date: "2023-12-10", title: "Expensive, but worth it for pros", comment: "The price is steep, but the quality is unmatched for professional work.", isVerifiedBuyer: true },
   ],
   relatedProducts: ["zenbook-pro-14-oled"],
-  has3DModel: true,
-  modelPath: "/models/prodisplay_xdr.glb",
 };

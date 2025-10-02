@@ -45,6 +45,4 @@ export const smartwatchXtreme: ProductDetails = {
     { id: "rev47", author: "TechWearer", rating: 4, date: "2024-01-22", title: "Stylish and functional", comment: "Looks great and has all the features I need. Notifications are a bit small.", isVerifiedBuyer: false },
   ],
   relatedProducts: ["soundwave-noise-cancelling-headphones"],
-  has3DModel: true,
-  modelPath: "/models/smartwatch_xtreme.glb",
 };

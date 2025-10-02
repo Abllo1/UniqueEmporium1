@@ -44,6 +44,4 @@ export const galaxyTabS9Ultra: ProductDetails = {
     { id: "rev41", author: "Multitasker", rating: 4, date: "2024-01-08", title: "A bit too big, but powerful", comment: "Amazing for productivity, but it's definitely a two-hand device.", isVerifiedBuyer: true },
   ],
   relatedProducts: ["surface-pro-9"],
-  has3DModel: true,
-  modelPath: "/models/galaxy_tab_s9_ultra.glb",
 };

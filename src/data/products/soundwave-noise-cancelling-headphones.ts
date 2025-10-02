@@ -59,6 +59,4 @@ export const soundwaveNoiseCancellingHeadphones: ProductDetails = {
     },
   ],
   relatedProducts: ["zenbook-pro-14-oled", "ergofit-wireless-keyboard"],
-  has3DModel: true,
-  modelPath: "/models/soundwave_headphones.glb",
 };

@@ -42,6 +42,4 @@ export const echoDot5thGen: ProductDetails = {
     { id: "rev29", author: "Jessica R.", rating: 4, date: "2023-11-30", title: "Great, but sometimes mishears me", comment: "Mostly works perfectly, but occasionally struggles with my accent.", isVerifiedBuyer: true },
   ],
   relatedProducts: ["smarthome-hub-pro"],
-  has3DModel: true,
-  modelPath: "/models/echo_dot_5th_gen.glb",
 };

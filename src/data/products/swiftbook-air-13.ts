@@ -46,6 +46,4 @@ export const swiftbookAir13: ProductDetails = {
     { id: "rev39", author: "Traveler", rating: 4, date: "2024-01-01", title: "Great travel companion", comment: "Fits easily in my bag. Screen is good, but wish it was brighter outdoors.", isVerifiedBuyer: true },
   ],
   relatedProducts: ["ultrafast-1tb-external-ssd"],
-  has3DModel: true,
-  modelPath: "/models/swiftbook_air_13.glb",
 };

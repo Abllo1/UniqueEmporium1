@@ -46,6 +46,4 @@ export const officemasterAllInOnePc: ProductDetails = {
     { id: "rev43", author: "FamilyUser", rating: 4, date: "2024-01-12", title: "Solid family computer", comment: "Handles all our needs, but the speakers could be better.", isVerifiedBuyer: false },
   ],
   relatedProducts: ["prodisplay-xdr"],
-  has3DModel: true,
-  modelPath: "/models/officemaster_all_in_one_pc.glb",
 };

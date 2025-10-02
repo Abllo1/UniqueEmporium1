@@ -61,6 +61,4 @@ export const ultrafast1TbExternalSsd: ProductDetails = {
     },
   ],
   relatedProducts: ["zenbook-pro-14-oled"],
-  has3DModel: true,
-  modelPath: "/models/ultrafast_1tb_external_ssd.glb",
 };

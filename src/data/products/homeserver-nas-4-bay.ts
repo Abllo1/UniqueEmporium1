@@ -45,6 +45,4 @@ export const homeserverNas4Bay: ProductDetails = {
     { id: "rev53", author: "MediaStreamer", rating: 4, date: "2024-02-08", title: "Great for Plex", comment: "Streams all my movies without a hitch. The interface could be a bit more modern.", isVerifiedBuyer: false },
   ],
   relatedProducts: ["ultrafast-1tb-external-ssd"],
-  has3DModel: true,
-  modelPath: "/models/homeserver_nas_4_bay.glb",
 };

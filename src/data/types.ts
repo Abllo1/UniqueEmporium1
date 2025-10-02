@@ -34,6 +34,4 @@ export interface ProductDetails extends Product {
     isVerifiedBuyer: boolean;
   }[];
   relatedProducts: string[];
-  has3DModel?: boolean;
-  modelPath?: string;
 }

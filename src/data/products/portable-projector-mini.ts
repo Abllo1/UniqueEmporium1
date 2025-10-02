@@ -44,6 +44,4 @@ export const portableProjectorMini: ProductDetails = {
     { id: "rev49", author: "Presenter", rating: 4, date: "2024-01-28", title: "Handy for presentations", comment: "Works well for quick meetings, but the fan can be a bit loud.", isVerifiedBuyer: false },
   ],
   relatedProducts: ["smarthome-hub-pro"],
-  has3DModel: true,
-  modelPath: "/models/portable_projector_mini.glb",
 };

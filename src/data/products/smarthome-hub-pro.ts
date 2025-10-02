@@ -59,6 +59,4 @@ export const smarthomeHubPro: ProductDetails = {
     },
   ],
   relatedProducts: ["echo-dot-5th-gen"],
-  has3DModel: true,
-  modelPath: "/models/smarthome_hub_pro.glb",
 };

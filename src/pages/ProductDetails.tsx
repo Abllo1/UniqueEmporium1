@@ -12,10 +12,9 @@ import ProductInfoSection from "@/components/product-details/ProductInfoSection.
 import ProductTabs from "@/components/product-details/ProductTabs.tsx";
 import RecommendedProductsSection from "@/components/recommended-products/RecommendedProductsSection.tsx";
 import RecentlyViewedProductsSection from "@/components/product-details/RecentlyViewedProductsSection.tsx";
-import Product3DModelViewer from "@/components/product-details/Product3DModelViewer.tsx";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Image, Box } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 50 },
@@ -32,7 +31,6 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [recentlyViewedProductIds, setRecentlyViewedProductIds] = useState<string[]>([]);
-  const [show3DView, setShow3DView] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -41,8 +39,6 @@ const ProductDetails = () => {
       const fetchedProduct = getProductById(productId);
       if (fetchedProduct) {
         setProduct(fetchedProduct);
-        // Set initial view based on whether a 3D model exists
-        setShow3DView(!!fetchedProduct.has3DModel);
 
         // Update recently viewed product IDs in localStorage
         setRecentlyViewedProductIds((prevIds) => {
@@ -128,33 +124,10 @@ const ProductDetails = () => {
             animate="visible"
             viewport={{ once: true, amount: 0.1 }}
           >
-            {product.has3DModel && (
-              <div className="flex justify-end gap-2 mb-4">
-                <Button
-                  variant={!show3DView ? "default" : "outline"}
-                  onClick={() => setShow3DView(false)}
-                  size="sm"
-                >
-                  <Image className="h-4 w-4 mr-2" /> View Images
-                </Button>
-                <Button
-                  variant={show3DView ? "default" : "outline"}
-                  onClick={() => setShow3DView(true)}
-                  size="sm"
-                >
-                  <Box className="h-4 w-4 mr-2" /> View 3D
-                </Button>
-              </div>
-            )}
-
-            {show3DView && product.has3DModel && product.modelPath ? (
-              <Product3DModelViewer modelPath={product.modelPath} productName={product.name} />
-            ) : (
-              <ProductImageGallery
-                images={product.images}
-                productName={product.name}
-              />
-            )}
+            <ProductImageGallery
+              images={product.images}
+              productName={product.name}
+            />
           </motion.div>
 
           {/* Product Info & Actions */}

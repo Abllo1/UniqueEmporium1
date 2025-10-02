@@ -46,6 +46,4 @@ export const gamingBeastDesktopPc: ProductDetails = {
     { id: "rev35", author: "TechGuru", rating: 5, date: "2023-12-18", title: "Stunning performance and looks", comment: "Not just powerful, but also looks incredible with the RGB lighting.", isVerifiedBuyer: true },
   ],
   relatedProducts: ["prodisplay-xdr", "gaming-pro-wireless-mouse"],
-  has3DModel: true,
-  modelPath: "/models/gaming_beast_desktop_pc.glb",
 };

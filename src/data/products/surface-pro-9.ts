@@ -48,6 +48,4 @@ export const surfacePro9: ProductDetails = {
     { id: "rev27", author: "Sarah M.", rating: 4, date: "2023-11-25", title: "Great, but accessories are pricey", comment: "The device itself is fantastic, but the keyboard and pen add up.", isVerifiedBuyer: false },
   ],
   relatedProducts: ["ergogrip-wireless-mouse"],
-  has3DModel: true,
-  modelPath: "/models/surface_pro_9.glb",
 };

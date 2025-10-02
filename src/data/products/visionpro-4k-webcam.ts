@@ -44,6 +44,4 @@ export const visionpro4kWebcam: ProductDetails = {
     { id: "rev37", author: "RemoteWorker", rating: 4, date: "2023-12-20", title: "Great for meetings", comment: "Much better than my laptop camera. Good value for 4K.", isVerifiedBuyer: true },
   ],
   relatedProducts: ["gaming-beast-desktop-pc"],
-  has3DModel: true,
-  modelPath: "/models/visionpro_4k_webcam.glb",
 };

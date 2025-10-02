@@ -45,6 +45,4 @@ export const gamingProWirelessMouse: ProductDetails = {
     { id: "rev45", author: "CasualGamer", rating: 4, date: "2024-01-18", title: "Great, but a bit pricey", comment: "Fantastic performance, but it's a premium price for a mouse.", isVerifiedBuyer: false },
   ],
   relatedProducts: ["gaming-beast-desktop-pc"],
-  has3DModel: true,
-  modelPath: "/models/gaming_pro_wireless_mouse.glb",
 };

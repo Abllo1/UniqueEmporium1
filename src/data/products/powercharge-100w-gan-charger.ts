@@ -60,6 +60,4 @@ export const powercharge100wGanCharger: ProductDetails = {
     },
   ],
   relatedProducts: ["ergofit-wireless-keyboard"],
-  has3DModel: true,
-  modelPath: "/models/powercharge_100w_gan_charger.glb",
 };
