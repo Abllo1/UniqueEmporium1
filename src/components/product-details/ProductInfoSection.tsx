@@ -153,6 +153,13 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
         )}
       </div>
 
+      {/* Limited Stock Badge */}
+      {product.limitedStock && (
+        <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-200">
+          Limited Stock Available
+        </Badge>
+      )}
+
       {/* Key Features */}
       <div className="grid grid-cols-2 gap-3">
         {product.specs?.slice(0, 4).map((spec, index) => (
@@ -169,8 +176,8 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
       <Separator />
 
       {/* Purchase Options Card */}
-      <div className="bg-card border border-border rounded-xl p-6 space-y-6 shadow-sm">
-        <div className="space-y-6">
+      <Card className="bg-card border border-border rounded-xl p-6 space-y-6 shadow-sm">
+        <CardContent className="p-0 space-y-6">
           {/* Quantity Selector */}
           <div className="flex items-center gap-4">
             <span className="text-sm font-medium">Quantity:</span>
@@ -237,8 +244,8 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
               1-year manufacturer warranty included
             </p>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 };
