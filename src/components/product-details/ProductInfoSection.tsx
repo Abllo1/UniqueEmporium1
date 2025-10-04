@@ -83,11 +83,11 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
         </Badge>
       )}
 
-      <h1 className="font-poppins text-4xl font-bold text-foreground">
+      <h1 className="font-poppins text-3xl md:text-4xl font-bold text-foreground">
         {product.name}
       </h1>
 
-      <p className="text-lg text-muted-foreground">{product.fullDescription.split('.')[0]}.</p>
+      <p className="text-base md:text-lg text-muted-foreground">{product.fullDescription.split('.')[0]}.</p>
 
       {/* Rating & Reviews */}
       <div className="flex items-center gap-3">
@@ -96,7 +96,7 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
             <Star
               key={i}
               className={cn(
-                "h-5 w-5",
+                "h-4 w-4 md:h-5 md:w-5",
                 i < Math.floor(product.rating) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground",
               )}
             />
@@ -109,12 +109,12 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
 
       {/* Price */}
       <div className="flex items-baseline gap-3">
-        <p className="font-poppins text-4xl font-bold text-primary">
+        <p className="font-poppins text-3xl md:text-4xl font-bold text-primary">
           {formatCurrency(product.price)}
         </p>
         {product.originalPrice && product.price < product.originalPrice && (
           <>
-            <p className="text-xl text-gray-400 line-through">
+            <p className="text-base md:text-xl text-gray-400 line-through">
               {formatCurrency(product.originalPrice)}
             </p>
             {discount > 0 && (
