@@ -127,16 +127,15 @@ const ProductDetails = () => {
               images={product.images}
               productName={product.name}
             />
-            {product.modelPath && ( // Conditionally render 3D viewer if modelPath exists
-              <motion.div
-                variants={fadeInUp}
-                initial="hidden"
-                animate="visible"
-                transition={{ delay: 0.1, duration: 0.6, ease: "easeOut" as Easing }} // Slight delay for staggered animation
-              >
-                <Product3DViewer modelPath={product.modelPath} />
-              </motion.div>
-            )}
+            {/* Product3DViewer is now always rendered with a hardcoded model path */}
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.1, duration: 0.6, ease: "easeOut" as Easing }} // Slight delay for staggered animation
+            >
+              <Product3DViewer />
+            </motion.div>
           </motion.div>
 
           {/* Product Info & Actions */}
