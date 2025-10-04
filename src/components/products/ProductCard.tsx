@@ -374,7 +374,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
             {product.specs.map((spec, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 min-w-[100px] border rounded-md bg-background p-2 flex items-center
+                className="flex-shrink-0 min-w-[100px] border rounded-md bg-background py-1 px-2 flex items-center
                            transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
               >
                 {spec.icon && React.createElement(spec.icon, { className: "w-4 h-4 text-primary mr-1" })}
