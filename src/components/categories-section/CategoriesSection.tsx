@@ -22,6 +22,9 @@ const categories: Category[] = [
   { name: "Smart Home", icon: Home, description: "Connect & automate your living space", link: "/products?category=smart-home" },
 ];
 
+// Duplicate categories to create a seamless loop effect
+const loopedCategories = [...categories, ...categories]; // Duplicate the array
+
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
@@ -41,7 +44,8 @@ const fadeInUp = {
 const CategoriesSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const isMobile = useIsMobile(); // Use the hook to detect mobile
+  const isMobile = useIsMobile();
+  const scrollSpeed = 1; // Adjust scroll speed as needed
 
   useEffect(() => {
     const scrollElement = scrollRef.current;
@@ -61,12 +65,15 @@ const CategoriesSection = () => {
       const elapsed = timestamp - lastTimestamp;
 
       if (elapsed > 16) { // Roughly 60fps
-        scrollElement.scrollLeft += 1; // Adjust scroll speed here
-        const maxScrollLeft = scrollElement.scrollWidth - scrollElement.clientWidth;
+        scrollElement.scrollLeft += scrollSpeed;
+        
+        // Calculate the width of a single set of categories
+        // This assumes all category items have the same width and spacing
+        // A more robust solution might involve measuring the first set of items
+        const singleSetWidth = scrollElement.scrollWidth / 2; 
 
-        // Only loop if there's actual content to scroll (maxScrollLeft > 0)
-        if (maxScrollLeft > 0 && scrollElement.scrollLeft >= maxScrollLeft) {
-          scrollElement.scrollLeft = 0; // Loop back to start
+        if (scrollElement.scrollLeft >= singleSetWidth) {
+          scrollElement.scrollLeft = 0; // Loop back to the start of the first duplicated set
         }
         lastTimestamp = timestamp;
       }
@@ -78,7 +85,7 @@ const CategoriesSection = () => {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isPaused, isMobile]); // Add isMobile to dependency array
+  }, [isPaused, isMobile, scrollSpeed]); // Add scrollSpeed to dependency array
 
   return (
     <section className="py-16 bg-background">
@@ -113,8 +120,8 @@ const CategoriesSection = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
         >
-          {categories.map((category, index) => (
-            <motion.div key={category.name} variants={fadeInUp}>
+          {loopedCategories.map((category, index) => ( // Use loopedCategories here
+            <motion.div key={`${category.name}-${index}`} variants={fadeInUp}> {/* Unique key for duplicated items */}
               <Link
                 to={category.link}
                 className="group relative flex-shrink-0 w-[200px] h-16 lg:w-[250px] lg:h-24
