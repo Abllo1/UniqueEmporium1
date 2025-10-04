@@ -165,7 +165,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
     >
       <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl shadow-lg">
         {product.tag && (
-          <FloatingTag text={product.tag} variant={product.tagVariant} className="absolute top-2 left-2 md:right-2 md:left-auto z-50" />
+          <FloatingTag text={product.tag} variant={product.tagVariant} className="absolute top-2 right-2 md:right-2 md:left-auto z-50" />
         )}
 
         {/* Product Image Area - now a clickable div, with the Link inside covering the image */}
@@ -188,7 +188,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
           </Link>
 
           {/* Rating Overlay (positioned above the Link) */}
-          <div className="absolute top-3 right-3 z-10 md:bottom-3 md:top-auto">
+          <div className="absolute top-3 left-3 z-10 md:bottom-3 md:top-auto md:left-auto md:right-3">
             <Badge variant="secondary" className="flex items-center gap-1 text-xs md:text-sm font-medium">
               <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
               {product.rating.toFixed(1)}
