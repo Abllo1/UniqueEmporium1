@@ -1,4 +1,4 @@
-import { Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging, Wifi, Camera, Weight, Ruler, Palette, Speaker, Mic, ShieldCheck, Star } from "lucide-react";
+import { Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging, Wifi, Camera, Weight, Ruler, Palette, Speaker, Mic, ShieldCheck, Star, Heart } from "lucide-react";
 import { Product } from "@/components/products/ProductCard.tsx"; // Assuming Product interface is exported
 
 export interface ProductDetails extends Product {
@@ -72,6 +72,12 @@ export const mockProducts: ProductDetails[] = [
           { label: "Ports", value: "2x Thunderbolt 4, 1x USB 3.2 Gen 2, HDMI 2.1, Audio Jack" },
         ],
       },
+    ],
+    specs: [ // Added specs for ProductCard
+      { icon: Cpu, label: "CPU", value: "i7-12700H" },
+      { icon: MemoryStick, label: "RAM", value: "16GB" },
+      { icon: HardDrive, label: "Storage", value: "512GB SSD" },
+      { icon: Monitor, label: "Display", value: "14\" 4K OLED" },
     ],
     reviews: [
       {
@@ -147,6 +153,12 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
+    specs: [ // Added specs for ProductCard
+      { icon: Cpu, label: "CPU", value: "i5/i7 Evo" },
+      { icon: MemoryStick, label: "RAM", value: "8GB/16GB" },
+      { icon: HardDrive, label: "Storage", value: "256GB SSD" },
+      { icon: Monitor, label: "Display", value: "13\" PixelSense" },
+    ],
     reviews: [
       { id: "rev26", author: "David L.", rating: 5, date: "2023-12-01", title: "Amazing versatility!", comment: "Perfect for my hybrid work setup. Love the pen input.", isVerifiedBuyer: true },
       { id: "rev27", author: "Sarah M.", rating: 4, date: "2023-11-25", title: "Great, but accessories are pricey", comment: "The device itself is fantastic, but the keyboard and pen add up.", isVerifiedBuyer: false },
@@ -189,6 +201,11 @@ export const mockProducts: ProductDetails[] = [
           { label: "Bluetooth", value: "Bluetooth 5.0" },
         ],
       },
+    ],
+    specs: [ // Added specs for ProductCard
+      { icon: Speaker, label: "Speaker", value: "1.73-inch" },
+      { icon: Mic, label: "Voice Asst.", value: "Alexa" },
+      { icon: Wifi, label: "Connectivity", value: "Wi-Fi, BT" },
     ],
     reviews: [
       { id: "rev28", author: "Mark T.", rating: 5, date: "2023-12-05", title: "Love my new Echo Dot!", comment: "Sound is surprisingly good for its size. Alexa is super helpful.", isVerifiedBuyer: true },
@@ -234,6 +251,11 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
+    specs: [ // Added specs for ProductCard
+      { icon: Cpu, label: "Layout", value: "Ergonomic" }, // Reusing CPU icon for layout
+      { icon: BatteryCharging, label: "Battery", value: "Long" },
+      { icon: Wifi, label: "Wireless", value: "2.4GHz" },
+    ],
     reviews: [
       { id: "rev30", author: "Chris P.", rating: 5, date: "2023-12-10", title: "My wrists thank me!", comment: "Huge improvement in comfort. Took a day to get used to, but now I love it.", isVerifiedBuyer: true },
       { id: "rev31", author: "Laura K.", rating: 4, date: "2023-12-05", title: "Good, but a bit bulky", comment: "Works great, but it's quite large on my desk.", isVerifiedBuyer: false },
@@ -278,6 +300,11 @@ export const mockProducts: ProductDetails[] = [
           { label: "USB-C", value: "3x USB-C" },
         ],
       },
+    ],
+    specs: [ // Added specs for ProductCard
+      { icon: Monitor, label: "Size", value: "32-inch" },
+      { icon: Camera, label: "Resolution", value: "6K Retina" }, // Reusing Camera icon for resolution
+      { icon: Wifi, label: "Connectivity", value: "Thunderbolt 3" }, // Reusing Wifi icon for connectivity
     ],
     reviews: [
       { id: "rev32", author: "Alex G.", rating: 5, date: "2023-12-15", title: "The best display I've ever used!", comment: "Unbelievable color accuracy and brightness. A game-changer for my studio.", isVerifiedBuyer: true },
@@ -326,6 +353,12 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
+    specs: [ // Added specs for ProductCard
+      { icon: Cpu, label: "CPU", value: "i9-14900K" },
+      { icon: MemoryStick, label: "RAM", value: "32GB DDR5" },
+      { icon: HardDrive, label: "Storage", value: "2TB SSD" },
+      { icon: Monitor, label: "GPU", value: "RTX 4090" }, // Reusing Monitor icon for GPU
+    ],
     reviews: [
       { id: "rev34", author: "GamerPro", rating: 5, date: "2023-12-20", title: "Absolute powerhouse!", comment: "Runs every game at max settings without breaking a sweat. Worth every penny!", isVerifiedBuyer: true },
       { id: "rev35", author: "TechGuru", rating: 5, date: "2023-12-18", title: "Stunning performance and looks", comment: "Not just powerful, but also looks incredible with the RGB lighting.", isVerifiedBuyer: true },
@@ -370,6 +403,12 @@ export const mockProducts: ProductDetails[] = [
           { label: "Wired", value: "3.5mm Audio Jack" },
         ],
       },
+    ],
+    specs: [ // Added specs for ProductCard
+      { icon: Speaker, label: "Drivers", value: "40mm" },
+      { icon: Mic, label: "ANC", value: "Hybrid" },
+      { icon: BatteryCharging, label: "Battery", value: "30 Hrs" },
+      { icon: Wifi, label: "Bluetooth", value: "5.2" },
     ],
     reviews: [
       {
@@ -433,6 +472,11 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
+    specs: [ // Added specs for ProductCard
+      { icon: HardDrive, label: "Capacity", value: "1TB" },
+      { icon: Cpu, label: "Interface", value: "USB 3.2 Gen2" }, // Reusing CPU icon for interface
+      { icon: MemoryStick, label: "Read Speed", value: "1050MB/s" }, // Reusing MemoryStick icon for read speed
+    ],
     reviews: [
       {
         id: "rev23",
@@ -492,6 +536,11 @@ export const mockProducts: ProductDetails[] = [
           { label: "Security", value: "AES-128 Encryption", icon: ShieldCheck },
         ],
       },
+    ],
+    specs: [ // Added specs for ProductCard
+      { icon: Wifi, label: "Protocols", value: "Multi-protocol" },
+      { icon: Mic, label: "Voice Asst.", value: "Alexa, Google" },
+      { icon: ShieldCheck, label: "Security", value: "AES-128" },
     ],
     reviews: [
       {
@@ -555,6 +604,11 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
+    specs: [ // Added specs for ProductCard
+      { icon: BatteryCharging, label: "Output", value: "100W" },
+      { icon: Cpu, label: "Tech", value: "GaN" }, // Reusing CPU icon for tech
+      { icon: Wifi, label: "Ports", value: "2C, 1A" }, // Reusing Wifi icon for ports
+    ],
     reviews: [
       {
         id: "rev11",
@@ -616,6 +670,11 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
+    specs: [ // Added specs for ProductCard
+      { icon: Camera, label: "Resolution", value: "4K UHD" },
+      { icon: Mic, label: "Mics", value: "Dual NC" },
+      { icon: Cpu, label: "FOV", value: "90°" }, // Reusing CPU icon for FOV
+    ],
     reviews: [
       { id: "rev36", author: "VideoCreator", rating: 5, date: "2023-12-25", title: "Amazing clarity!", comment: "My streams look so much more professional now. The autofocus is spot on.", isVerifiedBuyer: true },
       { id: "rev37", author: "RemoteWorker", rating: 4, date: "2023-12-20", title: "Great for meetings", comment: "Much better than my laptop camera. Good value for 4K.", isVerifiedBuyer: true },
@@ -663,6 +722,12 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
+    specs: [ // Added specs for ProductCard
+      { icon: Cpu, label: "CPU", value: "i5-1235U" },
+      { icon: MemoryStick, label: "RAM", value: "8GB" },
+      { icon: HardDrive, label: "Storage", value: "256GB SSD" },
+      { icon: Monitor, label: "Display", value: "13.3\" FHD" },
+    ],
     reviews: [
       { id: "rev38", author: "StudentLife", rating: 5, date: "2024-01-05", title: "Perfect for university!", comment: "Lightweight, fast, and the battery lasts all day. Couldn't ask for more.", isVerifiedBuyer: true },
       { id: "rev39", author: "Traveler", rating: 4, date: "2024-01-01", title: "Great travel companion", comment: "Fits easily in my bag. Screen is good, but wish it was brighter outdoors.", isVerifiedBuyer: true },
@@ -708,6 +773,12 @@ export const mockProducts: ProductDetails[] = [
           { label: "Storage", value: "256GB/512GB/1TB" },
         ],
       },
+    ],
+    specs: [ // Added specs for ProductCard
+      { icon: Cpu, label: "CPU", value: "Snapdragon 8 Gen 2" },
+      { icon: MemoryStick, label: "RAM", value: "12GB" },
+      { icon: HardDrive, label: "Storage", value: "256GB SSD" },
+      { icon: Monitor, label: "Display", value: "14.6\" AMOLED" },
     ],
     reviews: [
       { id: "rev40", author: "DigitalArtist", rating: 5, date: "2024-01-10", title: "Incredible screen for art!", comment: "The display is gorgeous and the S Pen is super responsive. My new favorite drawing tablet.", isVerifiedBuyer: true },
@@ -755,6 +826,12 @@ export const mockProducts: ProductDetails[] = [
           { label: "Touchscreen", value: "Optional" },
         ],
       },
+    ],
+    specs: [ // Added specs for ProductCard
+      { icon: Cpu, label: "CPU", value: "i7-12700" },
+      { icon: MemoryStick, label: "RAM", value: "16GB" },
+      { icon: HardDrive, label: "Storage", value: "512GB SSD" },
+      { icon: Monitor, label: "Display", value: "24\" FHD" },
     ],
     reviews: [
       { id: "rev42", author: "OfficePro", rating: 5, date: "2024-01-15", title: "Great for my home office!", comment: "Clean setup, fast performance, and the screen is perfect for my work.", isVerifiedBuyer: true },
@@ -849,6 +926,12 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
+    specs: [ // Added specs for ProductCard
+      { icon: Monitor, label: "Display", value: "AMOLED" },
+      { icon: Heart, label: "HR", value: "Yes" }, // Reusing Heart icon for Heart Rate
+      { icon: BatteryCharging, label: "Battery", value: "Long" },
+      { icon: Wifi, label: "GPS", value: "Built-in" }, // Reusing Wifi icon for GPS
+    ],
     reviews: [
       { id: "rev46", author: "FitnessFan", rating: 5, date: "2024-01-25", title: "Love this watch!", comment: "Tracks everything perfectly, and the battery lasts for days. Great for my runs.", isVerifiedBuyer: true },
       { id: "rev47", author: "TechWearer", rating: 4, date: "2024-01-22", title: "Stylish and functional", comment: "Looks great and has all the features I need. Notifications are a bit small.", isVerifiedBuyer: false },
@@ -893,6 +976,11 @@ export const mockProducts: ProductDetails[] = [
           { label: "Wi-Fi", value: "Yes" },
         ],
       },
+    ],
+    specs: [ // Added specs for ProductCard
+      { icon: Monitor, label: "Resolution", value: "1080p" },
+      { icon: Speaker, label: "Brightness", value: "300 Lumens" }, // Reusing Speaker icon for brightness
+      { icon: Wifi, label: "Connectivity", value: "HDMI, USB, Wi-Fi" },
     ],
     reviews: [
       { id: "rev48", author: "MovieBuff", rating: 5, date: "2024-01-30", title: "Great for outdoor movies!", comment: "Surprisingly bright and clear. Easy to set up. Kids love it.", isVerifiedBuyer: true },
@@ -943,6 +1031,12 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
+    specs: [ // Added specs for ProductCard
+      { icon: Cpu, label: "CPU", value: "i9-13900H" },
+      { icon: MemoryStick, label: "RAM", value: "32GB DDR5" },
+      { icon: HardDrive, label: "Storage", value: "1TB SSD" },
+      { icon: Monitor, label: "Display", value: "16\" Mini-LED" },
+    ],
     reviews: [
       { id: "rev50", author: "ProEditor", rating: 5, date: "2024-02-05", title: "Unmatched performance for editing!", comment: "Handles 8K footage like a dream. The screen is incredible.", isVerifiedBuyer: true },
       { id: "rev51", author: "DeveloperX", rating: 5, date: "2024-02-01", title: "Powerful workstation", comment: "Compiles code super fast. Great for virtual machines and heavy development.", isVerifiedBuyer: true },
@@ -988,6 +1082,11 @@ export const mockProducts: ProductDetails[] = [
           { label: "USB", value: "2x USB 3.0" },
         ],
       },
+    ],
+    specs: [ // Added specs for ProductCard
+      { icon: HardDrive, label: "Bays", value: "4-Bay" },
+      { icon: Cpu, label: "Max Cap.", value: "80TB" }, // Reusing CPU icon for max capacity
+      { icon: Wifi, label: "Ethernet", value: "Gigabit" },
     ],
     reviews: [
       { id: "rev52", author: "DataHoarder", rating: 5, date: "2024-02-10", title: "Excellent home server!", comment: "Easy to set up, fast transfers, and I feel much safer with my data backed up.", isVerifiedBuyer: true },
