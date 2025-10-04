@@ -165,7 +165,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
     >
       <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl shadow-lg">
         {product.tag && (
-          <FloatingTag text={product.tag} variant={product.tagVariant} className="absolute top-2 right-2 md:right-2 md:left-auto z-50" />
+          <FloatingTag text={product.tag} variant={product.tagVariant} className="absolute top-2 right-2 z-50" />
         )}
 
         {/* Product Image Area - now a clickable div, with the Link inside covering the image */}

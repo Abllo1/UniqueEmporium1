@@ -29,7 +29,7 @@ const FloatingTag = ({ text, variant = "default", className }: FloatingTagProps)
         repeatType: "reverse" as RepeatType,
       }}
       className={cn(
-        "absolute top-2 left-2 z-10",
+        "absolute top-2 z-10", // Removed 'left-2' from here
         className
       )}
       style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.2))" }} // Custom drop shadow for depth
