@@ -1,109 +1,97 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
-import { CartItem } from "@/types/cart";
-import { Product } from "@/types/product";
-import { useToast } from "@/hooks/use-toast";
+import React, { createContext, useState, useContext, ReactNode, useCallback } from "react";
+import { Product } from "@/components/products/ProductCard.tsx";
+import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+export interface CartItem extends Product {
+  quantity: number;
+}
 
 interface CartContextType {
-  cart: CartItem[];
-  cartItems: CartItem[]; // Add this for backward compatibility
-  addToCart: (product: Product | CartItem) => void;
+  cartItems: CartItem[];
+  addToCart: (product: Product, quantity?: number) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  getTotalItems: () => number;
-  totalItems: number; // Add this property
-  getTotalPrice: () => number;
-  totalPrice: number; // Add this property
+  totalItems: number;
+  totalPrice: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    if (typeof window !== "undefined") {
-      const savedCart = localStorage.getItem("cart");
-      return savedCart ? JSON.parse(savedCart) : [];
-    }
-    return [];
-  });
-  const { toast } = useToast();
+interface CartProviderProps {
+  children: ReactNode;
+  onOpenCartDrawer?: () => void; // New prop to open the cart drawer
+}
 
-  React.useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+export const CartProvider = ({ children, onOpenCartDrawer }: CartProviderProps) => {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const isMobile = useIsMobile();
 
-  const addToCart = (product: Product | CartItem) => {
-    setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === product.id);
-      
-      if (existingItem) {
-        // If item exists, update quantity
-        return prevCart.map(item =>
-          item.id === product.id 
-            ? { ...item, quantity: item.quantity + (("quantity" in product ? product.quantity : 1)) } 
-            : item
-        );
+  const addToCart = useCallback((product: Product, quantityToAdd: number = 1) => {
+    setCartItems((prevItems) => {
+      const existingItemIndex = prevItems.findIndex((item) => item.id === product.id);
+
+      if (existingItemIndex > -1) {
+        const updatedItems = [...prevItems];
+        updatedItems[existingItemIndex].quantity += quantityToAdd;
+        toast.success(`${quantityToAdd} x ${product.name} added to cart!`, {
+          description: `Current quantity: ${updatedItems[existingItemIndex].quantity}`,
+        });
+        return updatedItems;
       } else {
-        // If new item, add to cart with quantity
-        const quantity = "quantity" in product ? product.quantity : 1;
-        return [...prevCart, { ...product, quantity }];
+        toast.success(`${quantityToAdd} x ${product.name} added to cart!`);
+        return [...prevItems, { ...product, quantity: quantityToAdd }];
       }
     });
-    
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
-    });
-  };
 
-  const removeFromCart = (productId: string) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== productId));
-  };
-
-  const updateQuantity = (productId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(productId);
-      return;
+    // Automatically open cart drawer on desktop after adding an item
+    if (!isMobile && onOpenCartDrawer) {
+      onOpenCartDrawer();
     }
-    
-    setCart(prevCart =>
-      prevCart.map(item => 
-        item.id === productId ? { ...item, quantity } : item
-      )
-    );
-  };
+  }, [isMobile, onOpenCartDrawer]); // Add onOpenCartDrawer to dependencies
 
-  const clearCart = () => {
-    setCart([]);
-  };
+  const removeFromCart = useCallback((productId: string) => {
+    setCartItems((prevItems) => {
+      const removedItem = prevItems.find(item => item.id === productId);
+      if (removedItem) {
+        toast.info(`${removedItem.name} removed from cart.`);
+      }
+      return prevItems.filter((item) => item.id !== productId);
+    });
+  }, []);
 
-  const getTotalItems = () => {
-    return cart.reduce((total, item) => total + item.quantity, 0);
-  };
+  const updateQuantity = useCallback((productId: string, quantity: number) => {
+    setCartItems((prevItems) => {
+      if (quantity <= 0) {
+        return prevItems.filter((item) => item.id !== productId);
+      }
+      return prevItems.map((item) =>
+        item.id === productId ? { ...item, quantity } : item,
+      );
+    });
+  }, []);
 
-  const getTotalPrice = () => {
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
+  const clearCart = useCallback(() => {
+    setCartItems([]);
+    toast.info("Your cart has been cleared.");
+  }, []);
 
-  // Calculate derived values
-  const totalItems = getTotalItems();
-  const totalPrice = getTotalPrice();
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <CartContext.Provider
       value={{
-        cart,
-        cartItems: cart, // For backward compatibility
+        cartItems,
         addToCart,
         removeFromCart,
         updateQuantity,
         clearCart,
-        getTotalItems,
-        totalItems, // Expose totalItems
-        getTotalPrice,
-        totalPrice, // Expose totalPrice
+        totalItems,
+        totalPrice,
       }}
     >
       {children}
