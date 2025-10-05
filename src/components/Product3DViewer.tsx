@@ -22,29 +22,25 @@ const Product3DViewer = ({ modelPath, productName }: Product3DViewerProps) => {
 
   useEffect(() => {
     const currentModelViewer = modelViewerElementRef.current;
+    let loadTimeout: ReturnType<typeof setTimeout>;
 
     const handleLoad = () => {
-      setIsModelLoading(false);
+      // Add a small delay after the 'load' event to ensure the model is fully rendered
+      // before hiding our custom spinner.
+      loadTimeout = setTimeout(() => {
+        setIsModelLoading(false);
+      }, 300); // 300ms delay
     };
 
     if (currentModelViewer) {
       currentModelViewer.addEventListener("load", handleLoad);
     }
 
-    // Fallback for cases where load event might not fire immediately (e.g., cached models)
-    // Check if the model is already loaded after a short delay
-    const timeoutId = setTimeout(() => {
-      // Access the internal model property if available, or check for canvas presence
-      if (currentModelViewer && (currentModelViewer.model || currentModelViewer.shadowRoot?.querySelector('canvas'))) {
-        setIsModelLoading(false);
-      }
-    }, 100); 
-
     return () => {
       if (currentModelViewer) {
         currentModelViewer.removeEventListener("load", handleLoad);
       }
-      clearTimeout(timeoutId);
+      clearTimeout(loadTimeout); // Clear timeout if component unmounts before it fires
     };
   }, [modelPath]); // Re-run effect if modelPath changes
 
@@ -71,6 +67,9 @@ const Product3DViewer = ({ modelPath, productName }: Product3DViewerProps) => {
         alt={`3D view of ${productName}`}
         auto-rotate
         camera-controls
+        poster="" // Disable default poster
+        loading="eager" // Eagerly load the model
+        reveal="manual" // Manually control when the model is revealed
         style={{
           width: "100%",
           height: "100%",
