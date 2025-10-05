@@ -87,7 +87,7 @@ const Index = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
             {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} disableEntryAnimation={true} />
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
 
