@@ -27,7 +27,11 @@ export const mockProducts: ProductDetails[] = [
     id: "zenbook-pro-14-oled",
     name: "ZenBook Pro 14 OLED",
     category: "Laptops",
-    images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
+    images: [
+      "https://images.unsplash.com/photo-1517336714731-489689fd1588?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://cdn.pixabay.com/photo/2020/09/21/17/00/laptop-5590001_1280.jpg",
+      "https://cdn.pixabay.com/photo/2019/08/19/13/58/desk-4416000_1280.jpg"
+    ],
     price: 950000.00,
     originalPrice: 1000000.00,
     discountPercentage: 5,
@@ -879,6 +883,11 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
+    specs: [ // Added specs for ProductCard
+      { icon: Cpu, label: "Sensor", value: "26K DPI" },
+      { icon: BatteryCharging, label: "Battery", value: "100 Hrs" },
+      { icon: Wifi, label: "Wireless", value: "2.4GHz" },
+    ],
     reviews: [
       { id: "rev44", author: "EsportsChamp", rating: 5, date: "2024-01-20", title: "Best gaming mouse ever!", comment: "Super precise, no lag, and incredibly comfortable for long sessions.", isVerifiedBuyer: true },
       { id: "rev45", author: "CasualGamer", rating: 4, date: "2024-01-18", title: "Great, but a bit pricey", comment: "Fantastic performance, but it's a premium price for a mouse.", isVerifiedBuyer: false },
@@ -993,7 +1002,11 @@ export const mockProducts: ProductDetails[] = [
     id: "cyberbook-pro-16",
     name: "CyberBook Pro 16",
     category: "Laptops",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    images: [
+      "https://images.unsplash.com/photo-1588872657578-7efd1f155d51?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.pexels.com/photos/34130516/pexels-photo-34130516.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+    ],
     price: 1500000.00,
     originalPrice: 1600000.00,
     discountPercentage: 6,
