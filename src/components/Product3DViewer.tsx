@@ -69,7 +69,7 @@ const Product3DViewer = ({ modelPath, productName }: Product3DViewerProps) => {
         camera-controls
         poster="" // Disable default poster
         loading="eager" // Eagerly load the model
-        reveal="manual" // Manually control when the model is revealed
+        // Removed reveal="manual" to allow opacity control to work
         style={{
           width: "100%",
           height: "100%",
