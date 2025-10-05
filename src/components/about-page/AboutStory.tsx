@@ -41,7 +41,7 @@ const AboutStory = () => {
         >
           <div className="relative h-96 rounded-2xl overflow-hidden shadow-xl">
             <img
-              src="/public/placeholder.svg" // Placeholder image
+              src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" // New image for About Story
               alt="Our Story"
               className="w-full h-full object-cover"
             />
