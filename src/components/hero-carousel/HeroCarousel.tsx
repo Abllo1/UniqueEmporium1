@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ElectroProLogo3D from "./ElectroProLogo3D.tsx";
 import { mockProducts, ProductDetails } from "@/data/products.ts"; // Import mockProducts and ProductDetails
-import { Link } from "react-router-dom"; // Import Link for CTA button
+// Removed Link import as it's no longer used for the CTA button
 
 interface CarouselItem {
   id: string;
@@ -17,7 +17,7 @@ interface CarouselItem {
   productDescription: string;
   price: number;
   ctaText: string;
-  ctaLink: string;
+  // Removed ctaLink as it's no longer needed for scrolling
 }
 
 // Select specific products from mockProducts for the carousel
@@ -36,11 +36,14 @@ const carouselItems: CarouselItem[] = selectedProductsForCarousel.map(product =>
   productName: product.name, // Keep product name dynamic
   productDescription: product.fullDescription.split('.')[0] + '.', // Keep product description dynamic
   price: product.price, // Keep price dynamic
-  ctaText: `Shop ${product.category} Now`,
-  ctaLink: `/products/${product.id}`, // Link to product details page
+  ctaText: "Explore Featured Products", // Generic CTA text for scrolling
 }));
 
-const HeroCarousel = () => {
+interface HeroCarouselProps {
+  onScrollToFeatured: () => void; // New prop for the scroll function
+}
+
+const HeroCarousel = ({ onScrollToFeatured }: HeroCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const goToNext = () => {
@@ -170,11 +173,9 @@ const HeroCarousel = () => {
           >
             <Button
               className="px-6 py-2 text-base md:px-8 md:py-3 md:text-lg"
-              asChild // Use asChild to render Link inside Button
+              onClick={onScrollToFeatured} // Call the scroll function
             >
-              <Link to={currentItem.ctaLink}>
-                {currentItem.ctaText}
-              </Link>
+              {currentItem.ctaText}
             </Button>
           </motion.div>
         </div>

@@ -11,7 +11,7 @@ import { motion, Easing } from "framer-motion";
 import { mockProducts, ProductDetails, getProductsByIds } from "@/data/products.ts"; // Import getProductsByIds
 import RecentlyViewedProductsSection from "@/components/product-details/RecentlyViewedProductsSection.tsx"; // Import RecentlyViewedProductsSection
 import TopSellingProductsSection from "@/components/top-selling-products/TopSellingProductsSection.tsx"; // Reverted to alias path
-import React, { useEffect, useState } from "react"; // Import useEffect and useState
+import React, { useEffect, useState, useRef } from "react"; // Import useEffect, useState, and useRef
 
 // Select specific products from mockProducts to be featured
 const featuredProducts: ProductDetails[] = [
@@ -43,6 +43,7 @@ const RECENTLY_VIEWED_KEY = "recentlyViewedProducts";
 
 const Index = () => {
   const [recentlyViewedProductIds, setRecentlyViewedProductIds] = useState<string[]>([]);
+  const featuredProductsRef = useRef<HTMLDivElement>(null); // Ref for the featured products section
 
   useEffect(() => {
     const storedViewed = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || "[]") as string[];
@@ -51,14 +52,19 @@ const Index = () => {
 
   const actualRecentlyViewedProducts = getProductsByIds(recentlyViewedProductIds);
 
+  // Function to scroll to the featured products section
+  const scrollToFeaturedProducts = () => {
+    featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div className="relative min-h-screen w-full">
-      <HeroCarousel />
+      <HeroCarousel onScrollToFeatured={scrollToFeaturedProducts} /> {/* Pass the scroll function */}
       <HeroIntroBanner />
       <CategoriesSection />
 
       {/* Featured Products Section */}
-      <section id="featured-products-section" className="py-16 bg-muted/30">
+      <section id="featured-products-section" ref={featuredProductsRef} className="py-16 bg-muted/30"> {/* Apply ref here */}
         <motion.div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
           variants={staggerContainer}
