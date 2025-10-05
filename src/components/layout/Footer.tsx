@@ -64,15 +64,7 @@ const Footer = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
-  const footerRef = useRef(null);
-  const isInView = useInView(footerRef, { once: true, amount: 0.1 });
-  const controls = useAnimation();
-
-  useEffect(() => {
-    if (isInView) {
-      controls.start("visible");
-    }
-  }, [isInView, controls]);
+  // Removed footerRef, isInView, and controls as they will be replaced by whileInView on the motion.div
 
   const handleScroll = useCallback(() => {
     if (window.scrollY > 300) {
@@ -80,7 +72,7 @@ const Footer = () => {
     } else {
       setShowScrollToTop(false);
     }
-  }, []); // Empty dependency array as handleScroll doesn't depend on any external state that changes
+  }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -109,11 +101,11 @@ const Footer = () => {
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-10">
         <motion.div
-          ref={footerRef}
           className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12 lg:grid-cols-4"
           variants={staggerContainer}
           initial="hidden"
-          animate={controls}
+          whileInView="visible" // Changed from animate={controls} to whileInView
+          viewport={{ once: true, amount: 0.1 }} // Added viewport prop for automatic detection
         >
           {/* Column 1: Company Info */}
           <motion.div variants={fadeInUp}>
