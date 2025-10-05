@@ -17,25 +17,25 @@ const teamMembers: TeamMember[] = [
     name: "Jane Doe",
     role: "CEO & Founder",
     bio: "Visionary leader passionate about tech innovation and customer experience.",
-    image: "/public/placeholder.svg",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Placeholder image 1
   },
   {
     name: "John Smith",
     role: "Chief Technology Officer",
     bio: "Architect of our digital infrastructure, ensuring seamless operations.",
-    image: "/public/placeholder.svg",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Placeholder image 2
   },
   {
     name: "Emily White",
     role: "Head of Product Curation",
     bio: "Expert in identifying the next big thing in electronics.",
-    image: "/public/placeholder.svg",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Placeholder image 3
   },
   {
     name: "David Green",
     role: "Customer Relations Lead",
     bio: "Dedicated to providing exceptional support and building lasting relationships.",
-    image: "/public/placeholder.svg",
+    image: "https://images.unsplash.com/photo-1557862921-37829c790f51?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Placeholder image 4
   },
 ];
 
