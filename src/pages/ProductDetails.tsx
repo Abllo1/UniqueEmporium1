@@ -127,17 +127,7 @@ const ProductDetails = () => {
               images={product.images}
               productName={product.name}
             />
-            {product.modelPath && (
-              <motion.div
-                variants={fadeInUp}
-                initial="hidden"
-                animate="visible"
-                viewport={{ once: true, amount: 0.1 }}
-                transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" as Easing }}
-              >
-                <Product3DViewer productName={product.name} modelPath={product.modelPath} />
-              </motion.div>
-            )}
+            {product.modelPath && <Product3DViewer modelPath={product.modelPath} productName={product.name} />}
           </motion.div>
 
           {/* Product Info & Actions */}
