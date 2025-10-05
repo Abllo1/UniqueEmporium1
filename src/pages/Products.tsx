@@ -288,7 +288,7 @@ const Products = () => {
       {displayedProducts.length > 0 ? (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-5">
           {displayedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} disableEntryAnimation={true} />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       ) : (
@@ -313,7 +313,7 @@ const Products = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
         >
-          <RecommendedProductsSection currentProductId={productForRecommendationsId} />
+          <RecommendedProductsSection currentProductId={productForRecommendationsId} /> {/* Pass currentProductId */}
         </motion.div>
       )}
 
