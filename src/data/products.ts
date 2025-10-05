@@ -28,7 +28,7 @@ export const mockProducts: ProductDetails[] = [
     name: "ZenBook Pro 14 OLED",
     category: "Laptops",
     images: [
-      "https://images.unsplash.com/photo-1517336714731-489689fd1588?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1517336714731-489689fd1588?auto=format&fit=crop&w=2070&q=80",
       "https://cdn.pixabay.com/photo/2020/09/21/17/00/laptop-5590001_1280.jpg",
       "https://cdn.pixabay.com/photo/2019/08/19/13/58/desk-4416000_1280.jpg"
     ],
@@ -344,8 +344,8 @@ export const mockProducts: ProductDetails[] = [
         group: "Performance",
         items: [
           { icon: Cpu, label: "CPU", value: "Intel Core i9-14900K" },
-          { icon: MemoryStick, label: "RAM", value: "32GB DDR5-6000" },
-          { icon: HardDrive, label: "Storage", value: "2TB NVMe SSD" },
+          { label: "RAM", value: "32GB DDR5-6000" },
+          { label: "Storage", value: "2TB NVMe SSD" },
           { label: "Graphics", value: "NVIDIA GeForce RTX 4090" },
         ],
       },
@@ -1003,8 +1003,8 @@ export const mockProducts: ProductDetails[] = [
     name: "CyberBook Pro 16",
     category: "Laptops",
     images: [
-      "https://images.unsplash.com/photo-1588872657578-7efd1f155d51?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1588872657578-7efd1f155d51?auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=2070&q=80",
       "https://images.pexels.com/photos/34130516/pexels-photo-34130516.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     ],
     price: 1500000.00,
@@ -1149,7 +1149,7 @@ export const mockProducts: ProductDetails[] = [
       },
     ],
     reviews: [
-      { id: "rev54", author: "WorkFromHome", rating: 5, date: "2024-02-15", title: "Game-changer for my home office!", comment: "Easy to assemble, super stable, and I feel so much better standing throughout the day.", isVerifiedBuyer: true },
+      { id: "rev54", author: "WorkFromHome", rating: 5, date: "2024-02-15", title: "Game-changer for my home office!", comment: "Easy to assemble, super stable, and I feel much better standing throughout the day.", isVerifiedBuyer: true },
       { id: "rev55", author: "ProductivityHack", rating: 4, date: "2024-02-12", title: "Great desk, minor wobble at max height", comment: "Mostly solid, but there's a slight wobble when fully extended. Still highly recommend.", isVerifiedBuyer: false },
     ],
     relatedProducts: ["ergofit-wireless-keyboard"],
