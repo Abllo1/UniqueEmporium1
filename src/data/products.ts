@@ -29,8 +29,8 @@ export const mockProducts: ProductDetails[] = [
     category: "Laptops",
     images: [
       "https://images.unsplash.com/photo-1517336714731-489689fd1588?auto=format&fit=crop&w=2070&q=80",
-      "https://cdn.pixabay.com/photo/2020/09/21/17/00/laptop-5590001_1280.jpg",
-      "https://cdn.pixabay.com/photo/2019/08/19/13/58/desk-4416000_1280.jpg"
+      "https://images.unsplash.com/photo-1588872657578-7efd1f155d51?auto=format&fit=crop&w=2070&q=80",
+      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=2070&q=80"
     ],
     price: 950000.00,
     originalPrice: 1000000.00,
