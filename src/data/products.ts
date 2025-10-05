@@ -279,7 +279,11 @@ export const mockProducts: ProductDetails[] = [
     id: "prodisplay-xdr",
     name: "ProDisplay XDR",
     category: "Monitors",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    images: [
+      "https://images.unsplash.com/photo-1547082299-de196ea013d6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1725817853503-645c1c0cbfa2?q=80&w=1694&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    ],
     price: 2500000.00,
     rating: 4.9,
     reviewCount: 90,
@@ -299,10 +303,10 @@ export const mockProducts: ProductDetails[] = [
       {
         group: "Display",
         items: [
-          { label: "Size", value: "32-inch" },
+          { label: "Size", value: "32-inch", icon: Monitor },
           { label: "Resolution", value: "6016x3384 (6K)" },
+          { label: "Refresh Rate", value: "90Hz" },
           { label: "Brightness", value: "1000 nits sustained, 1600 nits peak" },
-          { label: "Color Gamut", value: "P3 wide color" },
         ],
       },
       {
@@ -585,7 +589,11 @@ export const mockProducts: ProductDetails[] = [
     id: "powercharge-100w-gan-charger",
     name: "PowerCharge 100W GaN Charger",
     category: "Accessories",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    images: [
+      "https://images.unsplash.com/photo-1727885796960-70a0adfe40ef?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1731616103600-3fe7ccdc5a59?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://plus.unsplash.com/premium_photo-1677723581361-f661203302e3?q=80&w=1625&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    ],
     price: 25000.00,
     originalPrice: 30000.00,
     discountPercentage: 17,
@@ -1144,7 +1152,11 @@ export const mockProducts: ProductDetails[] = [
     id: "smartdesk-standing-desk",
     name: "SmartDesk Standing Desk",
     category: "Accessories",
-    images: ["/placeholder.svg", "/placeholder.svg"],
+    images: [
+      "https://images.unsplash.com/photo-1696453423500-98461c31ed64?q=80&w=1064&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1696453423411-3fc7847a9611?q=80&w=1064&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1696453423785-727e165462c1?q=80&w=1064&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    ],
     price: 280000.00,
     originalPrice: 300000.00,
     discountPercentage: 7,
