@@ -111,7 +111,7 @@ const WhyChooseUsSection = () => {
             variants={fadeInUp}
           >
             <img
-              src="/public/placeholder.svg" // Large illustrative image
+              src="https://images.pexels.com/photos/6407435/pexels-photo-6407435.jpeg" // Updated image source
               alt="ElectroPro Advantage"
               className="w-full h-full object-cover object-center"
             />
