@@ -28,9 +28,9 @@ export const mockProducts: ProductDetails[] = [
     name: "ZenBook Pro 14 OLED",
     category: "Laptops",
     images: [
-      "https://images.unsplash.com/photo-1517336714731-489689fd1588?auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1588872657578-7efd1f155d51?auto=format&fit=crop&w=2070&q=80",
-      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=2070&q=80"
+      "https://images.unsplash.com/photo-1515343480029-43cdfe6b6aae?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://cdn.pixabay.com/photo/2020/10/21/18/07/laptop-5673901_1280.jpg",
+      "https://cdn.pixabay.com/photo/2019/07/13/10/55/desk-4334575_1280.jpg"
     ],
     price: 950000.00,
     originalPrice: 1000000.00,
