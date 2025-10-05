@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, Lightbulb } from "lucide-react"; // Changed 
 import useEmblaCarousel from "embla-carousel-react";
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
 import { mockProducts, getProductById, ProductDetails as ProductDetailsType } from "@/data/products.ts"; // Import mockProducts and getProductById
+import ProductCardSkeleton from "@/components/products/ProductCardSkeleton.tsx"; // Import ProductCardSkeleton
 
 interface RecommendedProductsSectionProps {
   currentProductId: string; // New prop to receive the ID of the currently viewed product
@@ -36,6 +37,7 @@ const RecommendedProductsSection = ({ currentProductId }: RecommendedProductsSec
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true); // New loading state
 
   const onSelect = useCallback((emblaApi: any) => {
     setCanScrollPrev(emblaApi.canScrollPrev());
@@ -50,64 +52,68 @@ const RecommendedProductsSection = ({ currentProductId }: RecommendedProductsSec
   }, [emblaApi, onSelect]);
 
   useEffect(() => {
-    const generateRecommendations = () => {
-      const currentProduct = getProductById(currentProductId);
-      if (!currentProduct) {
-        setRecommendedProducts([]);
-        return;
-      }
-
-      const recommendations: Product[] = [];
-      const recommendationIds = new Set<string>();
-
-      // 1. Category Match (excluding current product)
-      const categoryMatches = mockProducts.filter(
-        (p) => p.category === currentProduct.category && p.id !== currentProduct.id
-      );
-      categoryMatches.forEach((p) => {
-        if (!recommendationIds.has(p.id)) {
-          recommendations.push(p);
-          recommendationIds.add(p.id);
+    setLoading(true);
+    const timer = setTimeout(() => { // Simulate loading delay
+      const generateRecommendations = () => {
+        const currentProduct = getProductById(currentProductId);
+        if (!currentProduct) {
+          setRecommendedProducts([]);
+          return;
         }
-      });
 
-      // 2. Related Attributes: Same tag.variant
-      if (currentProduct.tagVariant) {
-        const tagMatches = mockProducts.filter(
-          (p) => p.tagVariant === currentProduct.tagVariant && p.id !== currentProduct.id
+        const recommendations: Product[] = [];
+        const recommendationIds = new Set<string>();
+
+        // 1. Category Match (excluding current product)
+        const categoryMatches = mockProducts.filter(
+          (p) => p.category === currentProduct.category && p.id !== currentProduct.id
         );
-        tagMatches.forEach((p) => {
+        categoryMatches.forEach((p) => {
           if (!recommendationIds.has(p.id)) {
             recommendations.push(p);
             recommendationIds.add(p.id);
           }
         });
-      }
 
-      // 3. Related Attributes: Price within 20% range
-      const priceRange = 0.20;
-      const minPrice = currentProduct.price * (1 - priceRange);
-      const maxPrice = currentProduct.price * (1 + priceRange);
-
-      const priceMatches = mockProducts.filter(
-        (p) => p.id !== currentProduct.id && p.price >= minPrice && p.price <= maxPrice
-      );
-      priceMatches.forEach((p) => {
-        if (!recommendationIds.has(p.id)) {
-          recommendations.push(p);
-          recommendationIds.add(p.id);
+        // 2. Related Attributes: Same tag.variant
+        if (currentProduct.tagVariant) {
+          const tagMatches = mockProducts.filter(
+            (p) => p.tagVariant === currentProduct.tagVariant && p.id !== currentProduct.id
+          );
+          tagMatches.forEach((p) => {
+            if (!recommendationIds.has(p.id)) {
+              recommendations.push(p);
+              recommendationIds.add(p.id);
+            }
+          });
         }
-      });
 
-      // Limit to 10 items
-      setRecommendedProducts(recommendations.slice(0, 10));
-    };
+        // 3. Related Attributes: Price within 20% range
+        const priceRange = 0.20;
+        const minPrice = currentProduct.price * (1 - priceRange);
+        const maxPrice = currentProduct.price * (1 + priceRange);
 
-    generateRecommendations();
+        const priceMatches = mockProducts.filter(
+          (p) => p.id !== currentProduct.id && p.price >= minPrice && p.price <= maxPrice
+        );
+        priceMatches.forEach((p) => {
+          if (!recommendationIds.has(p.id)) {
+            recommendations.push(p);
+            recommendationIds.add(p.id);
+          }
+        });
+
+        // Limit to 10 items
+        setRecommendedProducts(recommendations.slice(0, 10));
+      };
+      generateRecommendations();
+      setLoading(false);
+    }, 600); // Simulate 600ms loading
+    return () => clearTimeout(timer);
   }, [currentProductId]); // Re-run when currentProductId changes
 
-  if (recommendedProducts.length === 0) {
-    return null; // Don't render the section if no recommendations
+  if (recommendedProducts.length === 0 && !loading) {
+    return null; // Don't render the section if no recommendations and not loading
   }
 
   return (
@@ -125,10 +131,10 @@ const RecommendedProductsSection = ({ currentProductId }: RecommendedProductsSec
             <Lightbulb className="h-6 w-6 text-primary" /> Recommended for You
           </h2>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon" onClick={scrollPrev} disabled={!canScrollPrev}>
+            <Button variant="outline" size="icon" onClick={scrollPrev} disabled={!canScrollPrev || loading}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" onClick={scrollNext} disabled={!canScrollNext}>
+            <Button variant="outline" size="icon" onClick={scrollNext} disabled={!canScrollNext || loading}>
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
@@ -137,11 +143,17 @@ const RecommendedProductsSection = ({ currentProductId }: RecommendedProductsSec
         {/* Product Carousel */}
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex gap-2 sm:gap-4">
-            {recommendedProducts.map((product) => (
-              <div key={product.id} className="flex-shrink-0 w-[calc(50%-4px)] sm:w-[280px]">
-                <ProductCard product={product} />
-              </div>
-            ))}
+            {loading
+              ? Array.from({ length: 4 }).map((_, i) => ( // Show 4 skeletons while loading
+                  <div key={i} className="flex-shrink-0 w-[calc(50%-4px)] sm:w-[280px]">
+                    <ProductCardSkeleton />
+                  </div>
+                ))
+              : recommendedProducts.map((product) => (
+                  <div key={product.id} className="flex-shrink-0 w-[calc(50%-4px)] sm:w-[280px]">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
           </div>
         </div>
       </motion.div>

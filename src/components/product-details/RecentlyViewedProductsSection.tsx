@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, History } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
+import ProductCardSkeleton from "@/components/products/ProductCardSkeleton.tsx"; // Import ProductCardSkeleton
 
 interface RecentlyViewedProductsSectionProps {
   products: Product[];
@@ -34,6 +35,15 @@ const RecentlyViewedProductsSection = ({ products }: RecentlyViewedProductsSecti
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const [loading, setLoading] = useState(true); // New loading state
+
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => { // Simulate loading delay
+      setLoading(false);
+    }, 500); // Simulate 500ms loading
+    return () => clearTimeout(timer);
+  }, [products]); // Re-run loading state when products prop changes
 
   const onSelect = useCallback((emblaApi: any) => {
     setCanScrollPrev(emblaApi.canScrollPrev());
@@ -47,8 +57,8 @@ const RecentlyViewedProductsSection = ({ products }: RecentlyViewedProductsSecti
     emblaApi.on("select", onSelect);
   }, [emblaApi, onSelect]);
 
-  if (products.length === 0) {
-    return null; // Don't render if no recently viewed products
+  if (products.length === 0 && !loading) {
+    return null; // Don't render if no recently viewed products and not loading
   }
 
   return (
@@ -66,10 +76,10 @@ const RecentlyViewedProductsSection = ({ products }: RecentlyViewedProductsSecti
             <History className="h-6 w-6 text-primary" /> Recently Viewed
           </h2>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon" onClick={scrollPrev} disabled={!canScrollPrev}>
+            <Button variant="outline" size="icon" onClick={scrollPrev} disabled={!canScrollPrev || loading}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" onClick={scrollNext} disabled={!canScrollNext}>
+            <Button variant="outline" size="icon" onClick={scrollNext} disabled={!canScrollNext || loading}>
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
@@ -78,11 +88,17 @@ const RecentlyViewedProductsSection = ({ products }: RecentlyViewedProductsSecti
         {/* Product Carousel */}
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex gap-2 sm:gap-4">
-            {products.map((product) => (
-              <div key={product.id} className="flex-shrink-0 w-[calc(50%-4px)] sm:w-[280px]">
-                <ProductCard product={product} />
-              </div>
-            ))}
+            {loading
+              ? Array.from({ length: 4 }).map((_, i) => ( // Show 4 skeletons while loading
+                  <div key={i} className="flex-shrink-0 w-[calc(50%-4px)] sm:w-[280px]">
+                    <ProductCardSkeleton />
+                  </div>
+                ))
+              : products.map((product) => (
+                  <div key={product.id} className="flex-shrink-0 w-[calc(50%-4px)] sm:w-[280px]">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
           </div>
         </div>
       </motion.div>

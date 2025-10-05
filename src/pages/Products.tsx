@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { mockProducts, ProductDetails, getProductsByIds } from "@/data/products.ts"; // Import mockProducts, ProductDetails, getProductsByIds
 import RecommendedProductsSection from "@/components/recommended-products/RecommendedProductsSection.tsx"; // Import RecommendedProductsSection
 import RecentlyViewedProductsSection from "@/components/product-details/RecentlyViewedProductsSection.tsx"; // Import RecentlyViewedProductsSection
+import ProductCardSkeleton from "@/components/products/ProductCardSkeleton.tsx"; // Import ProductCardSkeleton
 
 // Placeholder product data - now directly using mockProducts
 const allProducts: ProductDetails[] = mockProducts;
@@ -60,12 +61,19 @@ const Products = () => {
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sortBy, setSortBy] = useState("default");
-  const [isMobileFilterPanelOpen, setIsMobileFilterPanelOpen] = useState(false); // State for mobile filter panel
+  const [isMobileFilterPanelOpen, setIsMobileFilterPanelOpen] = useState(false);
   const [recentlyViewedProductIds, setRecentlyViewedProductIds] = useState<string[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(true); // New loading state
 
   useEffect(() => {
     setCurrentQuery(initialQuery);
     setSelectedCategory(initialCategory);
+    // Simulate loading for products
+    setLoadingProducts(true);
+    const timer = setTimeout(() => {
+      setLoadingProducts(false);
+    }, 800); // Simulate 800ms loading
+    return () => clearTimeout(timer);
   }, [initialQuery, initialCategory]);
 
   useEffect(() => {
@@ -85,10 +93,14 @@ const Products = () => {
       searchParams.set("category", value);
     }
     setSearchParams(searchParams);
+    setLoadingProducts(true); // Trigger loading state on filter change
+    setTimeout(() => setLoadingProducts(false), 800);
   };
 
   const handleSortByChange = (value: string) => {
     setSortBy(value);
+    setLoadingProducts(true); // Trigger loading state on sort change
+    setTimeout(() => setLoadingProducts(false), 800);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -99,6 +111,8 @@ const Products = () => {
       searchParams.delete("query");
     }
     setSearchParams(searchParams);
+    setLoadingProducts(true); // Trigger loading state on search submit
+    setTimeout(() => setLoadingProducts(false), 800);
   };
 
   const filterAndSortProducts = () => {
@@ -132,7 +146,7 @@ const Products = () => {
   };
 
   const displayedProducts = filterAndSortProducts();
-  const productForRecommendationsId = displayedProducts[0]?.id || mockProducts[0]?.id; // Use first displayed product or fallback
+  const productForRecommendationsId = displayedProducts[0]?.id || mockProducts[0]?.id;
 
   const handleClearFilters = () => {
     setCurrentQuery("");
@@ -140,6 +154,8 @@ const Products = () => {
     setSortBy("default");
     setSearchParams({}); // Clear all search params
     setIsMobileFilterPanelOpen(false); // Close panel on clear
+    setLoadingProducts(true); // Trigger loading state on clear filters
+    setTimeout(() => setLoadingProducts(false), 800);
   };
 
   const actualRecentlyViewedProducts = getProductsByIds(recentlyViewedProductIds);
@@ -281,11 +297,17 @@ const Products = () => {
         viewport={{ once: true, amount: 0.1 }}
         className="text-muted-foreground text-center mb-8"
       >
-        Showing {displayedProducts.length} of {allProducts.length} electronics
+        {loadingProducts ? "Loading products..." : `Showing ${displayedProducts.length} of ${allProducts.length} electronics`}
       </motion.p>
 
       {/* Product Grid Display */}
-      {displayedProducts.length > 0 ? (
+      {loadingProducts ? (
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-5">
+          {Array.from({ length: 8 }).map((_, i) => ( // Show 8 skeletons
+            <ProductCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : displayedProducts.length > 0 ? (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-5">
           {displayedProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
@@ -313,7 +335,7 @@ const Products = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
         >
-          <RecommendedProductsSection currentProductId={productForRecommendationsId} /> {/* Pass currentProductId */}
+          <RecommendedProductsSection currentProductId={productForRecommendationsId} />
         </motion.div>
       )}
 

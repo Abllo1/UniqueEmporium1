@@ -8,16 +8,17 @@ import ProductBreadcrumb from "@/components/product-details/ProductBreadcrumb.ts
 import ProductImageGallery from "@/components/product-details/ProductImageGallery.tsx";
 import ProductInfoSection from "@/components/product-details/ProductInfoSection.tsx";
 import ProductTabs from "@/components/product-details/ProductTabs.tsx";
-import RecommendedProductsSection from "@/components/recommended-products/RecommendedProductsSection.tsx"; // Existing component
-import RecentlyViewedProductsSection from "@/components/product-details/RecentlyViewedProductsSection.tsx"; // New component
-import Product3DViewer from "@/components/Product3DViewer.tsx"; // Import Product3DViewer
+import RecommendedProductsSection from "@/components/recommended-products/RecommendedProductsSection.tsx";
+import RecentlyViewedProductsSection from "@/components/product-details/RecentlyViewedProductsSection.tsx";
+import Product3DViewer from "@/components/Product3DViewer.tsx";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import ProductDetailsSkeleton from "@/components/product-details/ProductDetailsSkeleton.tsx"; // Import ProductDetailsSkeleton
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as Easing } },
+  hidden: { opacity: 0, y: 50, x: -50 },
+  visible: { opacity: 1, y: 0, x: 0, transition: { duration: 0.6, ease: "easeOut" as Easing } },
 };
 
 const RECENTLY_VIEWED_KEY = "recentlyViewedProducts";
@@ -29,33 +30,36 @@ const ProductDetails = () => {
   const [product, setProduct] = useState<ProductDetailsType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [recentlyViewedProductIds, setRecentlyViewedProductIds] = useState<string[]>([]); // Renamed state to clarify it holds IDs
+  const [recentlyViewedProductIds, setRecentlyViewedProductIds] = useState<string[]>([]);
 
   useEffect(() => {
     setLoading(true);
     setError(null);
-    if (productId) {
-      const fetchedProduct = getProductById(productId);
-      if (fetchedProduct) {
-        setProduct(fetchedProduct);
+    const timer = setTimeout(() => { // Simulate API call delay
+      if (productId) {
+        const fetchedProduct = getProductById(productId);
+        if (fetchedProduct) {
+          setProduct(fetchedProduct);
 
-        // Update recently viewed product IDs in localStorage
-        setRecentlyViewedProductIds((prevIds) => {
-          const currentViewed = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || "[]") as string[];
-          const updatedViewed = [productId, ...currentViewed.filter(id => id !== productId)].slice(0, MAX_RECENTLY_VIEWED);
-          localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(updatedViewed));
-          return updatedViewed;
-        });
+          // Update recently viewed product IDs in localStorage
+          setRecentlyViewedProductIds((prevIds) => {
+            const currentViewed = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || "[]") as string[];
+            const updatedViewed = [productId, ...currentViewed.filter(id => id !== productId)].slice(0, MAX_RECENTLY_VIEWED);
+            localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(updatedViewed));
+            return updatedViewed;
+          });
 
+        } else {
+          setError("Product not found.");
+          toast.error("Product not found.", { description: `No product found with ID: ${productId}` });
+        }
       } else {
-        setError("Product not found.");
-        toast.error("Product not found.", { description: `No product found with ID: ${productId}` });
+        setError("Invalid product ID.");
+        toast.error("Invalid product ID.", { description: "Please provide a valid product identifier." });
       }
-    } else {
-      setError("Invalid product ID.");
-      toast.error("Invalid product ID.", { description: "Please provide a valid product identifier." });
-    }
-    setLoading(false);
+      setLoading(false);
+    }, 700); // Simulate 700ms loading
+    return () => clearTimeout(timer);
   }, [productId]);
 
   // Load recently viewed product IDs from localStorage on initial mount
@@ -66,18 +70,7 @@ const ProductDetails = () => {
 
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-lg text-muted-foreground"
-        >
-          Loading product details...
-        </motion.div>
-      </div>
-    );
+    return <ProductDetailsSkeleton />; // Render skeleton while loading
   }
 
   if (error || !product) {
@@ -117,7 +110,7 @@ const ProductDetails = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mt-8">
           {/* Product Media & Purchase Options */}
           <motion.div
-            className="lg:sticky lg:top-24 h-fit space-y-8" // Added space-y-8 for spacing between gallery and 3D viewer
+            className="lg:sticky lg:top-24 h-fit space-y-8"
             variants={fadeInUp}
             initial="hidden"
             animate="visible"
@@ -162,7 +155,7 @@ const ProductDetails = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
         >
-          <RecommendedProductsSection currentProductId={product.id} /> {/* Pass currentProductId */}
+          <RecommendedProductsSection currentProductId={product.id} />
         </motion.div>
 
         {/* Recently Viewed Products Section */}

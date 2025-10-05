@@ -12,16 +12,17 @@ import { mockProducts, ProductDetails, getProductsByIds } from "@/data/products.
 import RecentlyViewedProductsSection from "@/components/product-details/RecentlyViewedProductsSection.tsx"; // Import RecentlyViewedProductsSection
 import TopSellingProductsSection from "@/components/top-selling-products/TopSellingProductsSection.tsx"; // Reverted to alias path
 import React, { useEffect, useState, useRef } from "react"; // Import useEffect, useState, and useRef
+import ProductCardSkeleton from "@/components/products/ProductCardSkeleton.tsx"; // Import ProductCardSkeleton
 
 // Select specific products from mockProducts to be featured
-const featuredProducts: ProductDetails[] = [
-  mockProducts.find(p => p.id === "zenbook-pro-14-oled"),
-  mockProducts.find(p => p.id === "soundwave-noise-cancelling-headphones"),
-  mockProducts.find(p => p.id === "ultrafast-1tb-external-ssd"),
-  mockProducts.find(p => p.id === "ergofit-wireless-keyboard"),
-  mockProducts.find(p => p.id === "smarthome-hub-pro"),
-  mockProducts.find(p => p.id === "powercharge-100w-gan-charger"),
-].filter((product): product is ProductDetails => product !== undefined);
+const featuredProductIds = [
+  "zenbook-pro-14-oled",
+  "soundwave-noise-cancelling-headphones",
+  "ultrafast-1tb-external-ssd",
+  "ergofit-wireless-keyboard",
+  "smarthome-hub-pro",
+  "powercharge-100w-gan-charger",
+];
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -43,11 +44,24 @@ const RECENTLY_VIEWED_KEY = "recentlyViewedProducts";
 
 const Index = () => {
   const [recentlyViewedProductIds, setRecentlyViewedProductIds] = useState<string[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loadingFeatured, setLoadingFeatured] = useState(true); // New loading state for featured products
   const featuredProductsRef = useRef<HTMLDivElement>(null); // Ref for the featured products section
 
   useEffect(() => {
     const storedViewed = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || "[]") as string[];
     setRecentlyViewedProductIds(storedViewed);
+
+    // Simulate loading for featured products
+    setLoadingFeatured(true);
+    const timer = setTimeout(() => {
+      const fetchedFeatured = featuredProductIds
+        .map(id => mockProducts.find(p => p.id === id))
+        .filter((product): product is ProductDetails => product !== undefined);
+      setFeaturedProducts(fetchedFeatured);
+      setLoadingFeatured(false);
+    }, 1000); // Simulate 1 second loading
+    return () => clearTimeout(timer);
   }, []);
 
   const actualRecentlyViewedProducts = getProductsByIds(recentlyViewedProductIds);
@@ -59,12 +73,12 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen w-full">
-      <HeroCarousel onScrollToFeatured={scrollToFeaturedProducts} /> {/* Pass the scroll function */}
+      <HeroCarousel onScrollToFeatured={scrollToFeaturedProducts} />
       <HeroIntroBanner />
       <CategoriesSection />
 
       {/* Featured Products Section */}
-      <section id="featured-products-section" ref={featuredProductsRef} className="py-16 bg-muted/30"> {/* Apply ref here */}
+      <section id="featured-products-section" ref={featuredProductsRef} className="py-16 bg-muted/30">
         <motion.div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
           variants={staggerContainer}
@@ -86,9 +100,11 @@ const Index = () => {
           </motion.p>
 
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {loadingFeatured
+              ? Array.from({ length: 6 }).map((_, i) => <ProductCardSkeleton key={i} />)
+              : featuredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
           </div>
 
           <motion.div variants={fadeInUp} className="mt-12">

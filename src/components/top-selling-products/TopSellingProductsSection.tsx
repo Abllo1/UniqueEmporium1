@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, TrendingUp } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
 import { mockProducts, ProductDetails } from "@/data/products.ts"; // Import mockProducts
+import ProductCardSkeleton from "@/components/products/ProductCardSkeleton.tsx"; // Import ProductCardSkeleton
 
 // Hand-pick some products to represent "Top Selling"
 const topSellingProductIds = [
@@ -18,10 +19,15 @@ const topSellingProductIds = [
   "smartwatch-xtreme",
 ];
 
-const getTopSellingProducts = (): Product[] => {
-  return topSellingProductIds
-    .map(id => mockProducts.find(p => p.id === id))
-    .filter((product): product is ProductDetails => product !== undefined);
+const getTopSellingProducts = (): Promise<Product[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const products = topSellingProductIds
+        .map(id => mockProducts.find(p => p.id === id))
+        .filter((product): product is ProductDetails => product !== undefined);
+      resolve(products);
+    }, 700); // Simulate API call delay
+  });
 };
 
 const fadeInUp = {
@@ -48,9 +54,14 @@ const TopSellingProductsSection = () => {
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [productsToDisplay, setProductsToDisplay] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true); // New loading state
 
   useEffect(() => {
-    setProductsToDisplay(getTopSellingProducts());
+    setLoading(true);
+    getTopSellingProducts().then(products => {
+      setProductsToDisplay(products);
+      setLoading(false);
+    });
   }, []);
 
   const onSelect = useCallback((emblaApi: any) => {
@@ -65,8 +76,8 @@ const TopSellingProductsSection = () => {
     emblaApi.on("select", onSelect);
   }, [emblaApi, onSelect]);
 
-  if (productsToDisplay.length === 0) {
-    return null; // Don't render if no top-selling products
+  if (productsToDisplay.length === 0 && !loading) {
+    return null; // Don't render if no top-selling products and not loading
   }
 
   return (
@@ -84,10 +95,10 @@ const TopSellingProductsSection = () => {
             <TrendingUp className="h-6 w-6 text-primary" /> Top Selling Products
           </h2>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon" onClick={scrollPrev} disabled={!canScrollPrev}>
+            <Button variant="outline" size="icon" onClick={scrollPrev} disabled={!canScrollPrev || loading}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" onClick={scrollNext} disabled={!canScrollNext}>
+            <Button variant="outline" size="icon" onClick={scrollNext} disabled={!canScrollNext || loading}>
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
@@ -96,11 +107,17 @@ const TopSellingProductsSection = () => {
         {/* Product Carousel */}
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex gap-2 sm:gap-4">
-            {productsToDisplay.map((product) => (
-              <div key={product.id} className="flex-shrink-0 w-[calc(50%-4px)] sm:w-[280px]">
-                <ProductCard product={product} />
-              </div>
-            ))}
+            {loading
+              ? Array.from({ length: 4 }).map((_, i) => ( // Show 4 skeletons while loading
+                  <div key={i} className="flex-shrink-0 w-[calc(50%-4px)] sm:w-[280px]">
+                    <ProductCardSkeleton />
+                  </div>
+                ))
+              : productsToDisplay.map((product) => (
+                  <div key={product.id} className="flex-shrink-0 w-[calc(50%-4px)] sm:w-[280px]">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
           </div>
         </div>
       </motion.div>
