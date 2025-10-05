@@ -9,7 +9,10 @@ interface Product3DViewerProps {
   modelPath?: string;
 }
 
-const Product3DViewer = ({ productName = "Sample Product", modelPath = "/models/sample-product.glb" }: Product3DViewerProps) => {
+const Product3DViewer = ({ productName = "Sample Product", modelPath }: Product3DViewerProps) => {
+  // Temporarily hardcode to sample-product.glb for debugging
+  const debugModelPath = "/models/sample-product.glb"; 
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -18,7 +21,7 @@ const Product3DViewer = ({ productName = "Sample Product", modelPath = "/models/
       className="relative w-full h-72 lg:h-96 bg-muted border rounded-xl overflow-hidden"
     >
       <model-viewer
-        src={modelPath}
+        src={debugModelPath} // Using the hardcoded debug path
         alt={`3D view of ${productName}`}
         auto-rotate
         camera-controls
@@ -32,7 +35,7 @@ const Product3DViewer = ({ productName = "Sample Product", modelPath = "/models/
         }}
       ></model-viewer>
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-background/70 backdrop-blur-sm text-xs text-muted-foreground px-2 py-1 rounded-md">
-        Interactive 3D View of {productName}
+        Interactive 3D View of {productName} (Debug Mode)
       </div>
     </motion.div>
   );
