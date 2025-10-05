@@ -239,8 +239,8 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
           <motion.div
             key={index}
             className="flex items-start gap-3 p-4 rounded-lg bg-muted/30"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 20, x: -20 }}
+            animate={{ opacity: 1, y: 0, x: 0 }}
             transition={{ delay: index * 0.1, duration: 0.5, ease: "easeOut" as Easing }}
           >
             <feature.icon className="h-6 w-6 text-primary flex-shrink-0 mt-1" />

@@ -14,8 +14,8 @@ interface ProductTabsProps {
 }
 
 const tabContentVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as Easing } },
+  hidden: { opacity: 0, y: 20, x: -20 },
+  visible: { opacity: 1, y: 0, x: 0, transition: { duration: 0.5, ease: "easeOut" as Easing } },
 };
 
 const ProductTabs = ({ product }: ProductTabsProps) => {

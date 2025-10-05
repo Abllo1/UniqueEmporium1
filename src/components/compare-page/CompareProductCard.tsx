@@ -7,12 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Star, Heart, ShoppingCart, Scale, X, Cpu, MemoryStick, HardDrive, Monitor, BatteryCharging, Wifi, HardHat } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Product } from "@/components/products/ProductCard.tsx"; // Re-using the Product interface
 import { useFavorites } from "@/context/FavoritesContext.tsx"; // Import useFavorites
 import { useCart } from "@/context/CartContext.tsx"; // Import useCart
 import { useState } from "react"; // Import useState for loading state
 import { Loader2 } from "lucide-react"; // Import Loader2
 import { cn } from "@/lib/utils"; // Import cn utility
+import { Product } from "@/components/products/ProductCard.tsx"; // Re-using the Product interface
 
 interface CompareProductCardProps {
   product: Product;
@@ -21,8 +21,8 @@ interface CompareProductCardProps {
 }
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as Easing } },
+  hidden: { opacity: 0, y: 50, x: -50 },
+  visible: { opacity: 1, y: 0, x: 0, transition: { duration: 0.6, ease: "easeOut" as Easing } },
 };
 
 const CompareProductCard = ({ product, onRemove, disableEntryAnimation = false }: CompareProductCardProps) => {

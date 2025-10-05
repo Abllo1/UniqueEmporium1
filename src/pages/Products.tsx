@@ -46,8 +46,8 @@ const staggerContainer = {
 };
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as Easing } },
+  hidden: { opacity: 0, y: 50, x: -50 },
+  visible: { opacity: 1, y: 0, x: 0, transition: { duration: 0.6, ease: "easeOut" as Easing } },
 };
 
 const RECENTLY_VIEWED_KEY = "recentlyViewedProducts";
@@ -198,12 +198,12 @@ const Products = () => {
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent>
-              {categories.map((cat) => (
-                <SelectItem key={cat.value} value={cat.value}>
-                  {cat.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
+                {categories.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
           </Select>
 
           {/* Sort By Select */}
