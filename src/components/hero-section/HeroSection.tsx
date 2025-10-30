@@ -100,27 +100,23 @@ const HeroSection = () => {
       {/* Main Content Block */}
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-4 py-8 md:flex-row md:items-center md:justify-between lg:px-8">
         <div className="flex flex-col space-y-4 md:w-1/2">
-          <motion.div
-            className="rounded-lg border border-white/20 bg-white/10 p-3 backdrop-blur-sm shadow-lg"
+          <motion.h1
+            className="font-poppins text-2xl font-bold leading-tight text-white md:text-6xl lg:text-7xl"
             variants={fadeInUpVariants}
             initial="hidden"
             animate="visible"
           >
-            <h1 className="font-poppins text-2xl font-bold leading-tight text-white md:text-6xl lg:text-7xl">
-              {heroItem.headline}
-            </h1>
-          </motion.div>
-          <motion.div
-            className="rounded-lg border border-white/20 bg-white/10 p-3 backdrop-blur-sm shadow-lg"
+            {heroItem.headline}
+          </motion.h1>
+          <motion.p
+            className="text-base text-white/90 md:text-2xl"
             variants={fadeInUpVariants}
             initial="hidden"
             animate="visible"
             transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" as Easing }}
           >
-            <p className="text-base text-white/90 md:text-2xl">
-              {heroItem.subHeadline}
-            </p>
-          </motion.div>
+            {heroItem.subHeadline}
+          </motion.p>
 
           {/* Product Info Card - Now displays custom text */}
           <motion.div
