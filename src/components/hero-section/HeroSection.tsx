@@ -29,7 +29,7 @@ const heroItem: HeroItem = selectedProductForHero ? {
   image: selectedProductForHero.images[0],
   headline: "Unveil Your Uniqueness — Luxury Meets Everyday Comfort",
   subHeadline: "Nigeria’s futuristic fashion hub for SHEIN gowns, vintage shirts, kids’ jeans, and luxury thrift collections. Bold. Timeless. Truly you.",
-  productName: selectedProductForHero.name, // Fixed here
+  productName: selectedProductForHero.name,
   productDescription: selectedProductForHero.fullDescription.split('.')[0] + '.',
   price: selectedProductForHero.price,
   ctaText1: "Shop the Collection",
@@ -118,7 +118,7 @@ const HeroSection = () => {
             {heroItem.subHeadline}
           </motion.p>
 
-          {/* Product Info Card */}
+          {/* Product Info Card - Now displays custom text */}
           <motion.div
             className="mt-6 rounded-lg border border-white/20 bg-[oklch(0.15_0.02_240_/_0.2)] p-4 shadow-lg md:w-2/3 lg:w-full"
             variants={fadeInUpVariants}
@@ -126,14 +126,8 @@ const HeroSection = () => {
             animate="visible"
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" as Easing }}
           >
-            <h3 className="font-poppins text-base font-semibold text-white md:text-xl">
-              {heroItem.productName}
-            </h3>
-            <p className="text-sm text-white/80">
-              {heroItem.productDescription}
-            </p>
-            <p className="mt-2 font-bold text-xl text-accent md:text-2xl">
-              {formatCurrency(heroItem.price)}
+            <p className="font-poppins text-sm text-white/90 md:text-base">
+              Unveil Your Uniqueness — Luxury Meets Everyday Comfort Nigeria’s fashion hub for SHEIN gowns, vintage shirts, kids’ jeans, and luxury thrift collections.
             </p>
           </motion.div>
 
@@ -152,7 +146,6 @@ const HeroSection = () => {
             >
               <Link to={heroItem.ctaLink1}>{heroItem.ctaText1}</Link>
             </Button>
-            {/* Removed the "Explore Trending Styles" button */}
           </motion.div>
         </div>
 
