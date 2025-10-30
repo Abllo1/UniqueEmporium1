@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Menu, X, Search, Heart, ChevronDown, Shirt, Baby, Gem, ShoppingBag } from "lucide-react"; // Removed Scale icon
+import { Menu, X, Search, Heart, ChevronDown, Shirt, Baby, Gem, ShoppingBag } from "lucide-react";
 import Badge from "@/components/common/Badge.tsx";
 import CartIcon from "@/components/common/CartIcon.tsx";
 import SlideOutSearchBar from "./SlideOutSearchBar.tsx";
@@ -14,8 +14,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
 import { useCart } from "@/context/CartContext.tsx";
 import { useFavorites } from "@/context/FavoritesContext.tsx";
-// Removed useCompare import
-import UniqueEmporiumLogo3D from "@/components/logo/UniqueEmporiumLogo3D.tsx"; // Import new logo
+import UniqueEmporiumLogo3D from "@/components/logo/UniqueEmporiumLogo3D.tsx";
+import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx"; // Import the new logo component
 
 interface HeaderProps {
   isCartDrawerOpen: boolean;
@@ -37,7 +37,6 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
   const isMobile = useIsMobile();
   const { totalItems } = useCart();
   const { totalFavorites } = useFavorites();
-  // Removed totalCompareItems from useCompare
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
@@ -57,11 +56,8 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
       <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="mx-auto flex max-w-7xl items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2" onClick={handleLogoClick}>
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground font-bold text-sm">
-              UE
-            </div>
-            <span className="font-poppins font-bold text-xl text-foreground">Unique Emporium</span>
+          <Link to="/" className="flex items-center" onClick={handleLogoClick}>
+            <UniqueEmporiumLogo className="h-10" /> {/* Using the new logo component */}
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -133,8 +129,6 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
               <Badge count={totalFavorites} variant="destructive" />
             </Link>
 
-            {/* Removed Compare Button */}
-
             <CartIcon onOpenCartDrawer={() => setIsCartDrawerOpen(true)} />
 
             {/* Mobile Menu Button */}
@@ -158,7 +152,6 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         favoriteCount={totalFavorites}
-        // Removed compareCount prop
         itemCount={totalItems}
       />
 

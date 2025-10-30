@@ -4,18 +4,17 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Heart, Shirt, Baby, Gem, ShoppingBag, Info, Mail } from "lucide-react"; // Removed Scale icon
+import { Heart, Shirt, Baby, Gem, ShoppingBag, Info, Mail } from "lucide-react";
 import Badge from "@/components/common/Badge.tsx";
 import { motion, Easing } from "framer-motion";
 import { useCart } from "@/context/CartContext.tsx";
 import { useFavorites } from "@/context/FavoritesContext.tsx";
-// Removed useCompare import
+import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx"; // Import the new logo component
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   favoriteCount: number;
-  // Removed compareCount prop
   itemCount: number;
 }
 
@@ -31,7 +30,6 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
   const navigate = useNavigate();
   const { totalItems } = useCart();
   const { totalFavorites } = useFavorites();
-  // Removed totalCompareItems from useCompare
 
   const handleLinkClick = (path: string) => {
     onClose();
@@ -46,8 +44,8 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="left" className="w-[80vw] max-w-sm flex flex-col">
-        <SheetHeader>
-          <SheetTitle className="text-2xl font-bold text-primary">Unique Emporium</SheetTitle>
+        <SheetHeader className="flex items-center justify-center py-4"> {/* Center the logo */}
+          <UniqueEmporiumLogo className="h-12" /> {/* Using the new logo component */}
         </SheetHeader>
         <motion.nav
           className="flex flex-col space-y-4 py-4 overflow-y-auto"
@@ -84,7 +82,6 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
               <Heart className="mr-2 h-5 w-5" /> Favorites
               <Badge count={totalFavorites} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />
             </Button>
-            {/* Removed Compare Button */}
             <Button variant="ghost" className="justify-start text-base relative" onClick={() => handleLinkClick("/cart")}>
               <ShoppingBag className="mr-2 h-5 w-5" /> Cart
               <Badge count={totalItems} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />

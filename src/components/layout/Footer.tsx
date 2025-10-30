@@ -19,9 +19,10 @@ import {
   ArrowUp,
   Loader2,
   CheckCircle2,
-  Shirt, Baby, Gem, ShoppingBag, // Updated icons for fashion
+  Shirt, Baby, Gem, ShoppingBag,
   Info,
 } from "lucide-react";
+import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx"; // Import the new logo component
 
 const categories = [
   { name: "SHEIN Gowns", icon: Shirt, link: "/products?category=shein-gowns" },
@@ -102,11 +103,8 @@ const Footer = () => {
         >
           {/* Column 1: Company Info */}
           <motion.div variants={fadeInUp}>
-            <Link to="/" className="mb-4 flex items-center space-x-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary-foreground text-primary font-bold text-sm">
-                UE
-              </div>
-              <span className="font-poppins text-xl font-bold">Unique Emporium</span>
+            <Link to="/" className="mb-4 flex items-center">
+              <UniqueEmporiumLogo className="h-12" /> {/* Using the new logo component */}
             </Link>
             <p className="mb-4 text-sm text-primary-foreground/80">
               Your ultimate destination for luxury thrift, fashion bundles, and unique wears.
