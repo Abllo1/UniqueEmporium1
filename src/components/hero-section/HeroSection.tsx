@@ -63,11 +63,11 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
 
       {/* Main Content Block */}
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-4 py-8 md:flex-row md:items-center md:justify-between lg:px-8">
-        <div className="flex flex-col space-y-4 md:w-1/2">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-4 py-8 md:flex-col md:items-center md:justify-center lg:px-8">
+        <div className="flex flex-col space-y-4 w-full md:max-w-2xl lg:max-w-3xl mx-auto"> {/* Adjusted for centering */}
           {/* Product Info Card - Now displays custom text */}
           <motion.div
-            className="mt-6 rounded-lg border border-white/20 bg-[oklch(0.15_0.02_240_/_0.2)] p-4 shadow-lg md:w-2/3 lg:w-full text-center"
+            className="mt-6 rounded-lg border border-white/20 bg-[oklch(0.15_0.02_240_/_0.2)] p-4 shadow-lg w-full text-center"
             variants={fadeInUpVariants}
             initial="hidden"
             animate="visible"
@@ -83,7 +83,7 @@ const HeroSection = () => {
 
           {/* CTA Buttons */}
           <motion.div
-            className="mt-8 flex flex-col sm:flex-row gap-4"
+            className="mt-8 flex flex-col sm:flex-row gap-4 justify-center" // Added justify-center
             variants={ctaFloatVariants}
             initial="initial"
             animate="animate"
