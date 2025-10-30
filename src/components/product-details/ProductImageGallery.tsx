@@ -65,7 +65,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
       <div className="relative h-[300px] sm:h-[400px] md:h-[500px] bg-muted flex items-center justify-center">
         {images.length === 0 ? (
           <div className="flex h-full w-full items-center justify-center bg-muted">
-            <img src="/public/placeholder.svg" alt="No image available" className="h-24 w-24 object-contain" />
+            <img src="/public/unique-emporium-logo.png" alt="Unique Emporium Logo" className="h-24 w-24 object-contain opacity-20" />
           </div>
         ) : (
           <div
@@ -81,7 +81,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
                   )}
                   {imageStatus[image] === 'failed' ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-muted">
-                      <img src="/public/placeholder.svg" alt="Image not available" className="h-24 w-24 object-contain" />
+                      <img src="/public/unique-emporium-logo.png" alt="Unique Emporium Logo" className="h-24 w-24 object-contain opacity-20" />
                     </div>
                   ) : (
                     <img
@@ -152,7 +152,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
               )}
               {imageStatus[image] === 'failed' ? (
                 <div className="flex h-full w-full items-center justify-center bg-muted">
-                  <img src="/public/placeholder.svg" alt="Thumbnail not available" className="h-8 w-8 object-contain" />
+                  <img src="/public/unique-emporium-logo.png" alt="Unique Emporium Logo" className="h-8 w-8 object-contain opacity-20" />
                 </div>
               ) : (
                 <img
@@ -180,7 +180,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
             />
           ) : (
             <div className="flex h-[90vh] w-full items-center justify-center bg-muted">
-              <img src="/public/placeholder.svg" alt="Zoomed image not available" className="h-48 w-48 object-contain" />
+              <img src="/public/unique-emporium-logo.png" alt="Unique Emporium Logo" className="h-48 w-48 object-contain opacity-20" />
             </div>
           )}
         </DialogContent>
