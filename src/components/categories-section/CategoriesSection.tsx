@@ -100,7 +100,7 @@ const CategoriesSection = () => {
           className="text-sm text-muted-foreground mt-2 mb-8 md:mb-12"
           variants={fadeInUp}
         >
-          Find the perfect style to express your uniqueness
+          Choose Unique Emporium — where luxury meets everyday comfort.
         </motion.p>
 
         <motion.div
