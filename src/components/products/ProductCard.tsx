@@ -138,7 +138,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
         )}
 
         {/* Product Image Area */}
-        <div className="relative h-[170px] w-full overflow-hidden bg-gray-100">
+        <div className="relative h-[200px] w-full overflow-hidden bg-gray-100">
           <Link to={`/products/${product.id}`} className="absolute inset-0 z-0">
             <div className="embla h-full" ref={emblaRef}>
               <div className="embla__container flex h-full">
