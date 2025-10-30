@@ -60,7 +60,7 @@ const HeroSection = () => {
       />
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/40 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
 
       {/* Main Content Block */}
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-4 py-8 md:flex-row md:items-center md:justify-between lg:px-8">

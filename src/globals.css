@@ -13,8 +13,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 260 90% 36%; /* #6A0DAD */
-    --primary-foreground: 210 40% 98%; /* White */
+    --primary: 30 20% 95%; /* Light Cream */
+    --primary-foreground: 222.2 84% 4.9%; /* Dark text for contrast */
 
     --secondary: 260 70% 79%; /* #B88AFF */
     --secondary-foreground: 222.2 47.4% 11.2%; /* Dark text */
@@ -54,8 +54,8 @@
     --popover: 260 90% 8%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 260 90% 36%; /* #6A0DAD */
-    --primary-foreground: 210 40% 98%;
+    --primary: 30 20% 95%; /* Light Cream */
+    --primary-foreground: 222.2 84% 4.9%; /* Dark text for contrast */
 
     --secondary: 260 70% 79%; /* #B88AFF */
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -103,13 +103,13 @@
   display: none; /* Chrome, Safari, Opera */
 }
 
-/* Footer Wave Effect - Updated to use new primary color */
+/* Footer Wave Effect - Updated to use a subtle dark neutral */
 .footer-wave-effect {
   background: radial-gradient(
     ellipse at center,
-    oklch(0.85 0.05 260 / 0.4) 0%, /* Lighter purple */
-    oklch(0.75 0.08 260 / 0.3) 30%, /* Medium purple */
-    oklch(0.5 0.1 260 / 0.2) 60%, /* Darker purple */
+    oklch(0.15 0.02 240 / 0.4) 0%, /* Dark desaturated blue-gray */
+    oklch(0.1 0.01 240 / 0.3) 30%, /* Slightly darker */
+    oklch(0.05 0.005 240 / 0.2) 60%, /* Even darker */
     transparent 100%
   );
   background-size: 200% 100%;
