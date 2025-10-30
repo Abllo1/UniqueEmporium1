@@ -82,7 +82,7 @@ const CategoriesSection = () => {
   }, [isPaused, isMobile, scrollSpeed]);
 
   return (
-    <section className="pt-2 pb-16 bg-background">
+    <section className="pt-0 pb-16 bg-background">
       <motion.div
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
         variants={staggerContainer}
