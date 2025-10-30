@@ -97,7 +97,7 @@ const WhyChooseUsSection = () => {
           variants={fadeInUp}
         >
           <img
-            src="/my-banner.webp"
+            src="/backgrounds/my-banner.webp"
             alt="Unique Emporium Fashion Advantage"
             className="w-full h-full object-cover object-center"
           />

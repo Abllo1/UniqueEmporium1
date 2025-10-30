@@ -38,7 +38,7 @@ const heroItem: HeroItem = selectedProductForHero ? {
   ctaLink2: "/products?tag=trending",
 } : { // Fallback if no product is found
   id: "default-hero",
-  image: "/my-banner.webp", // Use a generic banner image
+  image: "/backgrounds/my-banner.webp", // Updated path
   headline: "Welcome to Unique Emporium",
   subHeadline: "Your destination for luxury thrift and fashion bundles.",
   productName: "Featured Fashion",
