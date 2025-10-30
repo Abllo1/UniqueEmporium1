@@ -28,7 +28,7 @@ const heroItem: HeroItem = selectedProductForHero ? {
   id: selectedProductForHero.id,
   image: selectedProductForHero.images[0],
   headline: "Unveil Your Uniqueness — Luxury Meets Everyday Comfort",
-  subHeadline: "Nigeria’s futuristic fashion hub for SHEIN gowns, vintage shirts, kids’ jeans, and luxury thrift collections. Bold. Timeless. Truly you.",
+  subHeadline: "Nigeria’s fashion hub for SHEIN gowns, vintage shirts, kids’ jeans, and luxury thrift collections.",
   productName: selectedProductForHero.name,
   productDescription: selectedProductForHero.fullDescription.split('.')[0] + '.',
   price: selectedProductForHero.price,
@@ -118,18 +118,7 @@ const HeroSection = () => {
             {heroItem.subHeadline}
           </motion.p>
 
-          {/* Product Info Card - Now displays custom text */}
-          <motion.div
-            className="mt-6 rounded-lg border border-white/20 bg-[oklch(0.15_0.02_240_/_0.2)] p-4 shadow-lg md:w-2/3 lg:w-full"
-            variants={fadeInUpVariants}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" as Easing }}
-          >
-            <p className="font-poppins text-sm text-white/90 md:text-base">
-              Unveil Your Uniqueness — Luxury Meets Everyday Comfort Nigeria’s fashion hub for SHEIN gowns, vintage shirts, kids’ jeans, and luxury thrift collections.
-            </p>
-          </motion.div>
+          {/* Removed the glassmorphic product info card */}
 
           {/* CTA Buttons */}
           <motion.div
