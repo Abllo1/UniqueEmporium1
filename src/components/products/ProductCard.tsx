@@ -122,7 +122,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
       initial={disableEntryAnimation ? null : "hidden"}
       whileInView={disableEntryAnimation ? null : "visible"}
       viewport={{ once: true, amount: 0.2 }}
-      className="relative h-[420px] flex flex-col cursor-pointer"
+      className="relative h-[370px] flex flex-col cursor-pointer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={handleCardClick}
@@ -138,7 +138,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
         )}
 
         {/* Product Image Area */}
-        <div className="relative h-[200px] w-full overflow-hidden bg-gray-100">
+        <div className="relative h-[170px] w-full overflow-hidden bg-gray-100">
           <Link to={`/products/${product.id}`} className="absolute inset-0 z-0">
             <div className="embla h-full" ref={emblaRef}>
               <div className="embla__container flex h-full">
