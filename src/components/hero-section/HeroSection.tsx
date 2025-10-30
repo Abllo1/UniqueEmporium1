@@ -126,9 +126,12 @@ const HeroSection = () => {
             animate="visible"
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" as Easing }}
           >
-            <p className="font-poppins text-sm text-white/90 md:text-base">
-              Unveil Your Uniqueness — Luxury Meets Everyday Comfort Nigeria’s fashion hub for SHEIN gowns, vintage shirts, kids’ jeans, and luxury thrift collections.
-            </p>
+            <h1 className="font-poppins text-lg font-bold text-white/90 md:text-xl">
+              {heroItem.headline}
+            </h1>
+            <h2 className="font-poppins text-sm text-white/80 md:text-base mt-2">
+              {heroItem.subHeadline}
+            </h2>
           </motion.div>
 
           {/* CTA Buttons */}
