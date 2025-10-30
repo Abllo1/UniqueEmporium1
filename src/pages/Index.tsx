@@ -3,7 +3,6 @@
 import HeroSection from "@/components/hero-section/HeroSection.tsx";
 import HeroIntroBanner from "@/components/hero-intro-banner/HeroIntroBanner.tsx";
 import CategoriesSection from "@/components/categories-section/CategoriesSection.tsx";
-import CategoryCardsSection from "@/components/category-cards/CategoryCardsSection.tsx"; // New import
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
 import WhyChooseUsSection from "@/components/why-choose-us/WhyChooseUsSection.tsx";
 import CustomerReviewsSection from "@/components/customer-reviews/CustomerReviewsSection.tsx";
@@ -76,7 +75,6 @@ const Index = () => {
       <HeroSection />
       <HeroIntroBanner />
       <CategoriesSection />
-      <CategoryCardsSection /> {/* New component added here */}
 
       {/* Featured Products Section */}
       <section id="featured-products-section" ref={featuredProductsRef} className="py-16 bg-muted/30">
