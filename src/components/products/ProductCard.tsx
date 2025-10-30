@@ -44,14 +44,13 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
-  const specsScrollRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const { addToCart } = useCart();
   const { addFavorite, removeFavorite, isFavorited } = useFavorites();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const navigate = useNavigate();
 
-  const [imageLoadingStates, setImageLoadingStates] = useState<Record<string, boolean>>({});
+  const [imageStatus, setImageStatus] = useState<Record<number, 'loading' | 'loaded' | 'failed'>>({});
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -72,19 +71,19 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
   }, [emblaApi, onSelect]);
 
   useEffect(() => {
-    const initialLoadingStates: Record<string, boolean> = {};
-    product.images.forEach(image => {
-      initialLoadingStates[image] = true;
+    const initialStatus: Record<number, 'loading' | 'loaded' | 'failed'> = {};
+    product.images.forEach((_, index) => {
+      initialStatus[index] = 'loading';
     });
-    setImageLoadingStates(initialLoadingStates);
+    setImageStatus(initialStatus);
   }, [product.images]);
 
-  const handleImageLoad = useCallback((imageUrl: string) => {
-    setImageLoadingStates(prev => ({ ...prev, [imageUrl]: false }));
+  const handleImageLoad = useCallback((index: number) => {
+    setImageStatus(prev => ({ ...prev, [index]: 'loaded' }));
   }, []);
 
-  const handleImageError = useCallback((imageUrl: string) => {
-    setImageLoadingStates(prev => ({ ...prev, [imageUrl]: false }));
+  const handleImageError = useCallback((index: number) => {
+    setImageStatus(prev => ({ ...prev, [index]: 'failed' }));
   }, []);
 
   const discount = product.originalPrice && product.price < product.originalPrice
@@ -140,25 +139,37 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
         {/* Product Image Area */}
         <div className="relative h-[250px] w-full overflow-hidden bg-gray-100">
           <Link to={`/products/${product.id}`} className="absolute inset-0 z-0">
-            <div className="embla h-full" ref={emblaRef}>
-              <div className="embla__container flex h-full">
-                {product.images.map((image, index) => (
-                  <div className="embla__slide relative flex-none w-full h-full" key={index}>
-                    {imageLoadingStates[image] && (
-                      <Skeleton className="absolute inset-0 h-full w-full" />
-                    )}
-                    <img
-                      src={image}
-                      alt={`${product.name} - Image ${index + 1}`}
-                      className="w-full h-full object-contain transition-opacity duration-300"
-                      style={{ opacity: imageLoadingStates[image] ? 0 : 1 }}
-                      onLoad={() => handleImageLoad(image)}
-                      onError={() => handleImageError(image)}
-                    />
-                  </div>
-                ))}
+            {product.images.length === 0 ? (
+              <div className="flex h-full w-full items-center justify-center bg-muted">
+                <img src="/public/placeholder.svg" alt="No image available" className="h-24 w-24 object-contain" />
               </div>
-            </div>
+            ) : (
+              <div className="embla h-full" ref={emblaRef}>
+                <div className="embla__container flex h-full">
+                  {product.images.map((image, index) => (
+                    <div className="embla__slide relative flex-none w-full h-full" key={index}>
+                      {imageStatus[index] === 'loading' && (
+                        <Skeleton className="absolute inset-0 h-full w-full" />
+                      )}
+                      {imageStatus[index] === 'failed' ? (
+                        <div className="absolute inset-0 flex items-center justify-center bg-muted">
+                          <img src="/public/placeholder.svg" alt="Image not available" className="h-24 w-24 object-contain" />
+                        </div>
+                      ) : (
+                        <img
+                          src={image}
+                          alt={`${product.name} - Image ${index + 1}`}
+                          className="w-full h-full object-contain transition-opacity duration-300"
+                          style={{ opacity: imageStatus[index] === 'loaded' ? 1 : 0 }}
+                          onLoad={() => handleImageLoad(index)}
+                          onError={() => handleImageError(index)}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </Link>
 
           {/* Rating Overlay (positioned above the Link) */}
@@ -238,7 +249,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
           </AnimatePresence>
 
           {/* Mobile "Add to Cart" Button */}
-          <div className="md:hidden absolute bottom-2 right-2 z-10"> {/* Changed left-2 to right-2 */}
+          <div className="md:hidden absolute bottom-2 right-2 z-10">
             <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8" onClick={handleAddToCart} disabled={isAddingToCart}>
               {isAddingToCart ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

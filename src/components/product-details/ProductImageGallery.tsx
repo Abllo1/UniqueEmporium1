@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, Easing } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Dialog, DialogContent } from "@/components/ui/dialog"; // Import Dialog components
+import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -18,6 +19,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false); // State to control the zoom dialog
+  const [imageStatus, setImageStatus] = useState<Record<string, 'loading' | 'loaded' | 'failed'>>({});
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -37,6 +39,22 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
     };
   }, [emblaApi, onSelect]);
 
+  useEffect(() => {
+    const initialStatus: Record<string, 'loading' | 'loaded' | 'failed'> = {};
+    images.forEach(image => {
+      initialStatus[image] = 'loading';
+    });
+    setImageStatus(initialStatus);
+  }, [images]);
+
+  const handleImageLoad = useCallback((imageUrl: string) => {
+    setImageStatus(prev => ({ ...prev, [imageUrl]: 'loaded' }));
+  }, []);
+
+  const handleImageError = useCallback((imageUrl: string) => {
+    setImageStatus(prev => ({ ...prev, [imageUrl]: 'failed' }));
+  }, []);
+
   const handleImageClick = () => {
     setIsZoomed(true); // Open the dialog for zoom
   };
@@ -45,27 +63,45 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
     <div className="relative w-full rounded-xl overflow-hidden shadow-lg bg-muted">
       {/* Main Image Area */}
       <div className="relative h-[300px] sm:h-[400px] md:h-[500px] bg-muted flex items-center justify-center">
-        <div
-          className="embla h-full w-full relative cursor-pointer group"
-          ref={emblaRef} // emblaRef applied here
-          onClick={handleImageClick} // This will now open the dialog
-        >
-          <div className="embla__container flex h-full">
-            {images.map((image, index) => (
-              <div className="embla__slide relative flex-none w-full h-full" key={index}>
-                <img
-                  src={image}
-                  alt={`Product image ${index + 1} of ${productName}`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
+        {images.length === 0 ? (
+          <div className="flex h-full w-full items-center justify-center bg-muted">
+            <img src="/public/placeholder.svg" alt="No image available" className="h-24 w-24 object-contain" />
           </div>
-          {/* Zoom Indicator */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/20">
-            <ZoomIn className="h-10 w-10 text-white" />
+        ) : (
+          <div
+            className="embla h-full w-full relative cursor-pointer group"
+            ref={emblaRef}
+            onClick={handleImageClick}
+          >
+            <div className="embla__container flex h-full">
+              {images.map((image, index) => (
+                <div className="embla__slide relative flex-none w-full h-full" key={index}>
+                  {imageStatus[image] === 'loading' && (
+                    <Skeleton className="absolute inset-0 h-full w-full" />
+                  )}
+                  {imageStatus[image] === 'failed' ? (
+                    <div className="absolute inset-0 flex items-center justify-center bg-muted">
+                      <img src="/public/placeholder.svg" alt="Image not available" className="h-24 w-24 object-contain" />
+                    </div>
+                  ) : (
+                    <img
+                      src={image}
+                      alt={`Product image ${index + 1} of ${productName}`}
+                      className="w-full h-full object-cover"
+                      style={{ opacity: imageStatus[image] === 'loaded' ? 1 : 0 }}
+                      onLoad={() => handleImageLoad(image)}
+                      onError={() => handleImageError(image)}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+            {/* Zoom Indicator */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/20">
+              <ZoomIn className="h-10 w-10 text-white" />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Navigation Arrows */}
         {images.length > 1 && (
@@ -111,11 +147,23 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <img
-                src={image}
-                alt={`Thumbnail ${index + 1} of ${productName}`}
-                className="w-full h-full object-contain"
-              />
+              {imageStatus[image] === 'loading' && (
+                <Skeleton className="h-full w-full" />
+              )}
+              {imageStatus[image] === 'failed' ? (
+                <div className="flex h-full w-full items-center justify-center bg-muted">
+                  <img src="/public/placeholder.svg" alt="Thumbnail not available" className="h-8 w-8 object-contain" />
+                </div>
+              ) : (
+                <img
+                  src={image}
+                  alt={`Thumbnail ${index + 1} of ${productName}`}
+                  className="w-full h-full object-contain"
+                  style={{ opacity: imageStatus[image] === 'loaded' ? 1 : 0 }}
+                  onLoad={() => handleImageLoad(image)}
+                  onError={() => handleImageError(image)}
+                />
+              )}
             </motion.button>
           ))}
         </div>
@@ -124,11 +172,17 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
       {/* Zoom Dialog */}
       <Dialog open={isZoomed} onOpenChange={setIsZoomed}>
         <DialogContent className="max-w-4xl p-0 border-none bg-transparent">
-          <img
-            src={images[selectedIndex]}
-            alt={`Zoomed view of ${productName}`}
-            className="w-full h-full object-contain max-h-[90vh]"
-          />
+          {images.length > 0 && imageStatus[images[selectedIndex]] !== 'failed' ? (
+            <img
+              src={images[selectedIndex]}
+              alt={`Zoomed view of ${productName}`}
+              className="w-full h-full object-contain max-h-[90vh]"
+            />
+          ) : (
+            <div className="flex h-[90vh] w-full items-center justify-center bg-muted">
+              <img src="/public/placeholder.svg" alt="Zoomed image not available" className="h-48 w-48 object-contain" />
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
