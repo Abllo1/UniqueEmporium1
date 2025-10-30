@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Menu, X, Search, Heart, Scale, ChevronDown, Shirt, Baby, Gem, ShoppingBag } from "lucide-react"; // Updated icons for fashion
+import { Menu, X, Search, Heart, ChevronDown, Shirt, Baby, Gem, ShoppingBag } from "lucide-react"; // Removed Scale icon
 import Badge from "@/components/common/Badge.tsx";
 import CartIcon from "@/components/common/CartIcon.tsx";
 import SlideOutSearchBar from "./SlideOutSearchBar.tsx";
@@ -14,7 +14,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
 import { useCart } from "@/context/CartContext.tsx";
 import { useFavorites } from "@/context/FavoritesContext.tsx";
-import { useCompare } from "@/context/CompareContext.tsx";
+// Removed useCompare import
 import UniqueEmporiumLogo3D from "@/components/logo/UniqueEmporiumLogo3D.tsx"; // Import new logo
 
 interface HeaderProps {
@@ -37,7 +37,7 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
   const isMobile = useIsMobile();
   const { totalItems } = useCart();
   const { totalFavorites } = useFavorites();
-  const { totalCompareItems } = useCompare();
+  // Removed totalCompareItems from useCompare
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
@@ -133,12 +133,7 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
               <Badge count={totalFavorites} variant="destructive" />
             </Link>
 
-            <Link to="/compare" className="relative">
-              <Button variant="ghost" size="icon">
-                <Scale className="h-5 w-5" />
-              </Button>
-              <Badge count={totalCompareItems} variant="secondary" />
-            </Link>
+            {/* Removed Compare Button */}
 
             <CartIcon onOpenCartDrawer={() => setIsCartDrawerOpen(true)} />
 
@@ -163,7 +158,7 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         favoriteCount={totalFavorites}
-        compareCount={totalCompareItems}
+        // Removed compareCount prop
         itemCount={totalItems}
       />
 

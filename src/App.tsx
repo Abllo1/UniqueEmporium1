@@ -8,8 +8,6 @@ import Header from "./components/layout/Header.tsx";
 import Footer from "./components/layout/Footer.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
 import { FavoritesProvider } from "./context/FavoritesContext.tsx";
-import { CompareProvider } from "./context/CompareContext.tsx";
-import CompareBar from "./components/common/CompareBar.tsx";
 import ScrollToTop from "./components/common/ScrollToTop.tsx";
 import LoadingPage from "./components/common/LoadingPage.tsx"; // Import the new LoadingPage
 
@@ -17,7 +15,6 @@ import LoadingPage from "./components/common/LoadingPage.tsx"; // Import the new
 const Index = lazy(() => import("./pages/Index.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 const Favorites = lazy(() => import("./pages/Favorites.tsx"));
-const Compare = lazy(() => import("./pages/Compare.tsx"));
 const Cart = lazy(() => import("./pages/Cart.tsx"));
 const Products = lazy(() => import("./pages/Products.tsx"));
 const About = lazy(() => import("./pages/About.tsx"));
@@ -45,7 +42,6 @@ const App = () => {
           <ScrollToTop />
           <CartProvider onOpenCartDrawer={() => setIsCartDrawerOpen(true)}>
             <FavoritesProvider>
-              <CompareProvider>
                 <Header
                   isCartDrawerOpen={isCartDrawerOpen}
                   setIsCartDrawerOpen={setIsCartDrawerOpen}
@@ -54,7 +50,6 @@ const App = () => {
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/favorites" element={<Favorites />} />
-                    <Route path="/compare" element={<Compare />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/products" element={<Products />} />
                     <Route path="/products/:productId" element={<ProductDetails />} />
@@ -72,8 +67,6 @@ const App = () => {
                   </Routes>
                 </Suspense>
                 <Footer />
-                <CompareBar />
-              </CompareProvider>
             </FavoritesProvider>
           </CartProvider>
         </BrowserRouter>

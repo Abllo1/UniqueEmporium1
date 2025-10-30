@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Shirt, Baby, Gem, ShoppingBag, SlidersHorizontal } from "lucide-react"; // Updated icons for fashion
+import { Search, Shirt, Baby, Gem, ShoppingBag, SlidersHorizontal } from "lucide-react"; // Removed Scale icon
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
 import { motion, AnimatePresence, Easing } from "framer-motion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";

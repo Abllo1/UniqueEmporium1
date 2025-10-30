@@ -4,18 +4,18 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Heart, Scale, Shirt, Baby, Gem, ShoppingBag, Info, Mail } from "lucide-react"; // Updated icons for fashion
+import { Heart, Shirt, Baby, Gem, ShoppingBag, Info, Mail } from "lucide-react"; // Removed Scale icon
 import Badge from "@/components/common/Badge.tsx";
 import { motion, Easing } from "framer-motion";
 import { useCart } from "@/context/CartContext.tsx";
 import { useFavorites } from "@/context/FavoritesContext.tsx";
-import { useCompare } from "@/context/CompareContext.tsx";
+// Removed useCompare import
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   favoriteCount: number;
-  compareCount: number;
+  // Removed compareCount prop
   itemCount: number;
 }
 
@@ -27,11 +27,11 @@ const categories = [
   { name: "Fashion Bundles", icon: ShoppingBag, link: "/products?category=fashion-bundles" },
 ];
 
-const MobileMenu = ({ isOpen, onClose, favoriteCount, compareCount, itemCount }: MobileMenuProps) => {
+const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuProps) => {
   const navigate = useNavigate();
   const { totalItems } = useCart();
   const { totalFavorites } = useFavorites();
-  const { totalCompareItems } = useCompare();
+  // Removed totalCompareItems from useCompare
 
   const handleLinkClick = (path: string) => {
     onClose();
@@ -84,10 +84,7 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, compareCount, itemCount }:
               <Heart className="mr-2 h-5 w-5" /> Favorites
               <Badge count={totalFavorites} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />
             </Button>
-            <Button variant="ghost" className="justify-start text-base relative" onClick={() => handleLinkClick("/compare")}>
-              <Scale className="mr-2 h-5 w-5" /> Compare
-              <Badge count={totalCompareItems} variant="secondary" className="absolute right-4 top-1/2 -translate-y-1/2" />
-            </Button>
+            {/* Removed Compare Button */}
             <Button variant="ghost" className="justify-start text-base relative" onClick={() => handleLinkClick("/cart")}>
               <ShoppingBag className="mr-2 h-5 w-5" /> Cart
               <Badge count={totalItems} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />

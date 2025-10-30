@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence, Easing, RepeatType } from "framer-motion";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, Heart, ShoppingCart, ChevronLeft, ChevronRight, Scale, Shirt, Baby, Gem, Ruler, Palette, Tag, Loader2 } from "lucide-react"; // Updated icons
+import { Star, Heart, ShoppingCart, ChevronLeft, ChevronRight, Shirt, Baby, Gem, Ruler, Palette, Tag, Loader2 } from "lucide-react"; // Removed Scale icon
 import useEmblaCarousel from "embla-carousel-react";
 import FloatingTag from "@/components/common/FloatingTag.tsx";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCart } from "@/context/CartContext.tsx";
 import { useFavorites } from "@/context/FavoritesContext.tsx";
-import { useCompare } from "@/context/CompareContext.tsx";
+// Removed useCompare import
 import { Skeleton } from "@/components/ui/skeleton";
 
 export interface Product {
@@ -50,7 +50,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
   const isMobile = useIsMobile();
   const { addToCart } = useCart();
   const { addFavorite, removeFavorite, isFavorited } = useFavorites();
-  const { addToCompare, removeFromCompare, isInComparison } = useCompare();
+  // Removed addToCompare, removeFromCompare, isInComparison from useCompare
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const navigate = useNavigate();
 
@@ -155,14 +155,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
     }
   };
 
-  const handleToggleCompare = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (isInComparison(product.id)) {
-      removeFromCompare(product.id);
-    } else {
-      addToCompare(product);
-    }
-  };
+  // Removed handleToggleCompare
 
   const handleCardClick = () => {
     if (!isMobile) {
@@ -171,7 +164,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
   };
 
   const favorited = isFavorited(product.id);
-  const inComparison = isInComparison(product.id);
+  // Removed inComparison
 
   return (
     <motion.div
@@ -272,7 +265,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
             </div>
           )}
 
-          {/* Desktop Hover Overlay with Action Buttons - Now siblings to the Link, positioned over it */}
+          {/* Desktop Hover Overlay with Action Buttons - Removed Compare Button */}
           <AnimatePresence>
             {hovered && (
               <motion.div
@@ -282,9 +275,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
                 transition={{ duration: 0.2 }}
                 className="absolute inset-0 hidden md:flex items-center justify-center space-x-4 bg-black/60 z-20"
               >
-                <Button variant="secondary" size="icon" className="text-sm font-medium" onClick={handleToggleCompare}>
-                  <Scale className={cn("h-4 w-4", inComparison && "fill-primary text-primary")} />
-                </Button>
+                {/* Removed Compare Button */}
                 <Button className="text-sm font-medium" onClick={handleAddToCart} disabled={isAddingToCart}>
                   {isAddingToCart ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -297,7 +288,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
             )}
           </AnimatePresence>
 
-          {/* Mobile "Add to Cart" and "Compare" Buttons - Now siblings to the Link, positioned over it */}
+          {/* Mobile "Add to Cart" and "Compare" Buttons - Removed Compare Button */}
           <div className="md:hidden absolute bottom-2 left-2 z-10">
             <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8" onClick={handleAddToCart} disabled={isAddingToCart}>
               {isAddingToCart ? (
@@ -307,11 +298,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
               )}
             </Button>
           </div>
-          <div className="md:hidden absolute bottom-2 right-2 z-10">
-            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8" onClick={handleToggleCompare}>
-              <Scale className={cn("h-4 w-4", inComparison && "fill-primary text-primary")} />
-            </Button>
-          </div>
+          {/* Removed Mobile Compare Button */}
         </div>
 
         <CardContent className="p-4 flex flex-col flex-grow text-left">
