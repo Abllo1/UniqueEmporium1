@@ -29,7 +29,7 @@ export interface Product {
   tag?: string;
   tagVariant?: "default" | "secondary" | "destructive" | "outline";
   limitedStock?: boolean;
-  specs?: { icon: React.ElementType; label: string; value: string }[];
+  // Removed specs from Product interface
 }
 
 interface ProductCardProps {
@@ -46,7 +46,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
-  const specsScrollRef = useRef<HTMLDivElement>(null);
+  const specsScrollRef = useRef<HTMLDivElement>(null); // This ref is no longer needed for specs, but kept for now
   const isMobile = useIsMobile();
   const { addToCart } = useCart();
   const { addFavorite, removeFavorite, isFavorited } = useFavorites();
@@ -90,49 +90,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
     setImageLoadingStates(prev => ({ ...prev, [imageUrl]: false }));
   }, []);
 
-  useEffect(() => {
-    let animationFrameId: number;
-    let lastTimestamp: DOMHighResTimeStamp;
-    const scrollSpeed = 0.5;
-
-    const scroll = (timestamp: DOMHighResTimeStamp) => {
-      if (!specsScrollRef.current || !hovered || isMobile) {
-        cancelAnimationFrame(animationFrameId);
-        return;
-      }
-
-      if (!lastTimestamp) lastTimestamp = timestamp;
-      const elapsed = timestamp - lastTimestamp;
-
-      if (elapsed > 16) {
-        const currentScrollLeft = specsScrollRef.current.scrollLeft;
-        const maxScrollLeft = specsScrollRef.current.scrollWidth - specsScrollRef.current.clientWidth;
-
-        if (maxScrollLeft <= 0 || currentScrollLeft >= maxScrollLeft) {
-          cancelAnimationFrame(animationFrameId);
-          return;
-        }
-
-        specsScrollRef.current.scrollLeft += scrollSpeed;
-        lastTimestamp = timestamp;
-      }
-      animationFrameId = requestAnimationFrame(scroll);
-    };
-
-    if (hovered && !isMobile) {
-      if (specsScrollRef.current) {
-        specsScrollRef.current.scrollLeft = 0;
-      }
-      animationFrameId = requestAnimationFrame(scroll);
-    } else if (specsScrollRef.current) {
-      cancelAnimationFrame(animationFrameId);
-      specsScrollRef.current.scrollLeft = 0;
-    }
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [hovered, isMobile, product.specs]);
+  // Removed useEffect for specs scrolling as specs are removed
 
   const discount = product.originalPrice && product.price < product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -388,27 +346,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
           </div>
         </CardContent>
 
-        {/* Horizontal Scrolling Specifications Section */}
-        {product.specs && product.specs.length > 0 && (
-          <div
-            ref={specsScrollRef}
-            className="flex overflow-x-auto no-scrollbar rounded-b-2xl border-t border-border bg-muted/50 py-3 px-2 flex-shrink-0 space-x-2"
-          >
-            {product.specs.map((spec, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 min-w-[100px] border rounded-md bg-background py-1 px-2 flex items-center
-                           transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
-              >
-                {spec.icon && React.createElement(spec.icon, { className: "w-4 h-4 text-primary mr-1" })}
-                <div>
-                  <p className="text-xs text-muted-foreground leading-none">{spec.label}</p>
-                  <p className="text-xs font-medium text-foreground leading-none">{spec.value}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* Horizontal Scrolling Specifications Section - REMOVED */}
       </Card>
     </motion.div>
   );

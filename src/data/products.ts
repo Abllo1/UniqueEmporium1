@@ -68,12 +68,6 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
-    specs: [
-      { icon: Shirt, label: "Material", value: "Polyester" },
-      { icon: Ruler, label: "Fit", value: "Regular" },
-      { icon: Palette, label: "Color", value: "Floral" },
-      { icon: Tag, label: "Brand", value: "SHEIN" },
-    ],
     reviews: [
       { id: "rev1", author: "Aisha O.", rating: 5, date: "2024-07-20", title: "Absolutely beautiful!", comment: "The gown is even prettier in person. So comfortable and perfect for Nigerian weather.", isVerifiedBuyer: true },
       { id: "rev2", author: "Funke A.", rating: 4, date: "2024-07-15", title: "Great value", comment: "Love the print and the fit. A bit long for me, but easily altered.", isVerifiedBuyer: true },
@@ -124,12 +118,6 @@ export const mockProducts: ProductDetails[] = [
           { label: "Neckline", value: "Crew Neck" },
         ],
       },
-    ],
-    specs: [
-      { icon: Shirt, label: "Material", value: "Cotton" },
-      { icon: Ruler, label: "Fit", value: "Relaxed" },
-      { icon: Tag, label: "Era", value: "90s Vintage" },
-      { icon: Gem, label: "Condition", value: "Excellent" },
     ],
     reviews: [
       { id: "rev3", author: "Chinedu E.", rating: 5, date: "2024-07-18", title: "Love my new vintage tee!", comment: "The graphic is amazing, and it feels so soft. Exactly as described.", isVerifiedBuyer: true },
@@ -182,12 +170,6 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
-    specs: [
-      { icon: Baby, label: "Material", value: "Cotton Blend" },
-      { icon: Ruler, label: "Fit", value: "Slim" },
-      { icon: Palette, label: "Color", value: "Blue Denim" },
-      { icon: Tag, label: "Style", value: "Distressed" },
-    ],
     reviews: [
       { id: "rev5", author: "Blessing N.", rating: 5, date: "2024-07-22", title: "My son loves them!", comment: "Great quality and super stylish. They fit perfectly and he can move around easily.", isVerifiedBuyer: true },
       { id: "rev6", author: "Tunde O.", rating: 4, date: "2024-07-19", title: "Good, but a bit pricey", comment: "Nice jeans, but I wish they were a bit more affordable. Still, happy with the purchase.", isVerifiedBuyer: false },
@@ -239,12 +221,6 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
-    specs: [
-      { icon: ShoppingBag, label: "Items", value: "3-Piece" },
-      { icon: Ruler, label: "Sizes", value: "S-XL" },
-      { icon: Palette, label: "Style", value: "Casual Chic" },
-      { icon: Tag, label: "Value", value: "Bundle Deal" },
-    ],
     reviews: [
       { id: "rev7", author: "Amaka J.", rating: 5, date: "2024-07-25", title: "Love this bundle!", comment: "All the pieces are beautiful and fit well. Such a great deal for the price.", isVerifiedBuyer: true },
       { id: "rev8", author: "Chioma K.", rating: 4, date: "2024-07-20", title: "Good quality", comment: "Happy with the purchase, though the necklace was a bit different than expected.", isVerifiedBuyer: true },
@@ -294,12 +270,6 @@ export const mockProducts: ProductDetails[] = [
           { label: "Shape", value: "Square" },
         ],
       },
-    ],
-    specs: [
-      { icon: Gem, label: "Material", value: "100% Silk" },
-      { icon: Tag, label: "Brand", value: "Designer" },
-      { icon: Ruler, label: "Size", value: "90x90cm" },
-      { icon: ShieldCheck, label: "Condition", value: "Excellent" },
     ],
     reviews: [
       { id: "rev9", author: "Fatima G.", rating: 5, date: "2024-07-28", title: "Stunning quality!", comment: "The scarf is absolutely gorgeous and feels so luxurious. Looks brand new!", isVerifiedBuyer: true },
@@ -353,12 +323,6 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
-    specs: [
-      { icon: Shirt, label: "Material", value: "Poly/Spandex" },
-      { icon: Ruler, label: "Fit", value: "Slim" },
-      { icon: Palette, label: "Color", value: "Assorted" },
-      { icon: Tag, label: "Brand", value: "SHEIN" },
-    ],
     reviews: [
       { id: "rev11", author: "Adaobi C.", rating: 4, date: "2024-07-10", title: "Cute and comfy!", comment: "Love this dress, it's perfect for summer. The ruffles are a nice touch.", isVerifiedBuyer: true },
       { id: "rev12", author: "Gloria M.", rating: 5, date: "2024-07-05", title: "My new favorite!", comment: "Fits perfectly and the fabric is soft. Received many compliments!", isVerifiedBuyer: true },
@@ -409,12 +373,6 @@ export const mockProducts: ProductDetails[] = [
           { label: "Closure", value: "Button-Front" },
         ],
       },
-    ],
-    specs: [
-      { icon: Shirt, label: "Material", value: "Denim" },
-      { icon: Ruler, label: "Fit", value: "Regular" },
-      { icon: Palette, label: "Color", value: "Blue" },
-      { icon: Gem, label: "Condition", value: "Excellent" },
     ],
     reviews: [
       { id: "rev13", author: "David O.", rating: 5, date: "2024-07-29", title: "Perfect vintage jacket!", comment: "The wash is exactly what I wanted, and it fits great. So happy with this purchase.", isVerifiedBuyer: true },
@@ -467,12 +425,6 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
-    specs: [
-      { icon: Baby, label: "Material", value: "Cotton Blend" },
-      { icon: Ruler, label: "Fit", value: "Regular" },
-      { icon: Palette, label: "Color", value: "Assorted" },
-      { icon: Tag, label: "Style", value: "Graphic" },
-    ],
     reviews: [
       { id: "rev15", author: "Nkechi P.", rating: 5, date: "2024-07-27", title: "My daughter loves it!", comment: "The print is so cute, and it's very soft. She wears it all the time.", isVerifiedBuyer: true },
       { id: "rev16", author: "Segun R.", rating: 4, date: "2024-07-23", title: "Good hoodie", comment: "Warm and comfortable. The sizing was accurate.", isVerifiedBuyer: true },
@@ -524,12 +476,6 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
-    specs: [
-      { icon: ShoppingBag, label: "Items", value: "3-Piece" },
-      { icon: Ruler, label: "Sizes", value: "M-XXL" },
-      { icon: Palette, label: "Style", value: "Streetwear" },
-      { icon: Tag, label: "Value", value: "Bundle Deal" },
-    ],
     reviews: [
       { id: "rev17", author: "Kunle S.", rating: 5, date: "2024-07-30", title: "Fresh look!", comment: "This bundle is fire! Everything fits well and looks great together. Highly recommend.", isVerifiedBuyer: true },
       { id: "rev18", author: "Emeka T.", rating: 4, date: "2024-07-26", title: "Good quality for the price", comment: "The materials are good, and the style is on point. Happy with my purchase.", isVerifiedBuyer: true },
@@ -580,12 +526,6 @@ export const mockProducts: ProductDetails[] = [
           { label: "Condition", value: "New" },
         ],
       },
-    ],
-    specs: [
-      { icon: ShoppingBag, label: "Items", value: "3-Piece" },
-      { icon: Ruler, label: "Sizes", value: "2T-6" },
-      { icon: Palette, label: "Style", value: "Playtime" },
-      { icon: Tag, label: "Value", value: "Bundle Deal" },
     ],
     reviews: [
       { id: "rev19", author: "Gloria E.", rating: 5, date: "2024-07-28", title: "Perfect for my twins!", comment: "The clothes are durable and cute. They hold up well to all the playing.", isVerifiedBuyer: true },
@@ -640,12 +580,6 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
-    specs: [
-      { icon: Shirt, label: "Material", value: "Rayon" },
-      { icon: Ruler, label: "Fit", value: "A-Line" },
-      { icon: Palette, label: "Color", value: "Floral Print" },
-      { icon: Tag, label: "Brand", value: "SHEIN" },
-    ],
     reviews: [
       { id: "rev21", author: "Ngozi P.", rating: 5, date: "2024-08-01", title: "Perfect summer dress!", comment: "So comfortable and stylish. I love the print and how it flows.", isVerifiedBuyer: true },
       { id: "rev22", author: "Chika A.", rating: 4, date: "2024-07-29", title: "Great for holidays", comment: "Wore this on my trip, got many compliments. Fabric is a bit thin but good for heat.", isVerifiedBuyer: true },
@@ -695,12 +629,6 @@ export const mockProducts: ProductDetails[] = [
           { label: "Strap Length", value: "Adjustable (100-120 cm)" },
         ],
       },
-    ],
-    specs: [
-      { icon: Gem, label: "Material", value: "Leather" },
-      { icon: Tag, label: "Style", value: "Crossbody" },
-      { icon: Palette, label: "Color", value: "Brown" },
-      { icon: ShieldCheck, label: "Condition", value: "Very Good" },
     ],
     reviews: [
       { id: "rev23", author: "Uche M.", rating: 5, date: "2024-08-03", title: "Stunning bag!", comment: "The leather is beautiful and it's in fantastic condition for a vintage piece. Very happy!", isVerifiedBuyer: true },
@@ -753,12 +681,6 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
-    specs: [
-      { icon: Baby, label: "Material", value: "Cotton" },
-      { icon: Tag, label: "Items", value: "3-Pack" },
-      { icon: Palette, label: "Color", value: "Assorted Graphics" },
-      { icon: ShieldCheck, label: "Durability", value: "High" },
-    ],
     reviews: [
       { id: "rev25", author: "Funmi S.", rating: 5, date: "2024-08-05", title: "Excellent value!", comment: "My kids love these shirts. They're soft, the prints are fun, and they hold up well.", isVerifiedBuyer: true },
       { id: "rev26", author: "Kola T.", rating: 4, date: "2024-08-02", title: "Good everyday shirts", comment: "Solid quality for the price. Perfect for school.", isVerifiedBuyer: true },
@@ -809,12 +731,6 @@ export const mockProducts: ProductDetails[] = [
           { label: "Sleeve Length", value: "Long Sleeve (roll-up tabs)" },
         ],
       },
-    ],
-    specs: [
-      { icon: Shirt, label: "Material", value: "Linen Blend" },
-      { icon: Ruler, label: "Fit", value: "Relaxed" },
-      { icon: Palette, label: "Color", value: "White" },
-      { icon: Tag, label: "Style", value: "Casual" },
     ],
     reviews: [
       { id: "rev27", author: "Ahmed D.", rating: 5, date: "2024-08-07", title: "Perfect for the heat!", comment: "This shirt is so comfortable and keeps me cool. Looks great too.", isVerifiedBuyer: true },
@@ -867,12 +783,6 @@ export const mockProducts: ProductDetails[] = [
         ],
       },
     ],
-    specs: [
-      { icon: Glasses, label: "Type", value: "Sunglasses" },
-      { icon: Tag, label: "Brand", value: "Designer" },
-      { icon: Gem, label: "Condition", value: "Excellent" },
-      { icon: Sun, label: "Protection", value: "UV400" },
-    ],
     reviews: [
       { id: "rev29", author: "Zainab H.", rating: 5, date: "2024-08-09", title: "Love my new shades!", comment: "They look brand new and are exactly what I wanted. Great deal for designer sunglasses.", isVerifiedBuyer: true },
       { id: "rev30", author: "Obi K.", rating: 5, date: "2024-08-06", title: "Fantastic find", comment: "The quality is superb, and they fit perfectly. Very stylish.", isVerifiedBuyer: true },
@@ -907,7 +817,7 @@ export const getRandomProducts = (count: number, excludeId?: string): Product[] 
     tag: p.tag,
     tagVariant: p.tagVariant,
     limitedStock: p.limitedStock,
-    specs: p.specs,
+    // Removed specs from here
   }));
 };
 
