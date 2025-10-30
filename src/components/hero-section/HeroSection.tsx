@@ -85,7 +85,7 @@ const formatCurrency = (amount: number) => {
 const HeroSection = () => {
   return (
     <section
-      className="relative flex w-full flex-col justify-center overflow-hidden bg-black text-white h-[50vh] md:h-[calc(100vh-4rem)] md:min-h-[600px]"
+      className="relative flex w-full flex-col justify-center overflow-hidden bg-black text-white h-[30vh] md:h-[50vh] lg:h-[60vh]"
     >
       {/* Background Image */}
       <img
