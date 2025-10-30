@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence, Easing, RepeatType } from "framer-motion";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, Heart, ShoppingCart, ChevronLeft, ChevronRight, Shirt, Baby, Gem, Ruler, Palette, Tag, Loader2 } from "lucide-react"; // Removed Scale icon
+import { Star, Heart, ShoppingCart, ChevronLeft, ChevronRight, Shirt, Baby, Gem, Ruler, Palette, Tag, Loader2 } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import FloatingTag from "@/components/common/FloatingTag.tsx";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useCart } from "@/context/CartContext.tsx";
 import { useFavorites } from "@/context/FavoritesContext.tsx";
-// Removed useCompare import
 import { Skeleton } from "@/components/ui/skeleton";
 
 export interface Product {
@@ -29,7 +28,6 @@ export interface Product {
   tag?: string;
   tagVariant?: "default" | "secondary" | "destructive" | "outline";
   limitedStock?: boolean;
-  // Removed specs from Product interface
 }
 
 interface ProductCardProps {
@@ -46,11 +44,10 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
-  const specsScrollRef = useRef<HTMLDivElement>(null); // This ref is no longer needed for specs, but kept for now
+  const specsScrollRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const { addToCart } = useCart();
   const { addFavorite, removeFavorite, isFavorited } = useFavorites();
-  // Removed addToCompare, removeFromCompare, isInComparison from useCompare
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const navigate = useNavigate();
 
@@ -90,8 +87,6 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
     setImageLoadingStates(prev => ({ ...prev, [imageUrl]: false }));
   }, []);
 
-  // Removed useEffect for specs scrolling as specs are removed
-
   const discount = product.originalPrice && product.price < product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
@@ -113,8 +108,6 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
     }
   };
 
-  // Removed handleToggleCompare
-
   const handleCardClick = () => {
     if (!isMobile) {
       navigate(`/products/${product.id}`);
@@ -122,7 +115,6 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
   };
 
   const favorited = isFavorited(product.id);
-  // Removed inComparison
 
   return (
     <motion.div
@@ -223,7 +215,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
             </div>
           )}
 
-          {/* Desktop Hover Overlay with Action Buttons - Removed Compare Button */}
+          {/* Desktop Hover Overlay with Action Buttons */}
           <AnimatePresence>
             {hovered && (
               <motion.div
@@ -233,7 +225,6 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
                 transition={{ duration: 0.2 }}
                 className="absolute inset-0 hidden md:flex items-center justify-center space-x-4 bg-black/60 z-20"
               >
-                {/* Removed Compare Button */}
                 <Button className="text-sm font-medium" onClick={handleAddToCart} disabled={isAddingToCart}>
                   {isAddingToCart ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -246,7 +237,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
             )}
           </AnimatePresence>
 
-          {/* Mobile "Add to Cart" and "Compare" Buttons - Removed Compare Button */}
+          {/* Mobile "Add to Cart" Button */}
           <div className="md:hidden absolute bottom-2 left-2 z-10">
             <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8" onClick={handleAddToCart} disabled={isAddingToCart}>
               {isAddingToCart ? (
@@ -256,7 +247,6 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
               )}
             </Button>
           </div>
-          {/* Removed Mobile Compare Button */}
         </div>
 
         <CardContent className="p-4 flex flex-col flex-grow text-left">
@@ -267,13 +257,13 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
 
           {/* Product Name */}
           <Link to={`/products/${product.id}`} onClick={(e) => e.stopPropagation()}>
-            <h3 className="font-poppins font-semibold text-sm text-card-foreground line-clamp-2 mb-2 hover:text-primary transition-colors">
+            <h3 className="font-poppins font-semibold text-sm text-card-foreground line-clamp-2 mb-1 hover:text-primary transition-colors">
               {product.name}
             </h3>
           </Link>
 
           {/* Price Display (Main Price always visible, Original Price/Discount hidden on mobile) */}
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-1">
             <p className="font-bold text-base text-primary">
               {product.price.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })}
             </p>
@@ -296,7 +286,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
           {/* Limited Stock Message */}
           {product.limitedStock && (
             <motion.p
-              className="text-xs text-red-500 font-medium mb-2 hidden md:block"
+              className="text-xs text-red-500 font-medium mb-1 hidden md:block"
               initial={{ opacity: 0.5 }}
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" as Easing }}
@@ -345,8 +335,6 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
             </div>
           </div>
         </CardContent>
-
-        {/* Horizontal Scrolling Specifications Section - REMOVED */}
       </Card>
     </motion.div>
   );
