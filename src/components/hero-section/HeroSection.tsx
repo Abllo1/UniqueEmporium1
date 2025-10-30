@@ -3,51 +3,20 @@
 import React from "react";
 import { motion, Easing, RepeatType } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import UniqueEmporiumLogo3D from "@/components/logo/UniqueEmporiumLogo3D.tsx";
-import { mockProducts, ProductDetails } from "@/data/products.ts";
 import { Link } from "react-router-dom";
 
 interface HeroItem {
-  id: string;
-  image: string;
   headline: string;
   subHeadline: string;
-  productName: string;
-  productDescription: string;
-  price: number;
   ctaText1: string;
   ctaLink1: string;
-  ctaText2: string;
-  ctaLink2: string;
 }
 
-// Select a single product from mockProducts for the hero section
-const selectedProductForHero: ProductDetails | undefined = mockProducts.find(p => p.id === "shein-floral-maxi-gown");
-
-const heroItem: HeroItem = selectedProductForHero ? {
-  id: selectedProductForHero.id,
-  image: selectedProductForHero.images[0],
+const heroItem: HeroItem = {
   headline: "Unveil Your Uniqueness — Luxury Meets Everyday Comfort",
   subHeadline: "Nigeria’s futuristic fashion hub for SHEIN gowns, vintage shirts, kids’ jeans, and luxury thrift collections. Bold. Timeless. Truly you.",
-  productName: selectedProductForHero.name,
-  productDescription: selectedProductForHero.fullDescription.split('.')[0] + '.',
-  price: selectedProductForHero.price,
   ctaText1: "Shop the Collection",
   ctaLink1: "/products",
-  ctaText2: "Explore Trending Styles",
-  ctaLink2: "/products?tag=trending",
-} : { // Fallback if no product is found
-  id: "default-hero",
-  image: "/my-banner.webp", // Use a generic banner image
-  headline: "Welcome to Unique Emporium",
-  subHeadline: "Your destination for luxury thrift and fashion bundles.",
-  productName: "Featured Fashion",
-  productDescription: "Discover our hand-picked collections.",
-  price: 0,
-  ctaText1: "Shop Now",
-  ctaLink1: "/products",
-  ctaText2: "Learn More",
-  ctaLink2: "/about",
 };
 
 const fadeInUpVariants = {
@@ -78,10 +47,6 @@ const ctaFloatVariants = {
   tap: { scale: 0.95 },
 };
 
-const formatCurrency = (amount: number) => {
-  return amount.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
-};
-
 const HeroSection = () => {
   return (
     <section
@@ -89,8 +54,8 @@ const HeroSection = () => {
     >
       {/* Background Image */}
       <img
-        src={heroItem.image}
-        alt={heroItem.productName}
+        src="/unique-emporium-hero.webp" // Using the new image
+        alt="Unique Emporium Hero Banner"
         className="absolute inset-0 h-full w-full object-cover"
       />
 
@@ -109,10 +74,10 @@ const HeroSection = () => {
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" as Easing }}
           >
             <h1 className="font-poppins text-lg font-bold text-white/90 md:text-xl">
-              Unveil Your Uniqueness — Luxury Meets Everyday Comfort
+              {heroItem.headline}
             </h1>
             <h2 className="font-poppins text-sm text-white/80 md:text-base mt-2">
-              Step into Nigeria’s fashion hub for SHEIN gowns, vintage shirts, kids’ jeans, and luxury thrift collections.
+              {heroItem.subHeadline}
             </h2>
           </motion.div>
 
@@ -134,10 +99,7 @@ const HeroSection = () => {
           </motion.div>
         </div>
 
-        {/* 3D Rotating Logo (Desktop Only) */}
-        <div className="absolute right-10 top-1/2 hidden -translate-y-1/2 lg:block">
-          <UniqueEmporiumLogo3D />
-        </div>
+        {/* Removed 3D Rotating Logo */}
       </div>
     </section>
   );
