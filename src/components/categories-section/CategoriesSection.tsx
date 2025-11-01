@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, Easing } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Shirt, Baby, Gem, ShoppingBag, LucideIcon } from "lucide-react"; // Updated icons for fashion
+import { Shirt, Baby, Gem, ShoppingBag, LucideIcon } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Category {
@@ -11,17 +11,18 @@ interface Category {
   icon: LucideIcon;
   description: string;
   link: string;
+  image: string; // New property for the image
 }
 
 const categories: Category[] = [
-  { name: "SHEIN Gowns", icon: Shirt, description: "Elegant & trendy dresses", link: "/products?category=shein-gowns" },
-  { name: "Vintage Shirts", icon: Shirt, description: "Unique retro styles", link: "/products?category=vintage-shirts" },
-  { name: "Kids' Jeans", icon: Baby, description: "Durable & stylish denim for kids", link: "/products?category=kids-jeans" },
-  { name: "Luxury Thrift", icon: Gem, description: "High-end pre-loved fashion", link: "/products?category=luxury-thrift" },
-  { name: "Fashion Bundles", icon: ShoppingBag, description: "Curated outfits & collections", link: "/products?category=fashion-bundles" },
+  { name: "SHEIN Gowns", icon: Shirt, description: "Elegant & trendy dresses", link: "/products?category=shein-gowns", image: "/placeholder.svg" },
+  { name: "Vintage Shirts", icon: Shirt, description: "Unique retro styles", link: "/products?category=vintage-shirts", image: "/placeholder.svg" },
+  { name: "Kids' Jeans", icon: Baby, description: "Durable & stylish denim for kids", link: "/products?category=kids-jeans", image: "/placeholder.svg" },
+  { name: "Luxury Thrift", icon: Gem, description: "High-end pre-loved fashion", link: "/products?category=luxury-thrift", image: "/placeholder.svg" },
+  { name: "Fashion Bundles", icon: ShoppingBag, description: "Curated outfits & collections", link: "/products?category=fashion-bundles", image: "/placeholder.svg" },
 ];
 
-// Duplicate categories to create a seamless loop effect
+// Duplicate categories to create a seamless loop effect for mobile auto-scrolling
 const loopedCategories = [...categories, ...categories];
 
 const staggerContainer = {
@@ -29,10 +30,15 @@ const staggerContainer = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.07, // Adjusted stagger for individual cards
       delayChildren: 0.2,
     },
   },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as Easing } },
 };
 
 const fadeInUp = {
@@ -44,13 +50,11 @@ const CategoriesSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
   const isMobile = useIsMobile();
-  const scrollSpeed = 1;
+  const scrollSpeed = 1; // Adjust scroll speed as needed
 
   useEffect(() => {
     const scrollElement = scrollRef.current;
-    const shouldBePaused = !isMobile && isPaused;
-
-    if (!scrollElement || shouldBePaused) {
+    if (!scrollElement || !isMobile) { // Only auto-scroll if on mobile
       return;
     }
 
@@ -61,7 +65,7 @@ const CategoriesSection = () => {
       if (!lastTimestamp) lastTimestamp = timestamp;
       const elapsed = timestamp - lastTimestamp;
 
-      if (elapsed > 16) {
+      if (elapsed > 16 && !isPaused) { // Only scroll if not paused
         scrollElement.scrollLeft += scrollSpeed;
         
         const singleSetWidth = scrollElement.scrollWidth / 2; 
@@ -82,7 +86,7 @@ const CategoriesSection = () => {
   }, [isPaused, isMobile, scrollSpeed]);
 
   return (
-    <section className="pt-0 pb-16 bg-background">
+    <section className="py-12 bg-gray-50"> {/* Updated background and padding */}
       <motion.div
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
         variants={staggerContainer}
@@ -90,6 +94,7 @@ const CategoriesSection = () => {
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
       >
+        {/* Existing introductory text - DO NOT REMOVE OR EDIT */}
         <motion.h2
           className="font-poppins font-bold text-xl md:text-4xl text-foreground"
           variants={fadeInUp}
@@ -103,39 +108,43 @@ const CategoriesSection = () => {
           Find the perfect style to express your uniqueness
         </motion.p>
 
+        {/* Category Cards Container */}
         <motion.div
-          className="flex space-x-4 overflow-x-auto pb-[3px] no-scrollbar"
+          className="flex overflow-x-auto whitespace-nowrap gap-2 pb-4 md:grid md:grid-cols-4 lg:grid-cols-6 md:gap-4 scrollbar-hide"
           ref={scrollRef}
-          onMouseEnter={() => !isMobile && setIsPaused(true)}
-          onMouseLeave={() => !isMobile && setIsPaused(false)}
+          onMouseEnter={() => isMobile && setIsPaused(true)}
+          onMouseLeave={() => isMobile && setIsPaused(false)}
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
         >
           {loopedCategories.map((category, index) => (
-            <motion.div key={`${category.name}-${index}`} variants={fadeInUp}>
-              <Link
-                to={category.link}
-                className="group relative flex-shrink-0 w-[200px] h-16 lg:w-[250px] lg:h-24
-                           bg-gradient-to-br from-primary/80 to-primary/60 border border-primary/50
-                           rounded-xl overflow-hidden p-3 flex items-center justify-start text-left
-                           transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-              >
-                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-primary/50 rounded-full flex items-center justify-center mr-3
-                                transition-colors duration-300 group-hover:bg-primary/70">
-                  <category.icon className="w-3 h-3 lg:w-6 lg:h-6 text-secondary transition-all duration-300 group-hover:text-white group-hover:scale-110" />
+            <motion.div
+              key={`${category.name}-${index}`}
+              variants={itemVariants}
+              className="flex flex-col items-center cursor-pointer min-w-[120px] md:min-w-0"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Link to={category.link} className="flex flex-col items-center">
+                {/* Image Container */}
+                <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden shadow-md mb-3 bg-white flex items-center justify-center">
+                  <img
+                    src={category.image}
+                    alt={category.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <div>
-                  <h3 className="font-poppins font-semibold text-[10px] text-white lg:text-base
-                                 transition-colors duration-300 group-hover:text-secondary">
-                    {category.name}
-                  </h3>
-                  <p className="text-[8px] text-primary-foreground/80 lg:text-sm
-                                transition-colors duration-300 group-hover:text-primary-foreground">
-                    {category.description}
-                  </p>
-                </div>
+                {/* Category Name */}
+                <p className="text-sm md:text-base lg:text-lg font-bold text-gray-900 text-center mt-2 leading-tight">
+                  {category.name.split(' ').map((word, i) => (
+                    <React.Fragment key={i}>
+                      {word}
+                      {i < category.name.split(' ').length - 1 && <br />}
+                    </React.Fragment>
+                  ))}
+                </p>
               </Link>
             </motion.div>
           ))}
