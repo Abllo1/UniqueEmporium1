@@ -72,7 +72,7 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen w-full">
-      <HeroSection />
+      <HeroSection onScrollToFeatured={scrollToFeaturedProducts} />
 
       {/* Moved introductory text before CategoriesSection */}
       <motion.p
