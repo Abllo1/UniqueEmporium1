@@ -99,7 +99,7 @@ const Index = () => {
             className="text-sm md:text-lg lg:text-xl text-muted-foreground mt-2 mb-8 md:mb-12" // Changed mt-4 to mt-2
             variants={fadeInUp}
           >
-            Explore the latest SHEIN gowns, vintage shirts, kids’ jeans, and curated fashion bundles with effortless navigation, smart recommendations, and a transparent checkout.
+            Explore the latest SHEIN gowns, vintage shirts, kids’ jeans, and fashion bundles with easy navigation, smart picks, and clear checkout.
           </motion.p>
           <motion.h2
             className="font-poppins font-bold text-xl md:text-4xl text-foreground"
