@@ -52,8 +52,8 @@ const fadeInUp = {
 
 const CategoriesSection = () => {
   const isMobile = useIsMobile();
-  const autoplayOptions = useRef({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true });
-  const [emblaRef] = useEmblaCarousel({ loop: true, dragFree: true }, [ // Removed containScroll: "trimSnaps"
+  const autoplayOptions = useRef({ delay: 0, stopOnInteraction: false, stopOnMouseEnter: true }); // Changed delay to 0
+  const [emblaRef] = useEmblaCarousel({ loop: true, dragFree: true }, [
     Autoplay(autoplayOptions.current),
   ]);
 
@@ -84,7 +84,7 @@ const CategoriesSection = () => {
 
         {isMobile ? (
           // Mobile Carousel
-          <div className="embla no-scrollbar" ref={emblaRef}> {/* Added no-scrollbar class here */}
+          <div className="embla no-scrollbar" ref={emblaRef}>
             <div className="embla__container flex gap-2">
               {categories.map((category, index) => (
                 <motion.div
