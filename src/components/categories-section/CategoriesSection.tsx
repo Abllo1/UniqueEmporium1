@@ -84,7 +84,7 @@ const CategoriesSection = () => {
 
         {isMobile ? (
           // Mobile Carousel
-          <div className="embla" ref={emblaRef}>
+          <div className="embla no-scrollbar" ref={emblaRef}> {/* Added no-scrollbar class here */}
             <div className="embla__container flex gap-2">
               {categories.map((category, index) => (
                 <motion.div
