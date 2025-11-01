@@ -86,7 +86,7 @@ const Index = () => {
       <CategoriesSection />
 
       {/* Featured Products Section */}
-      <section id="featured-products-section" ref={featuredProductsRef} className="py-16 bg-muted/30">
+      <section id="featured-products-section" ref={featuredProductsRef} className="pt-4 pb-16 bg-muted/30">
         <motion.div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
           variants={staggerContainer}
