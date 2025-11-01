@@ -13,15 +13,15 @@ interface Category {
   icon: LucideIcon;
   description: string;
   link: string;
-  image: string; // New property for the image
+  image: string | undefined; // Changed type to allow undefined
 }
 
 const categories: Category[] = [
-  { name: "SHEIN Gowns", icon: Shirt, description: "Elegant & trendy dresses", link: "/products?category=shein-gowns", image: "/placeholder.svg" },
-  { name: "Vintage Shirts", icon: Shirt, description: "Unique retro styles", link: "/products?category=vintage-shirts", image: "/placeholder.svg" },
-  { name: "Kids' Jeans", icon: Baby, description: "Durable & stylish denim for kids", link: "/products?category=kids-jeans", image: "/placeholder.svg" },
-  { name: "Luxury Thrift", icon: Gem, description: "High-end pre-loved fashion", link: "/products?category=luxury-thrift", image: "/placeholder.svg" },
-  { name: "Fashion Bundles", icon: ShoppingBag, description: "Curated outfits & collections", link: "/products?category=fashion-bundles", image: "/placeholder.svg" },
+  { name: "SHEIN Gowns", icon: Shirt, description: "Elegant & trendy dresses", link: "/products?category=shein-gowns", image: undefined },
+  { name: "Vintage Shirts", icon: Shirt, description: "Unique retro styles", link: "/products?category=vintage-shirts", image: undefined },
+  { name: "Kids' Jeans", icon: Baby, description: "Durable & stylish denim for kids", link: "/products?category=kids-jeans", image: undefined },
+  { name: "Luxury Thrift", icon: Gem, description: "High-end pre-loved fashion", link: "/products?category=luxury-thrift", image: undefined },
+  { name: "Fashion Bundles", icon: ShoppingBag, description: "Curated outfits & collections", link: "/products?category=fashion-bundles", image: undefined },
 ];
 
 // Duplicate categories to create a seamless loop effect for mobile auto-scrolling
@@ -136,7 +136,7 @@ const CategoriesSection = () => {
                 {/* Image Container */}
                 <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden shadow-md mb-3 bg-white flex items-center justify-center">
                   <ImageWithFallback
-                    src={category.image}
+                    src={category.image} // Now explicitly undefined
                     alt={category.name}
                     containerClassName="w-full h-full"
                   />
