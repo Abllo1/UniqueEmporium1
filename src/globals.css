@@ -139,8 +139,9 @@
   @screen md {
     .md\:text-white-override {
       color: white !important; /* Override transparent color */
-      -webkit-background-clip: initial !important; /* Disable text clipping */
-      background-clip: initial !important; /* Disable text clipping */
+      background: none !important; /* Explicitly remove background */
+      -webkit-background-clip: unset !important; /* Disable text clipping */
+      background-clip: unset !important; /* Disable text clipping */
       text-shadow: none !important; /* Remove shadow for cleaner white text */
     }
   }
