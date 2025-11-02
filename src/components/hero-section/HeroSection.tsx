@@ -81,7 +81,7 @@ const HeroSection = ({ onScrollToFeatured }: HeroSectionProps) => {
           >
             <h1 className="font-poppins text-xl font-bold text-white md:text-4xl">
               {headlineParts[0]}
-              <span className="text-primary">#1</span>
+              <span className="text-black">#1</span> {/* Changed text-primary to text-black */}
               {headlineParts[1]}
             </h1>
             <h2 className="font-poppins text-xs text-white/80 md:text-lg mt-2">
