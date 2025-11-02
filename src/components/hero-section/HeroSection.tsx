@@ -77,17 +77,17 @@ const HeroSection = ({ onScrollToFeatured }: HeroSectionProps) => {
             animate="visible"
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" as Easing }}
           >
-            <h1 className="font-poppins text-base font-bold text-secondary md:text-3xl"> {/* Changed text-white/90 to text-secondary */}
+            <h1 className="font-poppins text-xl font-bold text-secondary md:text-4xl"> {/* Changed text-base to text-xl and md:text-3xl to md:text-4xl */}
               {heroItem.headline}
             </h1>
-            <h2 className="font-poppins text-xs text-white/80 md:text-lg mt-2"> {/* Changed text-sm to text-xs for mobile */}
+            <h2 className="font-poppins text-xs text-white/80 md:text-lg mt-2">
               {heroItem.subHeadline}
             </h2>
           </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
-            className="mt-8 flex flex-col sm:flex-row gap-4 justify-center max-w-xs mx-auto" // Added max-w-xs and mx-auto for mobile
+            className="mt-8 flex flex-col sm:flex-row gap-4 justify-center max-w-xs mx-auto"
             variants={ctaFloatVariants}
             initial="initial"
             animate="animate"
@@ -95,7 +95,7 @@ const HeroSection = ({ onScrollToFeatured }: HeroSectionProps) => {
             whileTap="tap"
           >
             <Button
-              onClick={onScrollToFeatured} // Call the scroll function
+              onClick={onScrollToFeatured}
               className="px-4 py-1.5 text-sm md:px-8 md:py-3 md:text-lg w-full"
             >
               {heroItem.ctaText1}
