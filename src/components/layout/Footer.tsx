@@ -21,7 +21,7 @@ import {
   CheckCircle2,
   Shirt, Baby, Gem, ShoppingBag,
   Info,
-  Sparkles, // Using Sparkles for TikTok as a placeholder icon
+  Sparkles, // Reverted to Sparkles as TikTok is not exported from lucide-react
 } from "lucide-react";
 import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx"; // Import the new logo component
 
@@ -317,7 +317,7 @@ const Footer = () => {
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <Sparkles className="h-6 w-6" /> {/* Using Sparkles as a placeholder for TikTok icon */}
+                <Sparkles className="h-6 w-6" /> {/* Reverted to Sparkles */}
               </motion.a>
               <motion.a
                 href="#"
