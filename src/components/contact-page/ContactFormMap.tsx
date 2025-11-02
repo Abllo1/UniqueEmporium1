@@ -112,7 +112,7 @@ const ContactFormMap = () => {
                       id="phone"
                       name="phone"
                       type="tel"
-                      placeholder="+234 (800) 123-4567"
+                      placeholder="+234 (906) 554-5572"
                       value={formData.phone}
                       onChange={handleChange}
                     />
@@ -179,7 +179,7 @@ const ContactFormMap = () => {
 
               <div className="mb-6 text-center">
                 <p className="text-sm text-muted-foreground">
-                  Find us at: <span className="font-semibold text-foreground">456 Fashion Blvd, Lagos, Nigeria</span>
+                  Find us at: <span className="font-semibold text-foreground">No 4 crescent Street opposite Ace supermarket unity, Ilorin, Kwara State, Nigeria</span>
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   (Appointments recommended for personalized styling sessions)

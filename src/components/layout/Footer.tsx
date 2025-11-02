@@ -21,6 +21,7 @@ import {
   CheckCircle2,
   Shirt, Baby, Gem, ShoppingBag,
   Info,
+  Sparkles, // Using Sparkles for TikTok as a placeholder icon
 } from "lucide-react";
 import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx"; // Import the new logo component
 
@@ -117,10 +118,10 @@ const Footer = () => {
                 <Mail className="mr-2 h-4 w-4" /> support@uniqueemporium.com
               </p>
               <p className="flex items-center">
-                <Phone className="mr-2 h-4 w-4" /> +234 (800) 123-4567
+                <Phone className="mr-2 h-4 w-4" /> +234 (906) 554-5572
               </p>
               <p className="flex items-center">
-                <MapPin className="mr-2 h-4 w-4" /> 456 Fashion Blvd, Lagos, Nigeria
+                <MapPin className="mr-2 h-4 w-4" /> No 4 crescent Street opposite Ace supermarket unity, Ilorin, Kwara State, Nigeria
               </p>
             </div>
           </motion.div>
@@ -299,7 +300,7 @@ const Footer = () => {
             </AnimatePresence>
             <div className="flex space-x-4">
               <motion.a
-                href="#"
+                href="https://www.facebook.com/profile.php?id=100083121582522&mibextid=ZbWKwL"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
@@ -309,14 +310,14 @@ const Footer = () => {
                 <Facebook className="h-6 w-6" />
               </motion.a>
               <motion.a
-                href="#"
+                href="https://www.tiktok.com/@uniquethriftwears001"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <Twitter className="h-6 w-6" />
+                <Sparkles className="h-6 w-6" /> {/* Using Sparkles as a placeholder for TikTok icon */}
               </motion.a>
               <motion.a
                 href="#"

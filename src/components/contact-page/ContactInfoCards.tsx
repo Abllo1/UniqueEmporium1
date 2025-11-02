@@ -20,12 +20,12 @@ const contactInfos: ContactInfo[] = [
   {
     icon: Phone,
     title: "Call Us",
-    details: ["+234 (800) 123-4567", "Mon-Fri, 9 AM - 5 PM WAT"],
+    details: ["+234 (906) 554-5572", "Mon-Fri, 9 AM - 5 PM WAT"],
   },
   {
     icon: MapPin,
     title: "Our Showroom",
-    details: ["456 Fashion Blvd", "Lagos, Nigeria"],
+    details: ["No 4 crescent Street opposite Ace supermarket unity", "Ilorin, Kwara State, Nigeria"],
   },
   {
     icon: Clock,
