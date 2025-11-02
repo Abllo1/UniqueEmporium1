@@ -24,7 +24,7 @@ const shippingInfos: ShippingInfo[] = [
   },
   {
     icon: Truck,
-    title: "3. Pack Delivery (@ ₦1)",
+    title: "3. Park Delivery (@ ₦1)", // Corrected here
     description: "Drivers handle delivery fees; we negotiate fair prices and inform you before dispatch.",
   },
   {

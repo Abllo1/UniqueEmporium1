@@ -33,7 +33,7 @@ const OrderSummaryCard = ({
   if (deliveryMethod === "pickup") {
     calculatedShipping = 0;
     shippingDisplay = "Free (Pick-up)";
-  } else if (deliveryMethod === "dispatch-rider" || deliveryMethod === "pack-delivery") {
+  } else if (deliveryMethod === "dispatch-rider" || deliveryMethod === "park-delivery") { // Corrected here
     // For these methods, we show a nominal ₦1 and clarify that actual fees are negotiated.
     calculatedShipping = 1; // Nominal charge for calculation, actual is negotiated
     shippingDisplay = "₦1 (Driver handles fees)";
@@ -77,9 +77,9 @@ const OrderSummaryCard = ({
           <p className="text-sm text-muted-foreground font-normal mt-2">
             Prices are final — no VAT or hidden charges.
           </p>
-          {(deliveryMethod === "dispatch-rider" || deliveryMethod === "pack-delivery") && (
+          {(deliveryMethod === "dispatch-rider" || deliveryMethod === "park-delivery") && ( // Corrected here
             <p className="text-xs text-primary font-medium mt-2">
-              *Actual delivery fees for Dispatch/Pack Delivery are negotiated directly with the driver.
+              *Actual delivery fees for Dispatch/Park Delivery are negotiated directly with the driver.
             </p>
           )}
         </CardFooter>

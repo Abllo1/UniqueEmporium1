@@ -23,7 +23,7 @@ const shippingSchema = z.object({
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
   zipCode: z.string().optional(),
-  deliveryMethod: z.enum(["pickup", "dispatch-rider", "pack-delivery"], {
+  deliveryMethod: z.enum(["pickup", "dispatch-rider", "park-delivery"], { // Corrected here
     required_error: "Please select a delivery method",
   }),
 });
@@ -46,7 +46,7 @@ const nigerianStates = [
 const deliveryOptions = [
   { value: "pickup", label: "Pick-up (Free)" },
   { value: "dispatch-rider", label: "Dispatch Rider (@ ₦1)" },
-  { value: "pack-delivery", label: "Pack Delivery (@ ₦1)" },
+  { value: "park-delivery", label: "Park Delivery (@ ₦1)" }, // Corrected here
 ];
 
 const ShippingForm = ({ onNext, initialData }: ShippingFormProps) => {
@@ -158,7 +158,7 @@ const ShippingForm = ({ onNext, initialData }: ShippingFormProps) => {
             <Label htmlFor="deliveryMethod" className="flex items-center gap-2">
               <Package className="h-4 w-4" /> Delivery Method
             </Label>
-            <Select onValueChange={(value) => setValue("deliveryMethod", value as "pickup" | "dispatch-rider" | "pack-delivery")} value={selectedDeliveryMethod}>
+            <Select onValueChange={(value) => setValue("deliveryMethod", value as "pickup" | "dispatch-rider" | "park-delivery")} value={selectedDeliveryMethod}> {/* Corrected here */}
               <SelectTrigger className={cn(errors.deliveryMethod && "border-destructive")}>
                 <SelectValue placeholder="Select a delivery method" />
               </SelectTrigger>
@@ -172,7 +172,7 @@ const ShippingForm = ({ onNext, initialData }: ShippingFormProps) => {
             </Select>
             {errors.deliveryMethod && <p className="text-destructive text-sm">{errors.deliveryMethod.message}</p>}
             <p className="text-xs text-muted-foreground mt-2">
-              💡 All delivery charges for Dispatch Rider and Pack Delivery are handled directly with the driver. We only help negotiate.
+              💡 All delivery charges for Dispatch Rider and Park Delivery are handled directly with the driver. We only help negotiate. {/* Corrected here */}
             </p>
           </div>
 

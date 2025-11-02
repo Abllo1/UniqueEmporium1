@@ -39,7 +39,7 @@ const OrderReview = ({ shippingInfo, paymentInfo, onPrevious, onPlaceOrder, isPl
       calculatedShipping = 1; // Nominal charge
       shippingDisplay = "₦1 (Driver handles fees)";
       break;
-    case "pack-delivery":
+    case "park-delivery": // Corrected here
       calculatedShipping = 1; // Nominal charge
       shippingDisplay = "₦1 (Driver handles fees)";
       break;
@@ -60,7 +60,7 @@ const OrderReview = ({ shippingInfo, paymentInfo, onPrevious, onPlaceOrder, isPl
     switch (method) {
       case "pickup": return "Pick-up (Free)";
       case "dispatch-rider": return "Dispatch Rider (@ ₦1)";
-      case "pack-delivery": return "Pack Delivery (@ ₦1)";
+      case "park-delivery": return "Park Delivery (@ ₦1)"; // Corrected here
       default: return "Unknown";
     }
   };
@@ -92,7 +92,7 @@ const OrderReview = ({ shippingInfo, paymentInfo, onPrevious, onPlaceOrder, isPl
             <Package className="h-5 w-5" /> Delivery Method
           </h3>
           <p className="text-muted-foreground text-sm">{getDeliveryMethodLabel(shippingInfo.deliveryMethod)}</p>
-          {(shippingInfo.deliveryMethod === "dispatch-rider" || shippingInfo.deliveryMethod === "pack-delivery") && (
+          {(shippingInfo.deliveryMethod === "dispatch-rider" || shippingInfo.deliveryMethod === "park-delivery") && ( // Corrected here
             <p className="text-xs text-primary font-medium mt-2">
               *Actual delivery fees are negotiated directly with the driver.
             </p>
@@ -149,9 +149,9 @@ const OrderReview = ({ shippingInfo, paymentInfo, onPrevious, onPlaceOrder, isPl
           <p className="text-sm text-muted-foreground font-normal mt-2">
             Prices are final — no VAT or hidden charges.
           </p>
-          {(shippingInfo.deliveryMethod === "dispatch-rider" || shippingInfo.deliveryMethod === "pack-delivery") && (
+          {(shippingInfo.deliveryMethod === "dispatch-rider" || shippingInfo.deliveryMethod === "park-delivery") && ( // Corrected here
             <p className="text-xs text-primary font-medium mt-2">
-              *Actual delivery fees for Dispatch/Pack Delivery are negotiated directly with the driver.
+              *Actual delivery fees for Dispatch/Park Delivery are negotiated directly with the driver.
             </p>
           )}
         </div>
