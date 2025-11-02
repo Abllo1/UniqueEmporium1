@@ -23,6 +23,8 @@ const featuredProductIds = [
   "ladies-fashion-bundle-casual",
   "luxury-thrift-silk-scarf",
   "mens-fashion-bundle-streetwear",
+  "shein-summer-midi-dress", // Added new product
+  "vintage-leather-crossbody-bag", // Added new product
 ];
 
 const staggerContainer = {
@@ -115,9 +117,9 @@ const Index = () => {
             Discover our most popular SHEIN gowns, vintage shirts, and fashion bundles
           </motion.p>
 
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-2 md:gap-5">
             {loadingFeatured
-              ? Array.from({ length: 6 }).map((_, i) => <ProductCardSkeleton key={i} />)
+              ? Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
               : featuredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
