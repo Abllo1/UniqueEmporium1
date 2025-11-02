@@ -23,8 +23,6 @@ const featuredProductIds = [
   "ladies-fashion-bundle-casual",
   "luxury-thrift-silk-scarf",
   "mens-fashion-bundle-streetwear",
-  "shein-summer-midi-dress", // New featured product
-  "vintage-leather-crossbody-bag", // New featured product
 ];
 
 const staggerContainer = {
@@ -119,7 +117,7 @@ const Index = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-2 md:gap-5">
             {loadingFeatured
-              ? Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />) // Updated to 8 skeletons
+              ? Array.from({ length: 6 }).map((_, i) => <ProductCardSkeleton key={i} />)
               : featuredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

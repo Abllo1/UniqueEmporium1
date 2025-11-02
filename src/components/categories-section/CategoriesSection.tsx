@@ -1,21 +1,19 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, Easing } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Shirt, Baby, Gem, ShoppingBag, LucideIcon } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
-import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
-import useEmblaCarousel from "embla-carousel-react";
-// Removed Autoplay import as we're implementing custom auto-scroll
+import { cn } from "@/lib/utils"; // Import cn for conditional classNames
+import ImageWithFallback from "@/components/common/ImageWithFallback.tsx"; // Import ImageWithFallback
 
 interface Category {
   name: string;
   icon: LucideIcon;
   description: string;
   link: string;
-  image: string | undefined;
+  image: string | undefined; // Changed type to allow undefined
 }
 
 const categories: Category[] = [
@@ -34,7 +32,7 @@ const staggerContainer = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.07,
+      staggerChildren: 0.07, // Adjusted stagger for individual cards
       delayChildren: 0.2,
     },
   },
@@ -50,52 +48,9 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, x: 0, transition: { duration: 0.6, ease: "easeOut" as Easing } },
 };
 
-// Helper to merge multiple refs into a single callback ref
-const mergeRefs = <T = any>(
-  ...refs: Array<React.MutableRefObject<T> | React.RefCallback<T> | null | undefined>
-): React.RefCallback<T> => {
-  return (value) => {
-    refs.forEach((ref) => {
-      if (typeof ref === 'function') {
-        ref(value);
-      } else if (ref != null) {
-        (ref as React.MutableRefObject<T | null>).current = value;
-      }
-    });
-  };
-};
-
 const CategoriesSection = () => {
-  const isMobile = useIsMobile();
-  const [emblaRef] = useEmblaCarousel({ loop: true, dragFree: true }); // Embla's ref (a callback)
-  const localScrollRef = useRef<HTMLDivElement>(null); // Our ref to the DOM element
-  const mergedRefs = mergeRefs(emblaRef, localScrollRef); // Combined ref
-  const [isPaused, setIsPaused] = useState(false); // State to control pause/resume
-
-  useEffect(() => {
-    // Only run auto-scrolling on mobile and if not paused
-    if (!isMobile || isPaused || !localScrollRef.current) { // Use localScrollRef.current
-      return;
-    }
-
-    const scrollContainer = localScrollRef.current; // Use localScrollRef.current
-    const scrollSpeed = 1; // Pixels per interval for smooth scroll
-    const intervalTime = 20; // Milliseconds for frequent updates
-
-    const intervalId = setInterval(() => {
-      if (scrollContainer) {
-        scrollContainer.scrollLeft += scrollSpeed;
-
-        // Loop mechanism: if at the end, reset to start
-        // Add a small tolerance for floating point inaccuracies
-        if (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth - 1) {
-          scrollContainer.scrollLeft = 0; // Reset to start
-        }
-      }
-    }, intervalTime);
-
-    return () => clearInterval(intervalId); // Cleanup interval on unmount or dependency change
-  }, [isMobile, isPaused, localScrollRef]); // Add localScrollRef to dependencies
+  // Removed auto-scrolling logic as it was tied to duplicated categories
+  // and is not desired for a single set of cards.
 
   return (
     <section className="relative py-[0.4rem]">
@@ -122,82 +77,44 @@ const CategoriesSection = () => {
           Find the perfect style to express your uniqueness
         </motion.p>
 
-        {isMobile ? (
-          // Mobile Carousel with custom auto-scroll and pause on hover
-          <div
-            className="embla no-scrollbar"
-            ref={mergedRefs} // Attach the merged ref here
-            onMouseEnter={() => setIsPaused(true)} // Pause on hover/touch
-            onMouseLeave={() => setIsPaused(false)} // Resume on leave
-          >
-            <div className="embla__container flex gap-2">
-              {categories.map((category, index) => (
-                <motion.div
-                  key={`${category.name}-${index}`}
-                  variants={itemVariants}
-                  className="embla__slide flex-shrink-0 flex flex-col items-center cursor-pointer min-w-[120px]"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Link to={category.link} className="flex flex-col items-center">
-                    <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden shadow-md mb-3 bg-white flex items-center justify-center">
-                      <ImageWithFallback
-                        src={category.image}
-                        alt={category.name}
-                        containerClassName="w-full h-full"
-                      />
-                    </div>
-                    <p className="text-sm md:text-base lg:text-lg font-bold text-gray-900 text-center mt-2 leading-tight">
-                      {category.name.split(' ').map((word, i) => (
-                        <React.Fragment key={i}>
-                          {word}
-                          {i < category.name.split(' ').length - 1 && <br />}
-                        </React.Fragment>
-                      ))}
-                    </p>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          // Desktop Grid (unchanged)
-          <motion.div
-            className="grid grid-cols-4 lg:grid-cols-6 gap-4 no-scrollbar"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            {categories.map((category, index) => (
-              <motion.div
-                key={`${category.name}-${index}`}
-                variants={itemVariants}
-                className="flex flex-col items-center cursor-pointer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Link to={category.link} className="flex flex-col items-center">
-                  <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden shadow-md mb-3 bg-white flex items-center justify-center">
-                    <ImageWithFallback
-                      src={category.image}
-                      alt={category.name}
-                      containerClassName="w-full h-full"
-                    />
-                  </div>
-                  <p className="text-sm md:text-base lg:text-lg font-bold text-gray-900 text-center mt-2 leading-tight">
-                      {category.name.split(' ').map((word, i) => (
-                        <React.Fragment key={i}>
-                          {word}
-                          {i < category.name.split(' ').length - 1 && <br />}
-                        </React.Fragment>
-                      ))}
-                    </p>
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
+        {/* Category Cards Container */}
+        <motion.div
+          className="flex overflow-x-auto whitespace-nowrap gap-2 pb-4 md:grid md:grid-cols-4 lg:grid-cols-6 md:gap-4 no-scrollbar"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+        >
+          {categories.map((category, index) => (
+            <motion.div
+              key={`${category.name}-${index}`}
+              variants={itemVariants}
+              className="flex flex-col items-center cursor-pointer min-w-[120px] md:min-w-0"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Link to={category.link} className="flex flex-col items-center">
+                {/* Image Container */}
+                <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden shadow-md mb-3 bg-white flex items-center justify-center">
+                  <ImageWithFallback
+                    src={category.image}
+                    alt={category.name}
+                    containerClassName="w-full h-full"
+                  />
+                </div>
+                {/* Category Name */}
+                <p className="text-sm md:text-base lg:text-lg font-bold text-gray-900 text-center mt-2 leading-tight">
+                  {category.name.split(' ').map((word, i) => (
+                    <React.Fragment key={i}>
+                      {word}
+                      {i < category.name.split(' ').length - 1 && <br />}
+                    </React.Fragment>
+                  ))}
+                </p>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
       </motion.div>
     </section>
   );
