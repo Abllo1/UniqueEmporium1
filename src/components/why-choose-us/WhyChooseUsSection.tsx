@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion, Easing } from "framer-motion";
-import { ShieldCheck, Truck, Headset, DollarSign, RefreshCw, Award, Gem, Sparkles, HeartHandshake, Tag } from "lucide-react"; // Updated icons
+import { ShieldCheck, Truck, Headset, DollarSign, RefreshCw, Award, Gem, Sparkles, HeartHandshake, Tag, XCircle } from "lucide-react"; // Updated icons
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx"; // Import ImageWithFallback
@@ -26,13 +26,13 @@ const reasons: Reason[] = [
   },
   {
     icon: Truck,
-    title: "Fast Nationwide Delivery",
-    description: "Get your unique wears delivered quickly and safely across Nigeria.",
+    title: "Flexible Delivery Options",
+    description: "Pick-up, Dispatch Rider, or Pack Delivery available nationwide.",
   },
   {
-    icon: RefreshCw,
-    title: "Easy Returns & Exchanges",
-    description: "Hassle-free policy for your peace of mind and satisfaction.",
+    icon: XCircle, // Changed icon to XCircle
+    title: "Final Sale Policy", // Changed title
+    description: "All products sold in good condition are final sale. Please confirm details before ordering.", // Changed description
   },
   {
     icon: HeartHandshake,

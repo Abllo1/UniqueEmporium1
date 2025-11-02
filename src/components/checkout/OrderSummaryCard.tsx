@@ -18,14 +18,14 @@ const fadeInUp = {
 };
 
 const OrderSummaryCard = ({
-  vatRate = 0.075, // 7.5% VAT
+  vatRate = 0, // Changed VAT rate to 0
   freeShippingThreshold = 100000, // Free shipping over ₦100,000
   shippingCost = 3500, // Base shipping cost ₦3,500
 }: OrderSummaryCardProps) => {
   const { cartItems, totalItems, totalPrice } = useCart();
 
   const subtotal = totalPrice;
-  const vat = subtotal * vatRate;
+  const vat = subtotal * vatRate; // This will now be 0
   const calculatedShipping = subtotal >= freeShippingThreshold ? 0 : shippingCost;
   const total = subtotal + vat + calculatedShipping;
 
@@ -46,10 +46,7 @@ const OrderSummaryCard = ({
             <span className="text-muted-foreground">Items ({totalItems})</span>
             <span className="font-medium text-foreground">{formatCurrency(subtotal)}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">VAT ({vatRate * 100}%)</span>
-            <span className="font-medium text-foreground">{formatCurrency(vat)}</span>
-          </div>
+          {/* Removed VAT display */}
           <div className="flex justify-between">
             <span className="text-muted-foreground">Shipping</span>
             <span className="font-medium text-foreground">
@@ -57,9 +54,14 @@ const OrderSummaryCard = ({
             </span>
           </div>
         </CardContent>
-        <CardFooter className="border-t pt-4 flex justify-between text-lg font-bold">
-          <span>Total</span>
-          <span>{formatCurrency(total)}</span>
+        <CardFooter className="border-t pt-4 flex flex-col items-start text-lg font-bold">
+          <div className="flex justify-between w-full mb-2">
+            <span>Total</span>
+            <span>{formatCurrency(total)}</span>
+          </div>
+          <p className="text-sm text-muted-foreground font-normal mt-2">
+            Prices are final — no VAT or hidden charges.
+          </p>
         </CardFooter>
       </Card>
     </motion.div>

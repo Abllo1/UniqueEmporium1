@@ -22,7 +22,7 @@ const shippingSchema = z.object({
   address2: z.string().optional(),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
-  zipCode: z.string().min(1, "Zip Code is required"),
+  zipCode: z.string().optional(), // Made optional
 });
 
 export type ShippingFormData = z.infer<typeof shippingSchema>;
@@ -136,7 +136,7 @@ const ShippingForm = ({ onNext, initialData }: ShippingFormProps) => {
               {errors.state && <p className="text-destructive text-sm">{errors.state.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="zipCode">Zip Code</Label>
+              <Label htmlFor="zipCode">ZIP Code (optional)</Label> {/* Updated label */}
               <Input id="zipCode" {...register("zipCode")} className={cn(errors.zipCode && "border-destructive")} />
               {errors.zipCode && <p className="text-destructive text-sm">{errors.zipCode.message}</p>}
             </div>

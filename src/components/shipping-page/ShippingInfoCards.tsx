@@ -13,19 +13,19 @@ interface ShippingInfo {
 
 const shippingInfos: ShippingInfo[] = [
   {
+    icon: MapPin,
+    title: "1. Pick-up (Free)",
+    description: "Collect directly from our warehouse in Lagos.",
+  },
+  {
     icon: Truck,
-    title: "Fast & Reliable Delivery",
-    description: "We partner with trusted logistics to ensure your fashion order arrives quickly and safely.",
+    title: "2. Dispatch Rider (@ ₦1)",
+    description: "Riders handle delivery fees; we negotiate fair prices and inform you before dispatch.",
   },
   {
-    icon: Clock,
-    title: "Estimated Delivery Times",
-    description: "Standard shipping: 3-7 business days within Nigeria. Varies by location.",
-  },
-  {
-    icon: Globe,
-    title: "Nationwide Coverage",
-    description: "We deliver to all states and major cities across Nigeria.",
+    icon: Truck,
+    title: "3. Pack Delivery (@ ₦1)",
+    description: "Drivers handle delivery fees; we negotiate fair prices and inform you before dispatch.",
   },
   {
     icon: Package,
@@ -33,14 +33,14 @@ const shippingInfos: ShippingInfo[] = [
     description: "Receive a tracking number via email once your fashion bundle is dispatched.",
   },
   {
-    icon: MapPin,
-    title: "Local Pickup Options",
-    description: "Select items may be available for in-store pickup at our Lagos showroom.",
+    icon: ShieldCheck,
+    title: "Quality Assurance",
+    description: "All unique wears are carefully checked before dispatch.",
   },
   {
-    icon: ShieldCheck,
-    title: "Secure Packaging",
-    description: "All unique wears are carefully packed to prevent damage during transit.",
+    icon: Clock,
+    title: "Timely Dispatch",
+    description: "Orders are processed and dispatched promptly after payment confirmation.",
   },
 ];
 
@@ -96,6 +96,15 @@ const ShippingInfoCards = () => {
           </motion.div>
         ))}
       </motion.div>
+      <motion.p
+        className="text-center text-sm md:text-base text-muted-foreground mt-12 max-w-3xl mx-auto"
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+      >
+        💡 All delivery charges are handled between you and the dispatch/driver — Unique Emporium does not profit from delivery fees.
+      </motion.p>
     </section>
   );
 };

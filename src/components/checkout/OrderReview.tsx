@@ -21,12 +21,12 @@ interface OrderReviewProps {
 const OrderReview = ({ shippingInfo, paymentInfo, onPrevious, onPlaceOrder, isPlacingOrder }: OrderReviewProps) => {
   const { cartItems, totalItems, totalPrice } = useCart();
 
-  const vatRate = 0.075; // 7.5% VAT
+  const vatRate = 0; // Changed VAT rate to 0
   const freeShippingThreshold = 100000; // Free shipping over ₦100,000
   const shippingCost = 3500; // Base shipping cost ₦3,500
 
   const subtotal = totalPrice;
-  const vat = subtotal * vatRate;
+  const vat = subtotal * vatRate; // This will now be 0
   const calculatedShipping = subtotal >= freeShippingThreshold ? 0 : shippingCost;
   const total = subtotal + vat + calculatedShipping;
 
@@ -92,10 +92,7 @@ const OrderReview = ({ shippingInfo, paymentInfo, onPrevious, onPlaceOrder, isPl
             <span className="text-muted-foreground">Subtotal</span>
             <span className="font-medium text-foreground">{formatCurrency(subtotal)}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">VAT ({vatRate * 100}%)</span>
-            <span className="font-medium text-foreground">{formatCurrency(vat)}</span>
-          </div>
+          {/* Removed VAT display */}
           <div className="flex justify-between">
             <span className="text-muted-foreground">Shipping</span>
             <span className="font-medium text-foreground">
@@ -106,6 +103,9 @@ const OrderReview = ({ shippingInfo, paymentInfo, onPrevious, onPlaceOrder, isPl
             <span>Grand Total</span>
             <span>{formatCurrency(total)}</span>
           </div>
+          <p className="text-sm text-muted-foreground font-normal mt-2">
+            Prices are final — no VAT or hidden charges.
+          </p>
         </div>
       </CardContent>
       <CardFooter>

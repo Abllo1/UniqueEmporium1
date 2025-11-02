@@ -3,7 +3,7 @@
 import React from "react";
 import { motion, Easing } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { RefreshCw, DollarSign, Package, Clock, ShieldCheck, XCircle, Tag } from "lucide-react"; // Added Tag icon
+import { RefreshCw, DollarSign, Package, Clock, ShieldCheck, XCircle, Tag, CheckCircle2 } from "lucide-react"; // Added CheckCircle2 icon
 
 interface PolicyInfo {
   icon: React.ElementType;
@@ -13,34 +13,34 @@ interface PolicyInfo {
 
 const policyInfos: PolicyInfo[] = [
   {
-    icon: RefreshCw,
-    title: "7-Day Returns",
-    description: "Most fashion items can be returned within 7 days of purchase for a full refund or exchange.",
+    icon: XCircle,
+    title: "No Returns, No Exchange, No Refunds",
+    description: "All products sold in good condition are final sale.",
   },
   {
-    icon: DollarSign,
-    title: "Full Refunds",
-    description: "Eligible returns receive a full refund to the original payment method.",
+    icon: CheckCircle2,
+    title: "Confirm Before Ordering",
+    description: "Please confirm product details, sizes, and quantities before completing your wholesale order.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Quality Assurance",
+    description: "Unique Emporium ensures all items are carefully checked before dispatch.",
   },
   {
     icon: Package,
-    title: "Original Condition",
-    description: "Items must be returned in their original packaging, unused, and with all tags attached.",
-  },
-  {
-    icon: Clock,
-    title: "Processing Time",
-    description: "Refunds are typically processed within 5-7 business days after receiving the returned item.",
+    title: "Careful Packaging",
+    description: "All unique wears are carefully packed to prevent damage during transit.",
   },
   {
     icon: Tag,
-    title: "Thrift Item Policy",
-    description: "Thrift items are returnable only if significantly not as described. Please check descriptions carefully.",
+    title: "Wholesale Focus",
+    description: "Our policies are tailored for wholesale transactions, ensuring competitive pricing.",
   },
   {
-    icon: XCircle,
-    title: "Non-Returnable Items",
-    description: "Certain items like personalized fashion, intimate wear, or final sale items are non-returnable.",
+    icon: Clock,
+    title: "Timely Dispatch",
+    description: "Orders are processed and dispatched promptly after payment confirmation.",
   },
 ];
 
