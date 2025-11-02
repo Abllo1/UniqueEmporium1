@@ -8,7 +8,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
 import useEmblaCarousel from "embla-carousel-react";
-import Autoplay from "embla-carousel-autoplay"; // Import Autoplay plugin
+// Removed Autoplay import as we're implementing custom auto-scroll
 
 interface Category {
   name: string;
@@ -50,12 +50,52 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, x: 0, transition: { duration: 0.6, ease: "easeOut" as Easing } },
 };
 
+// Helper to merge multiple refs into a single callback ref
+const mergeRefs = <T = any>(
+  ...refs: Array<React.MutableRefObject<T> | React.RefCallback<T> | null | undefined>
+): React.RefCallback<T> => {
+  return (value) => {
+    refs.forEach((ref) => {
+      if (typeof ref === 'function') {
+        ref(value);
+      } else if (ref != null) {
+        (ref as React.MutableRefObject<T | null>).current = value;
+      }
+    });
+  };
+};
+
 const CategoriesSection = () => {
   const isMobile = useIsMobile();
-  const autoplayOptions = useRef({ delay: 0, stopOnInteraction: false, stopOnMouseEnter: true }); // Changed delay to 0
-  const [emblaRef] = useEmblaCarousel({ loop: true, dragFree: true }, [
-    Autoplay(autoplayOptions.current),
-  ]);
+  const [emblaRef] = useEmblaCarousel({ loop: true, dragFree: true }); // Embla's ref (a callback)
+  const localScrollRef = useRef<HTMLDivElement>(null); // Our ref to the DOM element
+  const mergedRefs = mergeRefs(emblaRef, localScrollRef); // Combined ref
+  const [isPaused, setIsPaused] = useState(false); // State to control pause/resume
+
+  useEffect(() => {
+    // Only run auto-scrolling on mobile and if not paused
+    if (!isMobile || isPaused || !localScrollRef.current) { // Use localScrollRef.current
+      return;
+    }
+
+    const scrollContainer = localScrollRef.current; // Use localScrollRef.current
+    const scrollSpeed = 1; // Pixels per interval for smooth scroll
+    const intervalTime = 20; // Milliseconds for frequent updates
+
+    const intervalId = setInterval(() => {
+      if (scrollContainer) {
+        scrollContainer.scrollLeft += scrollSpeed;
+
+        // Loop mechanism: if at the end, reset to start
+        // Add a small tolerance for floating point inaccuracies
+        if (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth - 1) {
+          scrollContainer.scrollLeft = 0; // Reset to start
+        }
+      }
+    }, intervalTime);
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount or dependency change
+  }, [isMobile, isPaused, localScrollRef]); // Add localScrollRef to dependencies
 
   return (
     <section className="relative py-[0.4rem]">
@@ -83,8 +123,13 @@ const CategoriesSection = () => {
         </motion.p>
 
         {isMobile ? (
-          // Mobile Carousel
-          <div className="embla no-scrollbar" ref={emblaRef}>
+          // Mobile Carousel with custom auto-scroll and pause on hover
+          <div
+            className="embla no-scrollbar"
+            ref={mergedRefs} // Attach the merged ref here
+            onMouseEnter={() => setIsPaused(true)} // Pause on hover/touch
+            onMouseLeave={() => setIsPaused(false)} // Resume on leave
+          >
             <div className="embla__container flex gap-2">
               {categories.map((category, index) => (
                 <motion.div
@@ -116,7 +161,7 @@ const CategoriesSection = () => {
             </div>
           </div>
         ) : (
-          // Desktop Grid
+          // Desktop Grid (unchanged)
           <motion.div
             className="grid grid-cols-4 lg:grid-cols-6 gap-4 no-scrollbar"
             variants={staggerContainer}
@@ -141,13 +186,13 @@ const CategoriesSection = () => {
                     />
                   </div>
                   <p className="text-sm md:text-base lg:text-lg font-bold text-gray-900 text-center mt-2 leading-tight">
-                    {category.name.split(' ').map((word, i) => (
-                      <React.Fragment key={i}>
-                        {word}
-                        {i < category.name.split(' ').length - 1 && <br />}
-                      </React.Fragment>
-                    ))}
-                  </p>
+                      {category.name.split(' ').map((word, i) => (
+                        <React.Fragment key={i}>
+                          {word}
+                          {i < category.name.split(' ').length - 1 && <br />}
+                        </React.Fragment>
+                      ))}
+                    </p>
                 </Link>
               </motion.div>
             ))}
