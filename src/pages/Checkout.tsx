@@ -8,18 +8,18 @@ import OrderSummaryCard from "@/components/checkout/OrderSummaryCard.tsx";
 import EmptyCartState from "@/components/checkout/EmptyCartState.tsx";
 import OrderPlacedState from "@/components/checkout/OrderPlacedState.tsx";
 import ShippingForm from "@/components/checkout/ShippingForm.tsx";
-import BankTransferPaymentForm from "@/components/checkout/BankTransferPaymentForm.tsx"; // New import
+import BankTransferPaymentForm from "@/components/checkout/BankTransferPaymentForm.tsx";
 import OrderReview from "@/components/checkout/OrderReview.tsx";
 import { useCart } from "@/context/CartContext.tsx";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import type { ShippingFormData } from "@/components/checkout/ShippingForm.tsx";
-import type { BankTransferFormData } from "@/components/checkout/BankTransferPaymentForm.tsx"; // New import
+import type { BankTransferFormData } from "@/components/checkout/BankTransferPaymentForm.tsx";
 
 interface OrderData {
   shipping: ShippingFormData | null;
-  bankTransfer: BankTransferFormData | null; // Changed from 'payment' to 'bankTransfer'
+  bankTransfer: BankTransferFormData | null;
 }
 
 const formTransitionVariants = {
@@ -42,7 +42,7 @@ const formTransitionVariants = {
 const Checkout = () => {
   const { cartItems, clearCart } = useCart();
   const [currentStep, setCurrentStep] = useState(1);
-  const [orderData, setOrderData] = useState<OrderData>({ shipping: null, bankTransfer: null }); // Updated state
+  const [orderData, setOrderData] = useState<OrderData>({ shipping: null, bankTransfer: null });
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [direction, setDirection] = useState(0);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
@@ -54,13 +54,13 @@ const Checkout = () => {
     }
   }, [cartItems, isOrderPlaced]);
 
-  const handleNextStep = (data: ShippingFormData | BankTransferFormData) => { // Updated type
+  const handleNextStep = (data: ShippingFormData | BankTransferFormData) => {
     setDirection(1);
-    if (currentStep === 1) {
-      setOrderData((prev) => ({ ...prev, shipping: data as ShippingFormData }));
+    if (currentStep === 1) { // Now Bank Transfer
+      setOrderData((prev) => ({ ...prev, bankTransfer: data as BankTransferFormData }));
       setCurrentStep(2);
-    } else if (currentStep === 2) {
-      setOrderData((prev) => ({ ...prev, bankTransfer: data as BankTransferFormData })); // Updated state key
+    } else if (currentStep === 2) { // Now Shipping
+      setOrderData((prev) => ({ ...prev, shipping: data as ShippingFormData }));
       setCurrentStep(3);
     }
   };
@@ -98,15 +98,15 @@ const Checkout = () => {
 
   const renderStepContent = () => {
     switch (currentStep) {
-      case 1:
+      case 1: // First step: Bank Transfer Payment
+        return <BankTransferPaymentForm onNext={handleNextStep} onPrevious={handlePreviousStep} initialData={orderData.bankTransfer} />;
+      case 2: // Second step: Shipping Information
         return <ShippingForm onNext={handleNextStep} initialData={orderData.shipping} />;
-      case 2:
-        return <BankTransferPaymentForm onNext={handleNextStep} onPrevious={handlePreviousStep} initialData={orderData.bankTransfer} />; // Using new component
-      case 3:
-        if (!orderData.shipping || !orderData.bankTransfer) { // Updated check
+      case 3: // Third step: Order Review
+        if (!orderData.shipping || !orderData.bankTransfer) {
           return (
             <div className="text-center py-10">
-              <p className="text-destructive">Error: Missing shipping or payment information.</p>
+              <p className="text-destructive">Error: Missing payment or shipping information.</p>
               <Button onClick={() => setCurrentStep(1)} className="mt-4">Start Over</Button>
             </div>
           );
@@ -114,7 +114,7 @@ const Checkout = () => {
         return (
           <OrderReview
             shippingInfo={orderData.shipping!}
-            bankTransferInfo={orderData.bankTransfer!} // Updated prop name
+            bankTransferInfo={orderData.bankTransfer!}
             onPrevious={handlePreviousStep}
             onPlaceOrder={handlePlaceOrder}
             isPlacingOrder={isPlacingOrder}
