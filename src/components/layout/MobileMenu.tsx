@@ -4,18 +4,18 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Heart, Shirt, Baby, Gem, ShoppingBag, Info, Mail, List } from "lucide-react"; // Added List icon
+import { Heart, Shirt, Baby, Gem, ShoppingBag, Info, Mail, List } from "lucide-react";
 import Badge from "@/components/common/Badge.tsx";
 import { motion, Easing } from "framer-motion";
 import { useCart } from "@/context/CartContext.tsx";
 import { useFavorites } from "@/context/FavoritesContext.tsx";
-import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx"; // Import the new logo component
+import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"; // Added Accordion imports
+} from "@/components/ui/accordion";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -70,15 +70,15 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
           </Button>
 
           {/* Categories Accordion */}
-          <div className="border-t border-border pt-4">
+          <div className="border-t border-border pt-2"> {/* Changed pt-4 to pt-2 */}
             <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="categories" className="border-b-0"> {/* Removed bottom border */}
+              <AccordionItem value="categories" className="border-b-0">
                 <AccordionTrigger className="flex items-center justify-between px-4 py-2 text-base font-semibold text-foreground hover:no-underline">
                   <div className="flex items-center">
                     <List className="mr-2 h-5 w-5" /> Categories
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="pb-0"> {/* Removed default padding-bottom */}
+                <AccordionContent className="pb-0">
                   <div className="grid grid-cols-2 gap-2 px-2">
                     {categories.map((category) => (
                       <Button
