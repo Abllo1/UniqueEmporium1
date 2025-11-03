@@ -70,7 +70,7 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
           </Button>
 
           {/* Categories Accordion */}
-          <div className="border-t border-border pt-2"> {/* Changed pt-4 to pt-2 */}
+          <div className="border-t border-border pt-2">
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="categories" className="border-b-0">
                 <AccordionTrigger className="flex items-center justify-between px-4 py-2 text-base font-semibold text-foreground hover:no-underline">
@@ -97,12 +97,13 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
             </Accordion>
           </div>
 
-          <div className="border-t border-border pt-4">
-            <Button variant="ghost" className="justify-start text-base relative" onClick={() => handleLinkClick("/favorites")}>
+          {/* Favorites and Cart buttons - now stacked vertically */}
+          <div className="border-t border-border pt-4 flex flex-col space-y-2"> {/* Added flex flex-col space-y-2 */}
+            <Button variant="ghost" className="justify-start text-base relative w-full" onClick={() => handleLinkClick("/favorites")}> {/* Added w-full */}
               <Heart className="mr-2 h-5 w-5" /> Favorites
               <Badge count={totalFavorites} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />
             </Button>
-            <Button variant="ghost" className="justify-start text-base relative" onClick={() => handleLinkClick("/cart")}>
+            <Button variant="ghost" className="justify-start text-base relative w-full" onClick={() => handleLinkClick("/cart")}> {/* Added w-full */}
               <ShoppingBag className="mr-2 h-5 w-5" /> Cart
               <Badge count={totalItems} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />
             </Button>
