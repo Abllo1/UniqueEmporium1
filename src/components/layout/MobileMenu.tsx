@@ -82,7 +82,7 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
               <AccordionItem value="account" className="border-b-0">
                 <AccordionTrigger className="flex items-center justify-between px-4 py-1 text-base font-semibold text-foreground hover:no-underline">
                   <div className="flex items-center">
-                    <User className="mr-2 h-5 w-5" /> My Account Dashboard
+                    <User className="mr-2 h-5 w-5" /> My Account
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="pb-0">
@@ -97,6 +97,13 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
                         <item.icon className="mr-2 h-4 w-4" /> {item.name}
                       </Button>
                     ))}
+                    <Button
+                      variant="ghost"
+                      className="justify-start text-sm py-1 text-destructive hover:bg-destructive/10"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" /> Logout
+                    </Button>
                   </div>
                 </AccordionContent>
               </AccordionItem>
