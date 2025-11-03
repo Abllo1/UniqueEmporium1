@@ -39,10 +39,10 @@ const DashboardHome = () => {
       initial="hidden"
       animate="visible"
     >
-      <motion.h1 className="text-3xl font-bold text-foreground" variants={fadeInUp}>
+      <motion.h1 className="text-2xl md:text-3xl font-bold text-foreground" variants={fadeInUp}> {/* Adjusted text size for mobile */}
         Welcome, Fashionista!
       </motion.h1>
-      <motion.p className="text-muted-foreground text-lg" variants={fadeInUp}>
+      <motion.p className="text-sm md:text-lg text-muted-foreground" variants={fadeInUp}> {/* Adjusted text size for mobile */}
         Here's a quick overview of your Unique Emporium account.
       </motion.p>
 
