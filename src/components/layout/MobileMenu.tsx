@@ -47,6 +47,13 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
     navigate(path);
   };
 
+  const handleLogout = () => {
+    // Handle logout logic here (e.g., clear user session, tokens)
+    onClose();
+    navigate("/"); // Redirect to home after logout
+    toast.info("You have been logged out.");
+  };
+
   const menuVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" as Easing } },
@@ -64,14 +71,39 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
           animate="visible"
           variants={menuVariants}
         >
+          {/* 1. Home */}
           <Button variant="ghost" className="justify-start text-base py-1" onClick={() => handleLinkClick("/")}>
             <Info className="mr-2 h-5 w-5" /> Home
           </Button>
-          <Button variant="ghost" className="justify-start text-base py-1" onClick={() => handleLinkClick("/products")}>
-            <ShoppingBag className="mr-2 h-5 w-5" /> Shop All
-          </Button>
 
-          {/* Categories Accordion */}
+          {/* 2. My Account Accordion */}
+          <div>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="account" className="border-b-0">
+                <AccordionTrigger className="flex items-center justify-between px-4 py-1 text-base font-semibold text-foreground hover:no-underline">
+                  <div className="flex items-center">
+                    <User className="mr-2 h-5 w-5" /> My Account Dashboard
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pb-0">
+                  <div className="flex flex-col space-y-1 px-2">
+                    {accountNavItems.map((item) => (
+                      <Button
+                        key={item.name}
+                        variant="ghost"
+                        className="justify-start text-sm py-1"
+                        onClick={() => handleLinkClick(item.path)}
+                      >
+                        <item.icon className="mr-2 h-4 w-4" /> {item.name}
+                      </Button>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+
+          {/* 3. Categories Accordion */}
           <div>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="categories" className="border-b-0">
@@ -99,65 +131,41 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
             </Accordion>
           </div>
 
-          {/* My Account Accordion */}
-          <div>
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="account" className="border-b-0">
-                <AccordionTrigger className="flex items-center justify-between px-4 py-1 text-base font-semibold text-foreground hover:no-underline">
-                  <div className="flex items-center">
-                    <User className="mr-2 h-5 w-5" /> My Account
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="pb-0">
-                  <div className="flex flex-col space-y-1 px-2">
-                    {accountNavItems.map((item) => (
-                      <Button
-                        key={item.name}
-                        variant="ghost"
-                        className="justify-start text-sm py-1"
-                        onClick={() => handleLinkClick(item.path)}
-                      >
-                        <item.icon className="mr-2 h-4 w-4" /> {item.name}
-                      </Button>
-                    ))}
-                    <Button
-                      variant="ghost"
-                      className="justify-start text-sm py-1 text-destructive hover:bg-destructive/10"
-                      onClick={() => {
-                        // Handle logout logic here
-                        onClose();
-                        navigate("/"); // Redirect to home after logout
-                        toast.info("You have been logged out.");
-                      }}
-                    >
-                      <LogOut className="mr-2 h-4 w-4" /> Logout
-                    </Button>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+          {/* 4. Shop All */}
+          <Button variant="ghost" className="justify-start text-base py-1" onClick={() => handleLinkClick("/products")}>
+            <ShoppingBag className="mr-2 h-5 w-5" /> Shop All
+          </Button>
 
-          {/* Favorites and Cart buttons */}
-          <div className="flex flex-col space-y-1">
-            <Button variant="ghost" className="justify-start text-base relative w-full py-1" onClick={() => handleLinkClick("/favorites")}>
-              <Heart className="mr-2 h-5 w-5" /> Favorites
-              <Badge count={totalFavorites} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />
-            </Button>
-            <Button variant="ghost" className="justify-start text-base relative w-full py-1" onClick={() => handleLinkClick("/cart")}>
-              <ShoppingBag className="mr-2 h-5 w-5" /> Cart
-              <Badge count={totalItems} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />
-            </Button>
-          </div>
+          {/* 5. Favorites */}
+          <Button variant="ghost" className="justify-start text-base relative w-full py-1" onClick={() => handleLinkClick("/favorites")}>
+            <Heart className="mr-2 h-5 w-5" /> Favorites
+            <Badge count={totalFavorites} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />
+          </Button>
 
-          <div>
-            <Button variant="ghost" className="justify-start text-base py-1" onClick={() => handleLinkClick("/about")}>
-              <Info className="mr-2 h-5 w-5" /> About Us
-            </Button>
-            <Button variant="ghost" className="justify-start text-base py-1" onClick={() => handleLinkClick("/contact")}>
-              <Mail className="mr-2 h-5 w-5" /> Contact
-            </Button>
-          </div>
+          {/* 6. Cart */}
+          <Button variant="ghost" className="justify-start text-base relative w-full py-1" onClick={() => handleLinkClick("/cart")}>
+            <ShoppingBag className="mr-2 h-5 w-5" /> Cart
+            <Badge count={totalItems} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />
+          </Button>
+
+          {/* 7. About Us */}
+          <Button variant="ghost" className="justify-start text-base py-1" onClick={() => handleLinkClick("/about")}>
+            <Info className="mr-2 h-5 w-5" /> About Us
+          </Button>
+
+          {/* 8. Contact */}
+          <Button variant="ghost" className="justify-start text-base py-1" onClick={() => handleLinkClick("/contact")}>
+            <Mail className="mr-2 h-5 w-5" /> Contact
+          </Button>
+
+          {/* 9. Logout */}
+          <Button
+            variant="ghost"
+            className="justify-start text-base py-1 text-destructive hover:bg-destructive/10"
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-2 h-5 w-5" /> Logout
+          </Button>
         </motion.nav>
       </SheetContent>
     </Sheet>
