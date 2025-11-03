@@ -39,12 +39,15 @@ const DashboardHome = () => {
       initial="hidden"
       animate="visible"
     >
-      <motion.h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2" variants={fadeInUp}> {/* Added mb-2 here */}
-        Welcome, Fashionista!
-      </motion.h1>
-      <motion.p className="text-sm md:text-lg text-muted-foreground" variants={fadeInUp}>
-        Here's a quick overview of your Unique Emporium account.
-      </motion.p>
+      {/* Wrapper for the welcome text block with conditional bottom padding */}
+      <div className="pb-[0.3rem] md:pb-0">
+        <motion.h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2" variants={fadeInUp}>
+          Welcome, Fashionista!
+        </motion.h1>
+        <motion.p className="text-sm md:text-lg text-muted-foreground" variants={fadeInUp}>
+          Here's a quick overview of your Unique Emporium account.
+        </motion.p>
+      </div>
 
       <motion.div
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
