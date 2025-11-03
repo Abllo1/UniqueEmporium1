@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Menu, X, Search, Heart, ChevronDown, Shirt, Baby, Gem, ShoppingBag } from "lucide-react";
+import { Menu, X, Search, Heart, ChevronDown, Shirt, Baby, Gem, ShoppingBag, User } from "lucide-react"; // Added User icon
 import Badge from "@/components/common/Badge.tsx";
 import CartIcon from "@/components/common/CartIcon.tsx";
 import SlideOutSearchBar from "./SlideOutSearchBar.tsx";
@@ -26,7 +26,7 @@ const categories = [
   { name: "Kids", icon: Baby, link: "/products?category=Kids" },
   { name: "Kids Patpat", icon: Baby, link: "/products?category=Kids Patpat" },
   { name: "Children Jeans", icon: Baby, link: "/products?category=Children Jeans" },
-  { name: "Children Shirts", icon: Baby, link: "/products?category=Children Shirts" },
+  { name: "Children Shirts", icon: Baby, link: "/products?category=Children Jeans" },
   { name: "Men Vintage Shirts", icon: Shirt, link: "/products?category=Men Vintage Shirts" },
   { name: "Amazon Ladies", icon: ShoppingBag, link: "/products?category=Amazon Ladies" },
   { name: "SHEIN Gowns", icon: Shirt, link: "/products?category=SHEIN Gowns" },
@@ -133,6 +133,13 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
             </Link>
 
             <CartIcon onOpenCartDrawer={() => setIsCartDrawerOpen(true)} />
+
+            {/* Account Dashboard Link */}
+            <Link to="/account" className="relative">
+              <Button variant="ghost" size="icon">
+                <User className="h-5 w-5" />
+              </Button>
+            </Link>
 
             {/* Mobile Menu Button */}
             <Button
