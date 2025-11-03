@@ -15,7 +15,7 @@ const shippingInfos: ShippingInfo[] = [
   {
     icon: MapPin,
     title: "1. Pick-up (Free)",
-    description: "Collect directly from our warehouse in Lagos.",
+    description: "Collect directly from our warehouse in Ilorin.", // Corrected from Lagos to Ilorin
   },
   {
     icon: Truck,
