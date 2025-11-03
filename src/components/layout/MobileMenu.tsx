@@ -4,7 +4,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Heart, Shirt, Baby, Gem, ShoppingBag, Info, Mail, List, User, LogOut } from "lucide-react";
+import { Heart, Shirt, Baby, Gem, ShoppingBag, Info, Mail, List, User, LogOut, Home } from "lucide-react"; // Import Home icon
 import Badge from "@/components/common/Badge.tsx";
 import { motion, Easing } from "framer-motion";
 import { useCart } from "@/context/CartContext.tsx";
@@ -73,7 +73,7 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
         >
           {/* 1. Home */}
           <Button variant="ghost" className="justify-start text-base py-1" onClick={() => handleLinkClick("/")}>
-            <Info className="mr-2 h-5 w-5" /> Home
+            <Home className="mr-2 h-5 w-5" /> Home
           </Button>
 
           {/* 2. My Account Accordion */}
@@ -97,7 +97,6 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
                         <item.icon className="mr-2 h-4 w-4" /> {item.name}
                       </Button>
                     ))}
-                    {/* Removed the duplicate Logout button from here */}
                   </div>
                 </AccordionContent>
               </AccordionItem>
