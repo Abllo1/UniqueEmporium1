@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Menu, X, Search, Heart, ChevronDown, Shirt, Baby, Gem, ShoppingBag, User } from "lucide-react"; // Added User icon
+import { Menu, X, Search, Heart, ChevronDown, Shirt, Baby, Gem, ShoppingBag, User } from "lucide-react";
 import Badge from "@/components/common/Badge.tsx";
 import CartIcon from "@/components/common/CartIcon.tsx";
 import SlideOutSearchBar from "./SlideOutSearchBar.tsx";
@@ -134,12 +134,14 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
 
             <CartIcon onOpenCartDrawer={() => setIsCartDrawerOpen(true)} />
 
-            {/* Account Dashboard Link */}
-            <Link to="/account" className="relative">
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-              </Button>
-            </Link>
+            {/* Account Dashboard Link (Hidden on mobile) */}
+            {!isMobile && (
+              <Link to="/account" className="relative">
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
 
             {/* Mobile Menu Button */}
             <Button
