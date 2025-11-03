@@ -2,35 +2,22 @@
 
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
-import { LayoutDashboard, User, ShoppingBag, ReceiptText, LogOut, ChevronRight, Menu } from "lucide-react";
-import { motion, Easing } from "framer-motion";
+import { LogOut, ChevronRight } from "lucide-react";
+import { motion, Easing } from "framer-motion"; // Import Easing
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { accountNavItems, linkVariants } from "@/data/accountNavItems.ts"; // Import from new file
 
 interface AccountSidebarProps {
-  onCloseMobileMenu?: () => void; // Callback for mobile menu close
+  onCloseMobileMenu?: () => void; // Callback for mobile menu close (now unused in desktop sidebar)
 }
 
-const navItems = [
-  { name: "Dashboard", icon: LayoutDashboard, path: "/account" },
-  { name: "Profile", icon: User, path: "/account/profile" },
-  { name: "Orders", icon: ShoppingBag, path: "/account/orders" },
-  { name: "Receipts", icon: ReceiptText, path: "/account/receipts" },
-];
-
-const linkVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.3, ease: "easeOut" as Easing } },
-};
-
 const AccountSidebar = ({ onCloseMobileMenu }: AccountSidebarProps) => {
-  const isMobile = useIsMobile();
+  // onCloseMobileMenu is no longer directly used here as this component is for desktop only.
 
   const renderNavLinks = () => (
     <motion.ul className="space-y-2" initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.05 } } }}>
-      {navItems.map((item, index) => (
+      {accountNavItems.map((item, index) => (
         <motion.li key={item.name} variants={linkVariants}>
           <NavLink
             to={item.path}
@@ -41,7 +28,7 @@ const AccountSidebar = ({ onCloseMobileMenu }: AccountSidebarProps) => {
                 isActive ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground",
               )
             }
-            onClick={onCloseMobileMenu}
+            // onClick={onCloseMobileMenu} // Removed as this is for desktop
           >
             <item.icon className="h-5 w-5" />
             {item.name}
@@ -57,22 +44,6 @@ const AccountSidebar = ({ onCloseMobileMenu }: AccountSidebarProps) => {
       </motion.li>
     </motion.ul>
   );
-
-  if (isMobile) {
-    return (
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="outline" size="sm" className="w-full justify-start text-base md:hidden">
-            <Menu className="mr-2 h-5 w-5" /> Account Menu
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-[70vw] sm:w-[250px] flex flex-col">
-          <h2 className="text-xl font-bold mb-6 text-foreground">My Account</h2>
-          {renderNavLinks()}
-        </SheetContent>
-      </Sheet>
-    );
-  }
 
   return (
     <motion.aside

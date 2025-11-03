@@ -17,13 +17,8 @@ const Account = () => {
 
   return (
     <div className="min-h-screen w-full bg-background flex flex-col md:flex-row">
-      {/* Sidebar for Desktop, Menu Button for Mobile */}
-      <div className="md:hidden p-4 border-b border-border">
-        <AccountSidebar />
-      </div>
-      <div className="hidden md:block">
-        <AccountSidebar />
-      </div>
+      {/* Sidebar for Desktop */}
+      <AccountSidebar />
 
       {/* Main Content Area */}
       <main className="flex-grow p-4 md:p-8 lg:p-10">

@@ -4,7 +4,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Heart, Shirt, Baby, Gem, ShoppingBag, Info, Mail, List } from "lucide-react";
+import { Heart, Shirt, Baby, Gem, ShoppingBag, Info, Mail, List, User, LogOut } from "lucide-react";
 import Badge from "@/components/common/Badge.tsx";
 import { motion, Easing } from "framer-motion";
 import { useCart } from "@/context/CartContext.tsx";
@@ -16,6 +16,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { accountNavItems } from "@/data/accountNavItems.ts"; // Import account nav items
+import { toast } from "sonner"; // Import toast
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -57,7 +59,7 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
           <UniqueEmporiumLogo className="h-[100px]" />
         </SheetHeader>
         <motion.nav
-          className="flex flex-col space-y-1 py-2 overflow-y-auto" // Changed space-y-4 to space-y-1 and py-4 to py-2
+          className="flex flex-col space-y-1 py-2 overflow-y-auto"
           initial="hidden"
           animate="visible"
           variants={menuVariants}
@@ -70,10 +72,10 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
           </Button>
 
           {/* Categories Accordion */}
-          <div> {/* Removed border-t border-border pt-2 */}
+          <div>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="categories" className="border-b-0">
-                <AccordionTrigger className="flex items-center justify-between px-4 py-1 text-base font-semibold text-foreground hover:no-underline"> {/* Changed py-2 to py-1 */}
+                <AccordionTrigger className="flex items-center justify-between px-4 py-1 text-base font-semibold text-foreground hover:no-underline">
                   <div className="flex items-center">
                     <List className="mr-2 h-5 w-5" /> Categories
                   </div>
@@ -97,8 +99,47 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
             </Accordion>
           </div>
 
-          {/* Favorites and Cart buttons - now stacked vertically */}
-          <div className="flex flex-col space-y-1"> {/* Removed border-t border-border pt-4, changed space-y-2 to space-y-1 */}
+          {/* My Account Accordion */}
+          <div>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="account" className="border-b-0">
+                <AccordionTrigger className="flex items-center justify-between px-4 py-1 text-base font-semibold text-foreground hover:no-underline">
+                  <div className="flex items-center">
+                    <User className="mr-2 h-5 w-5" /> My Account
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pb-0">
+                  <div className="flex flex-col space-y-1 px-2">
+                    {accountNavItems.map((item) => (
+                      <Button
+                        key={item.name}
+                        variant="ghost"
+                        className="justify-start text-sm py-1"
+                        onClick={() => handleLinkClick(item.path)}
+                      >
+                        <item.icon className="mr-2 h-4 w-4" /> {item.name}
+                      </Button>
+                    ))}
+                    <Button
+                      variant="ghost"
+                      className="justify-start text-sm py-1 text-destructive hover:bg-destructive/10"
+                      onClick={() => {
+                        // Handle logout logic here
+                        onClose();
+                        navigate("/"); // Redirect to home after logout
+                        toast.info("You have been logged out.");
+                      }}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" /> Logout
+                    </Button>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+
+          {/* Favorites and Cart buttons */}
+          <div className="flex flex-col space-y-1">
             <Button variant="ghost" className="justify-start text-base relative w-full py-1" onClick={() => handleLinkClick("/favorites")}>
               <Heart className="mr-2 h-5 w-5" /> Favorites
               <Badge count={totalFavorites} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />
@@ -109,7 +150,7 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
             </Button>
           </div>
 
-          <div> {/* Removed border-t border-border pt-4 */}
+          <div>
             <Button variant="ghost" className="justify-start text-base py-1" onClick={() => handleLinkClick("/about")}>
               <Info className="mr-2 h-5 w-5" /> About Us
             </Button>
