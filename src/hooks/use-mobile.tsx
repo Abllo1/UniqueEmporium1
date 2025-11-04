@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-const MOBILE_BREAKPOINT = 1024; // Changed from 768 to 1024 to include tablet screens
+const MOBILE_BREAKPOINT = 768; // Set to 768px to target mobile devices, excluding tablets
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
