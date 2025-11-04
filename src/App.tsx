@@ -10,6 +10,7 @@ import { CartProvider } from "./context/CartContext.tsx";
 import { FavoritesProvider } from "./context/FavoritesContext.tsx";
 import ScrollToTop from "./components/common/ScrollToTop.tsx";
 import LoadingPage from "./components/common/LoadingPage.tsx"; // Import the new LoadingPage
+import FloatingWhatsApp from "./components/layout/FloatingWhatsApp.tsx"; // Import FloatingWhatsApp
 
 // Lazily load page components for code splitting
 const Index = lazy(() => import("./pages/Index.tsx"));
@@ -81,6 +82,7 @@ const App = () => {
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
+                <FloatingWhatsApp /> {/* Add the FloatingWhatsApp component here */}
                 <Footer />
             </FavoritesProvider>
           </CartProvider>
