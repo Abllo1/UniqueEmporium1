@@ -55,6 +55,7 @@ const CategoriesSection = () => {
   const scrollSpeed = 1; // Adjust scroll speed as needed
 
   // Conditionally create the list of categories to display
+  // Duplicate only if isMobile is true (for auto-scrolling effect)
   const categoriesToDisplay = isMobile ? [...categories, ...categories] : categories;
 
   useEffect(() => {
@@ -73,6 +74,7 @@ const CategoriesSection = () => {
       if (elapsed > 16 && !isPaused) { // Only scroll if not paused
         scrollElement.scrollLeft += scrollSpeed;
         
+        // Calculate the width of a single set of categories
         const singleSetWidth = scrollElement.scrollWidth / 2; 
 
         if (scrollElement.scrollLeft >= singleSetWidth) {
@@ -118,7 +120,10 @@ const CategoriesSection = () => {
 
         {/* Category Cards Container */}
         <motion.div
-          className="flex overflow-x-auto whitespace-nowrap gap-2 pb-4 md:grid md:grid-cols-4 lg:grid-cols-6 md:gap-4 no-scrollbar"
+          className={cn(
+            "flex overflow-x-auto whitespace-nowrap gap-2 pb-4 no-scrollbar",
+            !isMobile && "grid grid-cols-4 lg:grid-cols-8 gap-4" // Use grid layout for desktop/tablet
+          )}
           ref={scrollRef}
           onMouseEnter={() => isMobile && setIsPaused(true)}
           onMouseLeave={() => isMobile && setIsPaused(false)}
