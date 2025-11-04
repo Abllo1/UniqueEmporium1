@@ -50,8 +50,8 @@ const FloatingWhatsApp = () => {
           <motion.div
             className={cn(
               "relative w-72 md:w-80 p-6 rounded-xl shadow-2xl",
-              "bg-neon-purple/20 backdrop-blur-md border border-neon-purple/50",
-              "flex flex-col space-y-4 text-neon-purple-foreground mr-4"
+              "bg-secondary/20 backdrop-blur-md border border-secondary/50", // Using secondary color
+              "flex flex-col space-y-4 text-secondary-foreground mr-4" // Using secondary-foreground
             )}
             variants={panelVariants}
             initial="hidden"
@@ -62,18 +62,18 @@ const FloatingWhatsApp = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute top-2 right-2 h-8 w-8 text-neon-purple-foreground hover:bg-neon-purple/30"
+                className="absolute top-2 right-2 h-8 w-8 text-secondary-foreground hover:bg-secondary/30" // Using secondary color
                 onClick={handleTogglePanel}
               >
                 <X className="h-5 w-5" />
               </Button>
             )}
-            <h3 className="font-poppins text-lg font-semibold text-neon-purple-foreground">
+            <h3 className="font-poppins text-lg font-semibold text-secondary-foreground">
               If you have any queries or want to chat with us directly 👇👇
             </h3>
             <Button
               asChild
-              className="w-full bg-neon-purple hover:bg-neon-purple/90 text-neon-purple-foreground"
+              className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground" // Using secondary color
             >
               <a
                 href="https://wa.me/message/CHT2INJ4SKUMH1"
@@ -86,7 +86,7 @@ const FloatingWhatsApp = () => {
             </Button>
             <Button
               asChild
-              className="w-full bg-neon-purple hover:bg-neon-purple/90 text-neon-purple-foreground"
+              className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground" // Using secondary color
             >
               <a
                 href="https://wa.me/message/5KPFXJHULYLID1"
@@ -103,7 +103,7 @@ const FloatingWhatsApp = () => {
 
       {/* Floating WhatsApp Icon */}
       <motion.button
-        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-neon-purple shadow-lg text-neon-purple-foreground"
+        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-secondary shadow-lg text-secondary-foreground" // Using secondary color
         onClick={handleTogglePanel}
         variants={iconVariants}
         initial="initial"

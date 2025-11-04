@@ -65,10 +65,7 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        "neon-purple": {
-          DEFAULT: "hsl(var(--neon-purple))",
-          foreground: "hsl(var(--neon-purple-foreground))",
-        },
+        // Removed neon-purple color definition
       },
       borderRadius: {
         lg: "var(--radius)",

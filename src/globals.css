@@ -32,8 +32,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 260 90% 36%; /* #6A0DAD */
 
-    --neon-purple: 260 90% 45%; /* A vibrant purple for the WhatsApp panel */
-    --neon-purple-foreground: 210 40% 98%; /* White text for contrast */
+    /* Removed --neon-purple and --neon-purple-foreground */
 
     --radius: 0.5rem;
 
@@ -76,8 +75,7 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 260 90% 36%; /* #6A0DAD */
 
-    --neon-purple: 260 90% 45%; /* A vibrant purple for the WhatsApp panel */
-    --neon-purple-foreground: 210 40% 98%; /* White text for contrast */
+    /* Removed --neon-purple and --neon-purple-foreground */
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
