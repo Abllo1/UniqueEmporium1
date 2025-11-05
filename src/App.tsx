@@ -41,7 +41,8 @@ const AdminLayout = lazy(() => import("./components/admin/AdminLayout.tsx"));
 const AdminDashboardOverview = lazy(() => import("./pages/admin/DashboardOverview.tsx"));
 const AdminOrdersManagement = lazy(() => import("./pages/admin/OrdersManagement.tsx"));
 const AdminProductsManagement = lazy(() => import("./pages/admin/ProductsManagement.tsx"));
-const AdminCategoriesManagement = lazy(() => import("./pages/admin/CategoriesManagement.tsx")); // New import
+const AdminCategoriesManagement = lazy(() => import("./pages/admin/CategoriesManagement.tsx"));
+const AdminUsersManagement = lazy(() => import("./pages/admin/UsersManagement.tsx")); // New import
 
 
 const queryClient = new QueryClient();
@@ -90,9 +91,9 @@ const App = () => {
                       <Route index element={<AdminDashboardOverview />} /> {/* Default route for /admin */}
                       <Route path="orders" element={<AdminOrdersManagement />} />
                       <Route path="products" element={<AdminProductsManagement />} />
-                      <Route path="categories" element={<AdminCategoriesManagement />} /> {/* New Admin Categories Route */}
+                      <Route path="categories" element={<AdminCategoriesManagement />} />
+                      <Route path="users" element={<AdminUsersManagement />} /> {/* New Admin Users Route */}
                       {/* Add other admin routes here as they are created */}
-                      {/* <Route path="users" element={<AdminUsersManagement />} /> */}
                       {/* <Route path="analytics" element={<AdminAnalyticsDashboard />} /> */}
                     </Route>
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

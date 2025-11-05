@@ -7,8 +7,8 @@ export const adminNavItems = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
   { name: "Orders", icon: ShoppingBag, path: "/admin/orders" },
   { name: "Products", icon: Package, path: "/admin/products" },
-  { name: "Categories", icon: Settings, path: "/admin/categories" }, // Added Categories link
-  { name: "Users", icon: Users, path: "/admin/users" },
+  { name: "Categories", icon: Settings, path: "/admin/categories" },
+  { name: "Users", icon: Users, path: "/admin/users" }, // Added Users link
   { name: "Analytics", icon: BarChart2, path: "/admin/analytics" },
 ];
 
