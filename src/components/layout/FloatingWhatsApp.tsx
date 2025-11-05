@@ -10,20 +10,20 @@ import { cn } from "@/lib/utils";
 
 const FloatingWhatsApp = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile(); // This hook returns true for screens < 768px
 
   const handleTogglePanel = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
 
   const handleMouseEnter = useCallback(() => {
-    if (!isMobile) {
+    if (!isMobile) { // Only open on hover for desktop
       setIsOpen(true);
     }
   }, [isMobile]);
 
   const handleMouseLeave = useCallback(() => {
-    if (!isMobile) {
+    if (!isMobile) { // Only close on leave for desktop
       setIsOpen(false);
     }
   }, [isMobile]);
@@ -41,7 +41,10 @@ const FloatingWhatsApp = () => {
 
   return (
     <div
-      className="fixed bottom-8 right-8 z-50 flex items-end justify-end"
+      className={cn(
+        "fixed bottom-8 right-8 z-50 flex items-end",
+        isMobile ? "flex-col-reverse" : "flex-row justify-end" // Stack vertically on mobile, horizontally on desktop
+      )}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -50,9 +53,10 @@ const FloatingWhatsApp = () => {
         {isOpen && (
           <motion.div
             className={cn(
-              "relative w-[calc(100vw-104px)] max-w-72 md:w-80 p-4 md:p-6 rounded-xl shadow-2xl", // Adjusted width for mobile responsiveness
+              "relative w-72 md:w-80 p-4 md:p-6 rounded-xl shadow-2xl", // Reverted width
               "bg-secondary/20 backdrop-blur-md border border-secondary/50",
-              "flex flex-col space-y-4 text-secondary-foreground mr-4"
+              "flex flex-col space-y-4 text-secondary-foreground",
+              isMobile ? "mb-4" : "mr-4" // Conditional margin for spacing
             )}
             variants={panelVariants}
             initial="hidden"
