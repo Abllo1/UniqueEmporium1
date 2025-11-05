@@ -76,9 +76,10 @@ const productFormSchema = z.object({
   name: z.string().min(1, "Product Name is required"),
   category: z.string().min(1, "Category is required"),
   price: z.coerce.number().min(1, "Price is required and must be positive"), // Price for MOQ
+  originalPrice: z.coerce.number().optional().refine((val) => val === undefined || val > 0, "Original Price must be positive if provided"), // New: Optional original price
   minOrderQuantity: z.coerce.number().min(1, "Minimum Order Quantity is required and must be positive"),
-  status: z.enum(["active", "inactive"]).default("active"), // Re-added status field
-  limitedStock: z.boolean().default(false), // Dedicated limitedStock field
+  status: z.enum(["active", "inactive"]).default("active"),
+  limitedStock: z.boolean().default(false),
   fullDescription: z.string().min(1, "Description is required"),
   images: z.array(z.string()).optional(), // For existing images (URLs)
   newImageFiles: z.instanceof(FileList).optional(), // For new file uploads (FileList)
@@ -100,7 +101,7 @@ const ProductsManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterStockStatus, setFilterStockStatus] = useState("all");
-  const [filterProductStatus, setFilterProductStatus] = useState("all"); // New filter state for product status
+  const [filterProductStatus, setFilterProductStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 10;
 
@@ -121,8 +122,8 @@ const ProductsManagement = () => {
   } = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
-      status: "active", // Default status for new products
-      limitedStock: false, // Default to not limited stock
+      status: "active",
+      limitedStock: false,
       rating: 4.5,
       reviewCount: 0,
       keyFeatures: [],
@@ -134,7 +135,7 @@ const ProductsManagement = () => {
   const currentImageFiles = watch("newImageFiles");
   const currentImages = watch("images");
   const currentLimitedStock = watch("limitedStock");
-  const currentProductStatus = watch("status"); // Watch the product status field
+  const currentProductStatus = watch("status");
 
   // Effect to update image preview when newImageFiles changes
   React.useEffect(() => {
@@ -187,14 +188,14 @@ const ProductsManagement = () => {
       );
     }
 
-    if (filterProductStatus !== "all") { // New filter logic
+    if (filterProductStatus !== "all") {
       filtered = filtered.filter(
         (product) => product.status === filterProductStatus
       );
     }
 
     return filtered;
-  }, [products, searchTerm, filterCategory, filterStockStatus, filterProductStatus]); // Updated dependencies
+  }, [products, searchTerm, filterCategory, filterStockStatus, filterProductStatus]);
 
   // Pagination logic
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -215,7 +216,8 @@ const ProductsManagement = () => {
     reset({
       ...product,
       limitedStock: product.limitedStock,
-      status: product.status, // Set status directly
+      status: product.status,
+      originalPrice: product.originalPrice, // Set originalPrice for editing
       newImageFiles: undefined, // Clear file input for edit
     });
     setImagePreview(product.images?.[0] || null);
@@ -231,11 +233,19 @@ const ProductsManagement = () => {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
+    // Calculate discount percentage if originalPrice is provided and greater than current price
+    let discountPercentage: number | undefined;
+    if (data.originalPrice && data.price < data.originalPrice) {
+      discountPercentage = Math.round(((data.originalPrice - data.price) / data.originalPrice) * 100);
+    }
+
     const newProductData: ProductDetails = {
       id: data.id || `prod-${Date.now()}`, // Generate new ID if adding
       name: data.name,
       category: data.category,
       price: data.price,
+      originalPrice: data.originalPrice, // Use originalPrice from form
+      discountPercentage: discountPercentage, // Calculated discount
       minOrderQuantity: data.minOrderQuantity,
       fullDescription: data.fullDescription,
       rating: data.rating || 0,
@@ -243,9 +253,7 @@ const ProductsManagement = () => {
       tag: data.tag,
       tagVariant: data.tagVariant,
       limitedStock: data.limitedStock,
-      status: data.status, // Use status directly from form
-      originalPrice: editingProduct?.originalPrice,
-      discountPercentage: editingProduct?.discountPercentage,
+      status: data.status,
       images: (data.images && data.images.length > 0) ? data.images : (editingProduct?.images || []),
       keyFeatures: data.keyFeatures || editingProduct?.keyFeatures || [],
       styleNotes: data.styleNotes || editingProduct?.styleNotes || "",
@@ -347,7 +355,7 @@ const ProductsManagement = () => {
                   <SelectItem value="limited-stock">Limited Stock</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={filterProductStatus} onValueChange={setFilterProductStatus}> {/* New filter */}
+              <Select value={filterProductStatus} onValueChange={setFilterProductStatus}>
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Filter by Product Status" />
                 </SelectTrigger>
@@ -384,7 +392,7 @@ const ProductsManagement = () => {
                     <TableHead>Price/Unit</TableHead>
                     <TableHead>Price/MOQ</TableHead>
                     <TableHead>Stock Status</TableHead>
-                    <TableHead>Product Status</TableHead> {/* New column header */}
+                    <TableHead>Product Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -417,7 +425,7 @@ const ProductsManagement = () => {
                             {product.limitedStock ? "Ltd. stock" : "In Stock"}
                           </Badge>
                         </TableCell>
-                        <TableCell> {/* New column for product status */}
+                        <TableCell>
                           <Badge variant={product.status === "active" ? "default" : "secondary"}>
                             {product.status.charAt(0).toUpperCase() + product.status.slice(1)}
                           </Badge>
@@ -539,6 +547,14 @@ const ProductsManagement = () => {
                 {errors.price && <p className="text-destructive text-sm">{errors.price.message}</p>}
               </div>
               <div className="space-y-2">
+                <Label htmlFor="originalPrice">Original Price (Optional, for discount)</Label>
+                <Input id="originalPrice" type="number" step="0.01" {...register("originalPrice")} className={cn(errors.originalPrice && "border-destructive")} />
+                {errors.originalPrice && <p className="text-destructive text-sm">{errors.originalPrice.message}</p>}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
                 <Label htmlFor="minOrderQuantity">Min Order Quantity</Label>
                 <Input id="minOrderQuantity" type="number" {...register("minOrderQuantity")} className={cn(errors.minOrderQuantity && "border-destructive")} />
                 {errors.minOrderQuantity && <p className="text-destructive text-sm">{errors.minOrderQuantity.message}</p>}
@@ -657,6 +673,14 @@ const ProductsManagement = () => {
                 <Input id="price" type="number" step="0.01" {...register("price")} className={cn(errors.price && "border-destructive")} />
                 {errors.price && <p className="text-destructive text-sm">{errors.price.message}</p>}
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="originalPrice">Original Price (Optional, for discount)</Label>
+                <Input id="originalPrice" type="number" step="0.01" {...register("originalPrice")} className={cn(errors.originalPrice && "border-destructive")} />
+                {errors.originalPrice && <p className="text-destructive text-sm">{errors.originalPrice.message}</p>}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="minOrderQuantity">Min Order Quantity</Label>
                 <Input id="minOrderQuantity" type="number" {...register("minOrderQuantity")} className={cn(errors.minOrderQuantity && "border-destructive")} />
