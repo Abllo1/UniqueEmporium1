@@ -50,7 +50,7 @@ const FloatingWhatsApp = () => {
         {isOpen && (
           <motion.div
             className={cn(
-              "relative w-72 md:w-80 p-6 rounded-xl shadow-2xl",
+              "relative w-72 md:w-80 p-4 md:p-6 rounded-xl shadow-2xl", // Changed p-6 to p-4 md:p-6
               "bg-secondary/20 backdrop-blur-md border border-secondary/50", // Using secondary color
               "flex flex-col space-y-4 text-secondary-foreground mr-4" // Using secondary-foreground
             )}
