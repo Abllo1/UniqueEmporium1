@@ -218,26 +218,6 @@ const Footer = () => {
               >
                 <FaTelegram className="h-6 w-6" />
               </motion.a>
-              <motion.a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <Linkedin className="h-6 w-6" />
-              </motion.a>
-              <motion.a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <Youtube className="h-6 w-6" />
-              </motion.a>
             </div>
           </motion.div>
         </motion.div>
