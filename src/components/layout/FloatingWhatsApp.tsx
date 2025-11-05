@@ -50,9 +50,9 @@ const FloatingWhatsApp = () => {
         {isOpen && (
           <motion.div
             className={cn(
-              "relative w-72 md:w-80 p-4 md:p-6 rounded-xl shadow-2xl", // Changed p-6 to p-4 md:p-6
-              "bg-secondary/20 backdrop-blur-md border border-secondary/50", // Using secondary color
-              "flex flex-col space-y-4 text-secondary-foreground mr-4" // Using secondary-foreground
+              "relative w-[calc(100vw-104px)] max-w-72 md:w-80 p-4 md:p-6 rounded-xl shadow-2xl", // Adjusted width for mobile responsiveness
+              "bg-secondary/20 backdrop-blur-md border border-secondary/50",
+              "flex flex-col space-y-4 text-secondary-foreground mr-4"
             )}
             variants={panelVariants}
             initial="hidden"
@@ -63,7 +63,7 @@ const FloatingWhatsApp = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute top-2 right-2 h-8 w-8 text-secondary-foreground hover:bg-secondary/30" // Using secondary color
+                className="absolute top-2 right-2 h-8 w-8 text-secondary-foreground hover:bg-secondary/30"
                 onClick={handleTogglePanel}
               >
                 <X className="h-5 w-5" />
@@ -74,26 +74,26 @@ const FloatingWhatsApp = () => {
             </h3>
             <Button
               asChild
-              className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground" // Using secondary color
+              className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground"
             >
               <a
                 href="https://wa.me/message/CHT2INJ4SKUMH1"
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => isMobile && setIsOpen(false)} // Close on tap for mobile
+                onClick={() => isMobile && setIsOpen(false)}
               >
                 <User className="mr-2 h-4 w-4" /> Rep 1 – Customer Care
               </a>
             </Button>
             <Button
               asChild
-              className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground" // Using secondary color
+              className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground"
             >
               <a
                 href="https://wa.me/message/5KPFXJHULYLID1"
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => isMobile && setIsOpen(false)} // Close on tap for mobile
+                onClick={() => isMobile && setIsOpen(false)}
               >
                 <Package className="mr-2 h-4 w-4" /> Rep 2 – Order Support
               </a>
@@ -104,7 +104,7 @@ const FloatingWhatsApp = () => {
 
       {/* Floating WhatsApp Icon */}
       <motion.button
-        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-whatsapp-green shadow-lg text-white" // Using whatsapp-green and white text
+        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-whatsapp-green shadow-lg text-white"
         onClick={handleTogglePanel}
         variants={iconVariants}
         initial="initial"
