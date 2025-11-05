@@ -2,7 +2,8 @@
 
 import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence, Easing } from "framer-motion";
-import { MessageCircle, X, User, Package } from "lucide-react";
+import { X, User, Package } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa"; // Import FaWhatsapp
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -103,7 +104,7 @@ const FloatingWhatsApp = () => {
 
       {/* Floating WhatsApp Icon */}
       <motion.button
-        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-secondary shadow-lg text-secondary-foreground" // Using secondary color
+        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-whatsapp-green shadow-lg text-white" // Using whatsapp-green and white text
         onClick={handleTogglePanel}
         variants={iconVariants}
         initial="initial"
@@ -111,7 +112,7 @@ const FloatingWhatsApp = () => {
         whileTap="tap"
         aria-label="Open WhatsApp chat"
       >
-        <MessageCircle className="h-8 w-8" />
+        <FaWhatsapp className="h-8 w-8" />
       </motion.button>
     </div>
   );

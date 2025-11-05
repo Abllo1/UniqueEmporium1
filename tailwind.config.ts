@@ -65,7 +65,7 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Removed neon-purple color definition
+        "whatsapp-green": "hsl(var(--whatsapp-green))",
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -32,7 +32,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 260 90% 36%; /* #6A0DAD */
 
-    /* Removed --neon-purple and --neon-purple-foreground */
+    --whatsapp-green: 135 60% 48%; /* #25D366 */
 
     --radius: 0.5rem;
 
@@ -75,7 +75,7 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 260 90% 36%; /* #6A0DAD */
 
-    /* Removed --neon-purple and --neon-purple-foreground */
+    --whatsapp-green: 135 60% 48%; /* #25D366 */
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
