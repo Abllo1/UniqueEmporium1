@@ -20,8 +20,8 @@ import {
   CheckCircle2,
   Shirt, Baby, Gem, ShoppingBag,
   Info,
-  Sparkles, // Reverted to Sparkles as TikTok is not exported from lucide-react
 } from "lucide-react";
+import { FaTiktok } from "react-icons/fa"; // Import FaTiktok from react-icons/fa
 import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx"; // Import the new logo component
 
 const categories = [
@@ -219,7 +219,7 @@ const Footer = () => {
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <Sparkles className="h-6 w-6" /> {/* Reverted to Sparkles */}
+                <FaTiktok className="h-6 w-6" /> {/* Replaced Sparkles with FaTiktok */}
               </motion.a>
               <motion.a
                 href="https://www.instagram.com/unique_emporium1/"
