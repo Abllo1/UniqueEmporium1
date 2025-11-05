@@ -94,7 +94,7 @@ const FloatingWhatsApp = () => {
               className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground"
             >
               <a
-                href="https://wa.me/message/5KPFXJHULYLID1"
+                href="https://wa.me/2349065545572"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => isMobile && setIsOpen(false)}
