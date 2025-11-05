@@ -243,7 +243,7 @@ const OrdersManagement = () => {
               </Button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto"> {/* Added overflow-x-auto here */}
               <Table>
                 <TableHeader>
                   <TableRow>
