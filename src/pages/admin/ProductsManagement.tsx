@@ -414,7 +414,7 @@ const ProductsManagement = () => {
                         <TableCell>{formatCurrency(product.price)}</TableCell>
                         <TableCell>
                           <Badge variant={product.limitedStock ? "destructive" : "default"}>
-                            {product.limitedStock ? "Limited Stock" : "In Stock"}
+                            {product.limitedStock ? "Ltd. stock" : "In Stock"}
                           </Badge>
                         </TableCell>
                         <TableCell> {/* New column for product status */}
