@@ -10,15 +10,11 @@ import {
   Phone,
   MapPin,
   Facebook,
-  Twitter,
   Instagram,
-  Linkedin,
-  Youtube,
   Loader2,
   CheckCircle2,
-  Shirt, Baby, Gem, ShoppingBag,
 } from "lucide-react";
-import { FaTiktok, FaTelegram } from "react-icons/fa"; // Import FaTelegram from react-icons/fa
+import { FaTiktok, FaTelegram, FaWhatsapp } from "react-icons/fa"; // Import FaWhatsapp
 import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx";
 
 const staggerContainer = {
@@ -178,6 +174,16 @@ const Footer = () => {
               )}
             </AnimatePresence>
             <div className="flex space-x-4">
+              <motion.a
+                href="https://whatsapp.com/channel/0029VbBJEWBL7UVVHCMcjT0a"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <FaWhatsapp className="h-6 w-6" />
+              </motion.a>
               <motion.a
                 href="https://www.facebook.com/profile.php?id=100083121582522&mibextid=ZbWKwL"
                 target="_blank"
