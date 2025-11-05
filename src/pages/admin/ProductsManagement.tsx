@@ -83,11 +83,12 @@ const productFormSchema = z.object({
   fullDescription: z.string().min(1, "Description is required"),
   images: z.array(z.string()).optional(), // For existing images (URLs)
   newImageFiles: z.instanceof(FileList).optional(), // For new file uploads (FileList)
+  // New fields for product tag
+  tag: z.string().optional(),
+  tagVariant: z.enum(["default", "secondary", "destructive", "outline"]).optional(),
   // Simplified other fields for admin UI, providing defaults
   rating: z.coerce.number().min(0).max(5).default(4.5),
   reviewCount: z.coerce.number().min(0).default(0),
-  tag: z.string().optional(),
-  tagVariant: z.enum(["default", "secondary", "destructive", "outline"]).optional(),
   styleNotes: z.string().optional(),
   keyFeatures: z.array(z.string()).optional(),
   reviews: z.array(z.any()).optional(), // Simplified
@@ -129,6 +130,8 @@ const ProductsManagement = () => {
       keyFeatures: [],
       reviews: [],
       relatedProducts: [],
+      tag: "", // Default empty tag
+      tagVariant: "default", // Default tag variant
     }
   });
 
@@ -136,6 +139,7 @@ const ProductsManagement = () => {
   const currentImages = watch("images");
   const currentLimitedStock = watch("limitedStock");
   const currentProductStatus = watch("status");
+  const currentTagVariant = watch("tagVariant"); // Watch tag variant
 
   // Effect to update image preview when newImageFiles changes
   React.useEffect(() => {
@@ -206,7 +210,17 @@ const ProductsManagement = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const handleAddProductClick = () => {
-    reset(); // Clear form fields
+    reset({
+      status: "active",
+      limitedStock: false,
+      rating: 4.5,
+      reviewCount: 0,
+      keyFeatures: [],
+      reviews: [],
+      relatedProducts: [],
+      tag: "",
+      tagVariant: "default",
+    }); // Clear form fields and set defaults
     setImagePreview(null);
     setIsAddModalOpen(true);
   };
@@ -217,8 +231,10 @@ const ProductsManagement = () => {
       ...product,
       limitedStock: product.limitedStock,
       status: product.status,
-      originalPrice: product.originalPrice, // Set originalPrice for editing
-      newImageFiles: undefined, // Clear file input for edit
+      originalPrice: product.originalPrice,
+      newImageFiles: undefined,
+      tag: product.tag || "", // Pre-fill tag
+      tagVariant: product.tagVariant || "default", // Pre-fill tag variant
     });
     setImagePreview(product.images?.[0] || null);
     setIsEditModalOpen(true);
@@ -250,8 +266,8 @@ const ProductsManagement = () => {
       fullDescription: data.fullDescription,
       rating: data.rating || 0,
       reviewCount: data.reviewCount || 0,
-      tag: data.tag,
-      tagVariant: data.tagVariant,
+      tag: data.tag, // Use tag from form
+      tagVariant: data.tagVariant, // Use tagVariant from form
       limitedStock: data.limitedStock,
       status: data.status,
       images: (data.images && data.images.length > 0) ? data.images : (editingProduct?.images || []),
@@ -567,6 +583,27 @@ const ProductsManagement = () => {
               {errors.fullDescription && <p className="text-destructive text-sm">{errors.fullDescription.message}</p>}
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="tag">Product Tag (e.g., "New Arrival", "Best Seller")</Label>
+                <Input id="tag" {...register("tag")} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="tagVariant">Tag Style</Label>
+                <Select onValueChange={(value) => setValue("tagVariant", value as "default" | "secondary" | "destructive" | "outline")} value={currentTagVariant}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select tag style" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Default</SelectItem>
+                    <SelectItem value="secondary">Secondary</SelectItem>
+                    <SelectItem value="destructive">Destructive</SelectItem>
+                    <SelectItem value="outline">Outline</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
               <div className="space-y-2">
                 <Label htmlFor="newImageFiles">Upload Product Images (Max 5)</Label>
@@ -692,6 +729,27 @@ const ProductsManagement = () => {
               <Label htmlFor="fullDescription">Product Description</Label>
               <Textarea id="fullDescription" rows={4} {...register("fullDescription")} className={cn(errors.fullDescription && "border-destructive")} />
               {errors.fullDescription && <p className="text-destructive text-sm">{errors.fullDescription.message}</p>}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="tag">Product Tag (e.g., "New Arrival", "Best Seller")</Label>
+                <Input id="tag" {...register("tag")} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="tagVariant">Tag Style</Label>
+                <Select onValueChange={(value) => setValue("tagVariant", value as "default" | "secondary" | "destructive" | "outline")} value={currentTagVariant}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select tag style" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Default</SelectItem>
+                    <SelectItem value="secondary">Secondary</SelectItem>
+                    <SelectItem value="destructive">Destructive</SelectItem>
+                    <SelectItem value="outline">Outline</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
