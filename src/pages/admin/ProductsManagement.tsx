@@ -79,8 +79,8 @@ const productFormSchema = z.object({
   minOrderQuantity: z.coerce.number().min(1, "Minimum Order Quantity is required and must be positive"),
   limitedStock: z.boolean().default(false),
   fullDescription: z.string().min(1, "Description is required"),
-  images: z.array(z.string()).optional(), // For existing images
-  newImageFiles: z.any().optional(), // For new file uploads (FileList or single File)
+  images: z.array(z.string()).optional(), // For existing images (URLs)
+  newImageFiles: z.instanceof(FileList).optional(), // For new file uploads (FileList)
   status: z.enum(["active", "inactive"]).default("active"), // New status field
   // Simplified other fields for admin UI, providing defaults
   rating: z.coerce.number().min(0).max(5).default(4.5),
@@ -89,7 +89,6 @@ const productFormSchema = z.object({
   tagVariant: z.enum(["default", "secondary", "destructive", "outline"]).optional(),
   styleNotes: z.string().optional(),
   keyFeatures: z.array(z.string()).optional(),
-  // detailedSpecs is not directly editable in this form, so we'll manage it separately
   reviews: z.array(z.any()).optional(), // Simplified
   relatedProducts: z.array(z.string()).optional(),
 });
@@ -244,13 +243,17 @@ const ProductsManagement = () => {
       relatedProducts: data.relatedProducts || editingProduct?.relatedProducts || [],
     };
 
-    // Handle new image files, which would override the above if present
+    // Handle new image files
     if (data.newImageFiles && data.newImageFiles.length > 0) {
-      const file = data.newImageFiles[0];
-      if (file instanceof File) {
-        // In a real app, upload file and get URL. For mock, use a placeholder.
-        newProductData.images = [`https://via.placeholder.com/400x400?text=${newProductData.name.replace(/\s/g, '+')}`];
+      const newImageUrls: string[] = [];
+      for (let i = 0; i < data.newImageFiles.length; i++) {
+        const file = data.newImageFiles[i];
+        if (file instanceof File) {
+          // In a real app, upload file and get URL. For mock, use a placeholder URL based on the file index.
+          newImageUrls.push(`https://via.placeholder.com/400x400?text=${newProductData.name.replace(/\s/g, '+')}+Img${i + 1}`);
+        }
       }
+      newProductData.images = newImageUrls;
     }
 
 
@@ -523,14 +526,15 @@ const ProductsManagement = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
               <div className="space-y-2">
-                <Label htmlFor="newImageFiles">Upload Product Image</Label>
+                <Label htmlFor="newImageFiles">Upload Product Images (Max 5)</Label>
                 <Input
                   id="newImageFiles"
                   type="file"
                   accept="image/*"
+                  multiple // Allow multiple files
                   {...register("newImageFiles")}
                 />
-                <p className="text-xs text-muted-foreground">Only the first image will be used for preview.</p>
+                <p className="text-xs text-muted-foreground">Upload up to 5 images. Only the first image will be used for preview.</p>
               </div>
               <div className="space-y-2">
                 <Label>Image Preview</Label>
@@ -626,14 +630,15 @@ const ProductsManagement = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
               <div className="space-y-2">
-                <Label htmlFor="newImageFiles">Upload New Product Image</Label>
+                <Label htmlFor="newImageFiles">Upload New Product Images (Max 5)</Label>
                 <Input
                   id="newImageFiles"
                   type="file"
                   accept="image/*"
+                  multiple // Allow multiple files
                   {...register("newImageFiles")}
                 />
-                <p className="text-xs text-muted-foreground">Upload to replace existing image. Only the first image will be used for preview.</p>
+                <p className="text-xs text-muted-foreground">Upload new images to replace existing ones. Only the first image will be used for preview.</p>
               </div>
               <div className="space-y-2">
                 <Label>Image Preview</Label>
