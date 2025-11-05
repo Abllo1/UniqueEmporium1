@@ -133,15 +133,21 @@
 /* New WhatsApp icon attention animation */
 @keyframes whatsapp-attention {
   0%, 100% {
-    transform: scale(1);
+    transform: translateY(0) scale(1);
   }
-  10% { /* Quick pulse up */
-    transform: scale(1.1);
+  20% { /* Lift up */
+    transform: translateY(-8px) scale(1);
   }
-  20% { /* Return to normal */
-    transform: scale(1);
+  40% { /* Fall down and slightly squash */
+    transform: translateY(0) scale(1.05, 0.95);
   }
-  /* Stays at scale(1) for the rest of the duration to create a pause */
+  60% { /* Rebound slightly */
+    transform: translateY(-4px) scale(1);
+  }
+  80% { /* Settle back */
+    transform: translateY(0) scale(1);
+  }
+  /* The remaining 20% (80% to 100%) will be a pause before repeating */
 }
 
 .animate-whatsapp-attention {
