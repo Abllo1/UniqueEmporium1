@@ -358,7 +358,7 @@ const ProductsManagement = () => {
                     <TableHead>Category</TableHead>
                     <TableHead>MOQ</TableHead>
                     <TableHead>Price/Unit</TableHead>
-                    <TableHead>Price/10-Set</TableHead>
+                    <TableHead>Price/MOQ</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -386,7 +386,7 @@ const ProductsManagement = () => {
                         <TableCell>{product.category}</TableCell>
                         <TableCell>{product.minOrderQuantity}</TableCell>
                         <TableCell>{formatCurrency(product.price / product.minOrderQuantity)}</TableCell>
-                        <TableCell>{formatCurrency((product.price / product.minOrderQuantity) * 10)}</TableCell>
+                        <TableCell>{formatCurrency(product.price)}</TableCell>
                         <TableCell>
                           <Badge variant={product.limitedStock ? "destructive" : "default"}>
                             {product.limitedStock ? "Inactive" : "Active"}
