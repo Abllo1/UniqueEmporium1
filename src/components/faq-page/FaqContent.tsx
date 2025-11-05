@@ -92,7 +92,7 @@ const FaqContent = () => {
           {faqItems.map((item, index) => (
             <motion.div key={index} variants={fadeInUp}>
               <AccordionItem value={`item-${index + 1}`} className="border-b">
-                <AccordionTrigger className="text-base md:text-lg font-semibold hover:no-underline py-4 text-left">
+                <AccordionTrigger className="text-base md:text-lg font-semibold hover:no-underline py-4 text-left pl-0">
                   <span className="mr-2 text-primary">{index + 1}.</span> {item.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-sm md:text-base text-muted-foreground leading-relaxed pt-0 pb-4">
