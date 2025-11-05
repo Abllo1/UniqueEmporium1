@@ -5,8 +5,8 @@ import { Easing } from "framer-motion";
 
 export const adminNavItems = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
-  { name: "Orders", icon: ShoppingBag, path: "/admin/orders" }, // Added Orders link
-  { name: "Products", icon: Package, path: "/admin/products" },
+  { name: "Orders", icon: ShoppingBag, path: "/admin/orders" },
+  { name: "Products", icon: Package, path: "/admin/products" }, // Added Products link
   { name: "Categories", icon: Settings, path: "/admin/categories" },
   { name: "Users", icon: Users, path: "/admin/users" },
   { name: "Analytics", icon: BarChart2, path: "/admin/analytics" },
