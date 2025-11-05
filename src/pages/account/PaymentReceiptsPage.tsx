@@ -59,7 +59,7 @@ const PaymentReceiptsPage = () => {
               <p className="text-sm mt-2">Receipts will appear here after you place an order and upload proof of payment.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto w-full"> {/* Added w-full to ensure the container takes full width */}
               <Table>
                 <TableHeader>
                   <TableRow>

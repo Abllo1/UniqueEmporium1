@@ -63,7 +63,7 @@ const OrderHistoryPage = () => {
               </Button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto w-full"> {/* Added w-full to ensure the container takes full width */}
               <Table>
                 <TableHeader>
                   <TableRow>

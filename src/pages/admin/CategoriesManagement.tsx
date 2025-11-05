@@ -244,7 +244,7 @@ const CategoriesManagement = () => {
               </Button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto w-full"> {/* Added w-full to ensure the container takes full width */}
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -302,7 +302,7 @@ const CategoriesManagement = () => {
                                 <AlertDialogHeader>
                                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                   <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete the category "{category.name}".
+                                    This action will permanently delete the category "{category.name}".
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>

@@ -319,9 +319,9 @@ const ProductsManagement = () => {
                   <SelectValue placeholder="Filter by Category" />
                 </SelectTrigger>
                   <SelectContent>
-                    {uniqueCategories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category === "all" ? "All Categories" : category}
+                    {uniqueCategories.filter(cat => cat !== "all").map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -351,7 +351,7 @@ const ProductsManagement = () => {
               </Button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto w-full"> {/* Added w-full to ensure the container takes full width */}
               <Table>
                 <TableHeader>
                   <TableRow>

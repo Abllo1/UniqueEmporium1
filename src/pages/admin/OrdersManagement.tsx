@@ -243,7 +243,7 @@ const OrdersManagement = () => {
               </Button>
             </div>
           ) : (
-            <div className="overflow-x-auto"> {/* Added overflow-x-auto here */}
+            <div className="overflow-x-auto w-full"> {/* Added w-full to ensure the container takes full width */}
               <Table>
                 <TableHeader>
                   <TableRow>
