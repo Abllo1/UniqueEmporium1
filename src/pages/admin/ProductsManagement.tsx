@@ -218,8 +218,8 @@ const ProductsManagement = () => {
       keyFeatures: [],
       reviews: [],
       relatedProducts: [],
-      tag: "",
-      tagVariant: "default",
+      tag: "", // Default empty tag
+      tagVariant: "default", // Default tag variant
     }); // Clear form fields and set defaults
     setImagePreview(null);
     setIsAddModalOpen(true);
@@ -337,7 +337,7 @@ const ProductsManagement = () => {
             <Package className="h-5 w-5 text-primary" /> All Products
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent className="p-0 min-w-0">
           <div className="flex flex-col md:flex-row items-center justify-between p-4 gap-4 border-b">
             <div className="relative flex-grow w-full md:w-auto">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
