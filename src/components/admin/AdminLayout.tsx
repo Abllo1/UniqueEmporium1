@@ -22,13 +22,13 @@ const AdminLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen w-full bg-background flex overflow-x-hidden"> {/* Added overflow-x-hidden here */}
+    <div className="min-h-screen w-full bg-background flex">
       {/* Desktop Sidebar */}
       <AdminSidebar />
 
       {/* Mobile Menu Toggle Button */}
       {isMobile && (
-        <div className="fixed top-20 left-4 z-50 md:hidden">
+        <div className="fixed top-20 left-4 z-50 md:hidden"> {/* Changed top-4 to top-20 */}
           <Button
             variant="outline"
             size="icon"
