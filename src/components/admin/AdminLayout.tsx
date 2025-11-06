@@ -22,7 +22,7 @@ const AdminLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen w-full bg-background flex overflow-x-hidden"> {/* Added overflow-x-hidden here */}
+    <div className="min-h-screen w-full bg-background flex overflow-x-hidden">
       {/* Desktop Sidebar */}
       <AdminSidebar />
 
@@ -49,7 +49,7 @@ const AdminLayout = () => {
       )}
 
       {/* Main Content Area */}
-      <main className={cn("flex-grow p-4 md:p-8 lg:p-10", isMobile && "pt-20")}> {/* Add padding-top on mobile to avoid overlap with menu button */}
+      <main className={cn("flex-grow", isMobile && "pt-20")}> {/* Removed general padding, kept mobile top padding */}
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
@@ -59,7 +59,10 @@ const AdminLayout = () => {
             exit="exit"
             className="h-full"
           >
-            <Outlet />
+            {/* New wrapper div for content with padding */}
+            <div className="p-4 md:p-8 lg:p-10">
+              <Outlet />
+            </div>
           </motion.div>
         </AnimatePresence>
       </main>
