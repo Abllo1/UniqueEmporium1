@@ -397,7 +397,7 @@ const ProductsManagement = () => {
             </div>
           ) : (
             <div className="overflow-x-auto w-full">
-              <Table>
+              <Table className="min-w-full"> {/* Added min-w-full here */}
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[100px]">Image</TableHead>
