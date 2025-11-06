@@ -34,7 +34,7 @@ const FloatingTag = ({ text, variant = "default", className }: FloatingTagProps)
       )}
       style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.2))" }} // Custom drop shadow for depth
     >
-      <Badge variant={variant} className="relative px-2 py-1 text-xs font-semibold shadow-lg">
+      <Badge variant={variant} className="relative px-2 py-0.5 text-xs font-semibold shadow-lg">
         {text}
         {/* Dot Punched Effect */}
         <div className="absolute right-[-0.5rem] top-1/2 h-1 w-1 -translate-y-1/2 rounded-full bg-background" />
