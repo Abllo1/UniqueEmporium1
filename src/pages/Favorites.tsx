@@ -39,7 +39,7 @@ const Favorites = () => {
           animate="visible"
           viewport={{ once: true, amount: 0.1 }}
         >
-          <h1 className="text-3xl font-bold text-foreground">Your Favorites ({favoriteItems.length})</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Your Favorites ({favoriteItems.length})</h1>
           <Button variant="outline" asChild>
             <Link to="/products">
               <ArrowLeft className="mr-2 h-4 w-4" /> Continue Shopping
