@@ -82,7 +82,7 @@ const Favorites = () => {
               </p>
               <Button asChild size="lg">
                 <Link to="/products">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Start Browsing
+                  <ArrowLeft className="mr-2 h-4 w-4" /> Start Shopping
                 </Link>
               </Button>
             </motion.div>
