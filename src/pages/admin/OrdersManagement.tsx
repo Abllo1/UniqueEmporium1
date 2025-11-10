@@ -114,7 +114,8 @@ const OrdersManagement = () => {
         (order) =>
           order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
           order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase())
+          order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          order.customerPhone.includes(searchTerm) // Added phone search
       );
     }
 
@@ -208,7 +209,7 @@ const OrdersManagement = () => {
             <div className="relative flex-grow w-full md:w-auto">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search by Order ID, Customer Name, or Email..."
+                placeholder="Search by Order ID, Customer Name, or Phone..."
                 className="w-full pl-9"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -276,7 +277,7 @@ const OrdersManagement = () => {
                         <TableCell className="font-medium">{order.id}</TableCell>
                         <TableCell>
                           <div className="font-medium">{order.customerName}</div>
-                          <div className="text-sm text-muted-foreground">{order.customerEmail}</div>
+                          <div className="text-sm text-muted-foreground">{order.customerPhone}</div> {/* Changed to customerPhone */}
                         </TableCell>
                         <TableCell className="font-semibold">{formatCurrency(order.totalAmount)}</TableCell>
                         <TableCell>

@@ -28,6 +28,7 @@ const getNewIdByName = (name: string) => mockProducts.find(p => p.name === name)
 export interface AdminOrder extends Order {
   customerName: string;
   customerEmail: string;
+  customerPhone: string; // Added customerPhone
   paymentStatus: "pending" | "verified" | "failed";
   paymentReceiptId?: string; // Link to a mock receipt
 }
@@ -40,6 +41,7 @@ export const mockAdminOrders: AdminOrder[] = [
     status: "pending",
     customerName: "Aisha O.",
     customerEmail: "aisha.o@example.com",
+    customerPhone: "+2348012345678", // Added phone
     paymentStatus: "pending",
     paymentReceiptId: "PR-20240725-001",
     items: [
@@ -61,6 +63,7 @@ export const mockAdminOrders: AdminOrder[] = [
     status: "processing",
     customerName: "Chinedu E.",
     customerEmail: "chinedu.e@example.com",
+    customerPhone: "+2347012345678", // Added phone
     paymentStatus: "verified",
     paymentReceiptId: "PR-20240720-002",
     items: [
@@ -82,6 +85,7 @@ export const mockAdminOrders: AdminOrder[] = [
     status: "completed",
     customerName: "Blessing N.",
     customerEmail: "blessing.n@example.com",
+    customerPhone: "+2349012345678", // Added phone
     paymentStatus: "verified",
     paymentReceiptId: "PR-20240715-003",
     items: [
@@ -102,6 +106,7 @@ export const mockAdminOrders: AdminOrder[] = [
     status: "cancelled",
     customerName: "Amaka J.",
     customerEmail: "amaka.j@example.com",
+    customerPhone: "+2348098765432", // Added phone
     paymentStatus: "failed",
     paymentReceiptId: "PR-20240710-004",
     items: [
@@ -123,6 +128,7 @@ export const mockAdminOrders: AdminOrder[] = [
     status: "processing",
     customerName: "Fatima G.",
     customerEmail: "fatima.g@example.com",
+    customerPhone: "+2348123456789", // Added phone
     paymentStatus: "pending",
     items: [
       { productId: getNewIdByName("Luxury Thrift Designer Sunglasses"), productName: "Luxury Thrift Designer Sunglasses", quantity: 10, unitPrice: 6000, imageUrl: getProductById(getNewIdByName("Luxury Thrift Designer Sunglasses"))?.images[0] || "" },
