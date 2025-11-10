@@ -74,9 +74,12 @@ const Footer = () => {
               <p className="flex items-center">
                 <Mail className="mr-2 h-4 w-4" /> support@uniqueemporium.com
               </p>
-              <p className="flex items-center">
+              <a 
+                href="tel:+2349065545572" 
+                className="flex items-center hover:text-primary-foreground/60 transition-colors"
+              >
                 <Phone className="mr-2 h-4 w-4" /> +234 (906) 554-5572
-              </p>
+              </a>
               <p className="flex items-center">
                 <MapPin className="mr-2 h-11 w-11" /> No 4 crescent Street opposite Ace supermarket unity, Ilorin, Kwara State, Nigeria
               </p>
