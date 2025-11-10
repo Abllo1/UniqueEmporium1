@@ -419,12 +419,12 @@ const OrdersManagement = () => {
                                       Review the receipt. Mark as verified if payment is confirmed, or decline if the receipt is invalid.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <Button variant="destructive" onClick={() => handleAction(order.id, "declinePayment")}>
+                                  <AlertDialogFooter className="flex-row justify-between space-x-2">
+                                    <AlertDialogCancel className="w-1/3">Cancel</AlertDialogCancel>
+                                    <Button variant="destructive" onClick={() => handleAction(order.id, "declinePayment")} className="w-1/3">
                                       Decline
                                     </Button>
-                                    <AlertDialogAction onClick={() => handleAction(order.id, "verifyPayment")}>
+                                    <AlertDialogAction onClick={() => handleAction(order.id, "verifyPayment")} className="w-1/3">
                                       Verify
                                     </AlertDialogAction>
                                   </AlertDialogFooter>
@@ -563,6 +563,13 @@ const OrdersManagement = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Add User Dialog */}
+      <Dialog open={isCustomerDetailsModalOpen && selectedOrder?.id === selectedOrder?.id} onOpenChange={setIsCustomerDetailsModalOpen}>
+        {selectedOrder && (
+          <OrderCustomerDetailsDialog order={selectedOrder} onClose={() => setIsCustomerDetailsModalOpen(false)} />
+        )}
+      </Dialog>
     </motion.div>
   );
 };
