@@ -7,29 +7,16 @@ const GoogleSignInButton = () => {
   const [buttonState, setButtonState] = useState('');
 
   const handleClick = () => {
+    // In a real app, this would trigger the Google OAuth flow.
+    // For now, we just mark it as clicked.
     if (buttonState.includes('clicked')) return;
-    setButtonState('clicked waiting');
+    setButtonState('clicked');
+    
+    // Simulate a brief loading state before resetting
+    setTimeout(() => {
+      setButtonState('');
+    }, 1500);
   };
-
-  useEffect(() => {
-    let loadingTimeout: NodeJS.Timeout;
-    let resetTimeout: NodeJS.Timeout;
-
-    if (buttonState === 'clicked waiting') {
-      loadingTimeout = setTimeout(() => {
-        setButtonState(prev => prev.replace('waiting', 'loaded'));
-      }, 4000);
-
-      resetTimeout = setTimeout(() => {
-        setButtonState('');
-      }, 6000);
-    }
-
-    return () => {
-      clearTimeout(loadingTimeout);
-      clearTimeout(resetTimeout);
-    };
-  }, [buttonState]);
 
   const baseClasses = "firebaseui-idp-google flex items-center justify-center select-none p-3 px-5 bg-white border-0 rounded-full shadow-md outline-none overflow-hidden transform cursor-pointer";
   const textClasses = "firebaseui-idp-text ml-2 font-medium text-sm text-gray-600";

@@ -35,7 +35,7 @@ const InputField: React.FC<InputFieldProps> = ({
       required
       value={value}
       onChange={onChange}
-      className="bg-gray-100 border-none rounded-full py-3 px-4 w-full text-sm focus:outline-none focus:ring-2 focus:ring-[#008ecf] transition duration-300 hover:scale-[1.01]"
+      className="bg-gray-100 border-none rounded-full py-3 px-4 w-full text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-secondary transition duration-300 hover:scale-[1.01]"
     />
     {Icon && (
       <Icon className="absolute right-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
@@ -75,9 +75,9 @@ export default function AuthForm() {
           }`}
         >
           <form onSubmit={handleSignUp} className="flex flex-col p-8 h-full w-full justify-center items-center text-center">
-            <h1 className="font-bold text-2xl">Create Account</h1>
+            <h1 className="font-bold text-2xl text-foreground">Create Your Unique Account</h1>
             <SocialLinks />
-            <span className="text-xs mb-2">
+            <span className="text-xs mb-2 text-muted-foreground">
               Or use your email for registration
             </span>
             <InputField
@@ -103,7 +103,7 @@ export default function AuthForm() {
             />
             <button
               type="submit"
-              className="mt-4 rounded-full border border-[#008ecf] bg-[#008ecf] text-white text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-[#007bb5]"
+              className="mt-4 rounded-full border border-secondary bg-secondary text-white text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-secondary/80"
             >
               Sign Up
             </button>
@@ -117,9 +117,9 @@ export default function AuthForm() {
           }`}
         >
           <form onSubmit={handleSignIn} className="flex flex-col p-8 h-full w-full justify-center items-center text-center">
-            <h1 className="font-bold text-2xl">Sign In</h1>
+            <h1 className="font-bold text-2xl text-foreground">Sign In to Your Emporium</h1>
             <SocialLinks />
-            <span className="text-xs mb-2">Or use your email account</span>
+            <span className="text-xs mb-2 text-muted-foreground">Or use your email account</span>
             <InputField
               type="email"
               placeholder="Email"
@@ -136,13 +136,13 @@ export default function AuthForm() {
             />
             <a
               href="#"
-              className="text-sm text-[#0e263d] my-4 hover:underline"
+              className="text-sm text-primary my-4 hover:underline"
             >
               Forgot your password?
             </a>
             <button
               type="submit"
-              className="rounded-full border border-[#008ecf] bg-[#008ecf] text-white text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-[#007bb5]"
+              className="rounded-full border border-secondary bg-secondary text-white text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-secondary/80"
             >
               Sign In
             </button>
@@ -158,7 +158,7 @@ export default function AuthForm() {
           }`}
         >
           <div
-            className={`bg-gradient-to-b from-[#008ecf] to-[#007bb5] text-white relative h-[200%] w-full transition-transform duration-1600 ease-in-out ${
+            className={`bg-gradient-to-b from-secondary to-secondary/80 text-white relative h-[200%] w-full transition-transform duration-1600 ease-in-out ${
               isActive
                 ? "transform -translate-y-1/2"
                 : "transform translate-y-0"
@@ -166,13 +166,13 @@ export default function AuthForm() {
           >
             {/* Sign Up Prompt (Top half) */}
             <div className="absolute top-0 left-0 w-full h-1/2 flex flex-col items-center justify-center text-center px-8 py-[0.4rem]">
-              <h1 className="font-bold text-2xl">Hello, Friend!</h1>
+              <h1 className="font-bold text-2xl">Start Your Journey!</h1>
               <p className="text-sm font-light leading-5 tracking-wider my-4">
-                Enter your personal details and start your journey with us
+                Enter your details and discover unique wholesale fashion.
               </p>
               <button
                 onClick={() => setIsActive(true)}
-                className="ghost bg-transparent border-2 border-white text-white rounded-full text-xs font-bold py-3 px-11 tracking-wider uppercase"
+                className="ghost bg-transparent border-2 border-white text-white rounded-full text-xs font-bold py-3 px-11 tracking-wider uppercase hover:bg-white hover:text-secondary"
               >
                 Sign Up
               </button>
@@ -182,11 +182,11 @@ export default function AuthForm() {
             <div className="absolute top-1/2 left-0 w-full h-1/2 flex flex-col items-center justify-center text-center px-8 py-[0.4rem]">
               <h1 className="font-bold text-2xl">Welcome Back!</h1>
               <p className="text-sm font-light leading-5 tracking-wider my-4">
-                To keep connected with us please login with your personal info
+                Log in to manage your orders and explore new collections.
               </p>
               <button
                 onClick={() => setIsActive(false)}
-                className="ghost bg-transparent border-2 border-white text-white rounded-full text-xs font-bold py-3 px-11 tracking-wider uppercase"
+                className="ghost bg-transparent border-2 border-white text-white rounded-full text-xs font-bold py-3 px-11 tracking-wider uppercase hover:bg-white hover:text-secondary"
               >
                 Sign In
               </button>
@@ -214,9 +214,9 @@ export default function AuthForm() {
         }`}
       >
         <form onSubmit={handleSignUp} className="bg-white flex flex-col p-12 h-full justify-center items-center text-center">
-          <h1 className="font-bold m-0 text-2xl">Sign Up</h1>
+          <h1 className="font-bold m-0 text-2xl text-foreground">Create Your Unique Account</h1>
           <SocialLinks />
-          <span className="text-xs mb-2">
+          <span className="text-xs mb-2 text-muted-foreground">
             Or use your Email for registration
           </span>
           <InputField
@@ -242,7 +242,7 @@ export default function AuthForm() {
           />
           <button
             type="submit"
-            className="mt-4 rounded-full border border-[#008ecf] bg-[#008ecf] text-white text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-[#007bb5]"
+            className="mt-4 rounded-full border border-secondary bg-secondary text-white text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-secondary/80"
           >
             Sign Up
           </button>
@@ -256,9 +256,9 @@ export default function AuthForm() {
         }`}
       >
         <form onSubmit={handleSignIn} className="bg-white flex flex-col p-12 h-full justify-center items-center text-center">
-          <h1 className="font-bold m-0 text-2xl">Sign In</h1>
+          <h1 className="font-bold m-0 text-2xl text-foreground">Sign In to Your Emporium</h1>
           <SocialLinks />
-          <span className="text-xs mb-2">Or sign in using E-Mail Address</span>
+          <span className="text-xs mb-2 text-muted-foreground">Or sign in using E-Mail Address</span>
           <InputField
             type="email"
             placeholder="Email"
@@ -273,12 +273,12 @@ export default function AuthForm() {
             value={signInPassword}
             onChange={(e) => setSignInPassword(e.target.value)}
           />
-          <a href="#" className="text-sm text-[#0e263d] my-4 hover:underline">
+          <a href="#" className="text-sm text-primary my-4 hover:underline">
             Forgot your password?
           </a>
           <button
             type="submit"
-            className="rounded-full border border-[#008ecf] bg-[#008ecf] text-white text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-[#007bb5]"
+            className="rounded-full border border-secondary bg-secondary text-white text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-secondary/80"
           >
             Sign In
           </button>
@@ -292,7 +292,7 @@ export default function AuthForm() {
         }`}
       >
         <div
-          className={`bg-gradient-to-r from-[#008ecf] to-[#008ecf] bg-cover bg-no-repeat bg-center text-white relative left-[-100%] h-full w-[200%] transform transition-transform duration-1600 ease-in-out ${
+          className={`bg-gradient-to-r from-secondary to-secondary/80 bg-cover bg-no-repeat bg-center text-white relative left-[-100%] h-full w-[200%] transform transition-transform duration-1600 ease-in-out ${
             isActive ? "translate-x-1/2" : "translate-x-0"
           }`}
         >
@@ -302,13 +302,13 @@ export default function AuthForm() {
               isActive ? "translate-y-0" : "translate-y-[-20%]"
             }`}
           >
-            <h1 className="font-bold m-0 text-3xl">Log in</h1>
+            <h1 className="font-bold m-0 text-3xl">Welcome Back!</h1>
             <p className="text-sm font-light leading-5 tracking-wider my-5">
-              Sign in here if you already have an account
+              Log in to manage your orders and explore new collections.
             </p>
             <button
               onClick={() => setIsActive(false)}
-              className="ghost mt-5 bg-transparent border-2 border-white text-white rounded-full text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-white hover:text-[#008ecf]"
+              className="ghost mt-5 bg-transparent border-2 border-white text-white rounded-full text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-white hover:text-secondary"
               id="signIn"
             >
               Sign In
@@ -321,13 +321,13 @@ export default function AuthForm() {
               isActive ? "translate-y-[20%]" : "translate-y-0"
             }`}
           >
-            <h1 className="font-bold m-0 text-3xl">Create Account!</h1>
+            <h1 className="font-bold m-0 text-3xl">Start Your Journey!</h1>
             <p className="text-sm font-light leading-5 tracking-wider my-5">
-              Sign up if you still don't have an account ...
+              Sign up if you still don't have an account to discover unique wholesale fashion.
             </p>
             <button
               onClick={() => setIsActive(true)}
-              className="ghost bg-transparent border-2 border-white text-white rounded-full text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-white hover:text-[#008ecf]"
+              className="ghost bg-transparent border-2 border-white text-white rounded-full text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-white hover:text-secondary"
               id="signUp"
             >
               Sign Up
