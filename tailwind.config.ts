@@ -21,6 +21,9 @@ export default {
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
       },
+      transitionDuration: {
+        '1600': '1600ms',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
