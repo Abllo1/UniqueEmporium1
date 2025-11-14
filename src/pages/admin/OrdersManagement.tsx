@@ -41,6 +41,7 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
+  List,
 } from "lucide-react";
 import { mockAdminOrders, AdminOrder, mockAdminUsers } from "@/data/adminData.ts";
 import { cn } from "@/lib/utils";
@@ -94,13 +95,15 @@ const getOrderStatusBadgeClass = (status: AdminOrder["status"]) => {
   }
 };
 
-interface OrderCustomerDetailsDialogProps {
+interface OrderDetailsDialogProps {
   order: AdminOrder;
   onClose: () => void;
 }
 
-const OrderCustomerDetailsDialog = ({ order, onClose }: OrderCustomerDetailsDialogProps) => {
-  // Removed useNavigate and user lookup as the profile button is removed.
+const OrderDetailsDialog = ({ order, onClose }: OrderDetailsDialogProps) => {
+  const formatCurrency = (amount: number) => {
+    return amount.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
+  };
 
   const handleCopyPhone = () => {
     navigator.clipboard.writeText(order.customerPhone);
@@ -108,42 +111,90 @@ const OrderCustomerDetailsDialog = ({ order, onClose }: OrderCustomerDetailsDial
   };
 
   return (
-    <DialogContent className="sm:max-w-[425px] p-6 rounded-xl shadow-lg bg-card/80 backdrop-blur-md border border-border/50">
+    <DialogContent className="sm:max-w-3xl p-6 rounded-xl shadow-lg bg-card/80 backdrop-blur-md border border-border/50 overflow-y-auto max-h-[90vh]">
       <DialogHeader>
         <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-          <User className="h-6 w-6 text-primary" /> Customer Details
+          <ShoppingBag className="h-6 w-6 text-primary" /> Order Details: {order.id}
         </DialogTitle>
         <DialogDescription>
-          Quick access to contact information for Order {order.id}.
+          Comprehensive details for this customer order.
         </DialogDescription>
       </DialogHeader>
-      <div className="space-y-4 py-4">
-        <div className="space-y-1">
-          <p className="text-sm text-muted-foreground">Customer Name</p>
-          <p className="font-bold text-lg text-foreground">{order.customerName}</p>
+      <div className="space-y-6 py-4">
+        {/* 1. Customer & Contact Details */}
+        <div className="border-b pb-4">
+          <h3 className="font-semibold text-lg mb-3 flex items-center gap-2 text-foreground">
+            <User className="h-5 w-5" /> Customer Information
+          </h3>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="space-y-1">
+              <p className="text-muted-foreground">Name</p>
+              <p className="font-bold text-foreground">{order.customerName}</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-muted-foreground">Email</p>
+              <p className="font-medium text-foreground">{order.customerEmail}</p>
+            </div>
+            <div className="space-y-1 col-span-2">
+              <p className="text-muted-foreground">Phone Number</p>
+              <div className="flex items-center gap-2">
+                <p className="font-bold text-xl text-primary">{order.customerPhone}</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" onClick={handleCopyPhone} className="h-8 w-8">
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Copy Phone Number</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="space-y-1">
-          <p className="text-sm text-muted-foreground">Email</p>
-          <p className="font-medium text-foreground">{order.customerEmail}</p>
+
+        {/* 2. Shipping Details */}
+        <div className="border-b pb-4">
+          <h3 className="font-semibold text-lg mb-3 flex items-center gap-2 text-foreground">
+            <Truck className="h-5 w-5" /> Shipping Details
+          </h3>
+          <div className="space-y-1 text-sm text-muted-foreground">
+            <p><strong>Recipient:</strong> {order.shippingAddress.name}</p>
+            <p><strong>Address:</strong> {order.shippingAddress.address}</p>
+            <p><strong>City, State:</strong> {order.shippingAddress.city}, {order.shippingAddress.state}</p>
+            <p><strong>Delivery Method:</strong> <Badge variant="secondary">{order.deliveryMethod}</Badge></p>
+          </div>
         </div>
-        <div className="space-y-1">
-          <p className="text-sm text-muted-foreground">Phone Number</p>
-          <div className="flex items-center gap-2">
-            <p className="font-bold text-xl text-primary">{order.customerPhone}</p>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" onClick={handleCopyPhone} className="h-8 w-8">
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Copy Phone Number</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+
+        {/* 3. Order Items */}
+        <div>
+          <h3 className="font-semibold text-lg mb-3 flex items-center gap-2 text-foreground">
+            <List className="h-5 w-5" /> Items Purchased ({order.items.reduce((sum, item) => sum + item.quantity, 0)} total units)
+          </h3>
+          <div className="space-y-4">
+            {order.items.map((item, index) => (
+              <div key={index} className="flex items-center gap-4 border-b pb-3 last:border-b-0 last:pb-0">
+                <ImageWithFallback
+                  src={item.imageUrl}
+                  alt={item.productName}
+                  containerClassName="h-16 w-16 object-contain rounded-md border flex-shrink-0"
+                  fallbackLogoClassName="h-8 w-8"
+                />
+                <div className="flex-grow">
+                  <p className="font-medium text-foreground">{item.productName}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {item.quantity} units @ {formatCurrency(item.unitPrice)} / unit
+                  </p>
+                </div>
+                <p className="font-semibold text-foreground text-lg flex-shrink-0">
+                  {formatCurrency(item.quantity * item.unitPrice)}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-      {/* Removed the "Check User Profile" button section */}
     </DialogContent>
   );
 };
@@ -347,7 +398,7 @@ const OrdersManagement = () => {
                               </div>
                             </DialogTrigger>
                             {selectedOrder && selectedOrder.id === order.id && (
-                              <OrderCustomerDetailsDialog order={selectedOrder} onClose={() => setIsCustomerDetailsModalOpen(false)} />
+                              <OrderDetailsDialog order={selectedOrder} onClose={() => setIsCustomerDetailsModalOpen(false)} />
                             )}
                           </Dialog>
                         </TableCell>
@@ -564,10 +615,10 @@ const OrdersManagement = () => {
         </CardContent>
       </Card>
 
-      {/* Add User Dialog */}
+      {/* Order Details Dialog (formerly Customer Details Dialog) */}
       <Dialog open={isCustomerDetailsModalOpen && selectedOrder?.id === selectedOrder?.id} onOpenChange={setIsCustomerDetailsModalOpen}>
         {selectedOrder && (
-          <OrderCustomerDetailsDialog order={selectedOrder} onClose={() => setIsCustomerDetailsModalOpen(false)} />
+          <OrderDetailsDialog order={selectedOrder} onClose={() => setIsCustomerDetailsModalOpen(false)} />
         )}
       </Dialog>
     </motion.div>
