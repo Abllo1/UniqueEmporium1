@@ -34,8 +34,6 @@
 
     --whatsapp-green: 135 60% 48%; /* #25D366 */
 
-    --radius: 0.5rem;
-
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -156,4 +154,9 @@
 
 .animate-whatsapp-attention.paused {
   animation-play-state: paused;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
 }

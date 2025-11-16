@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion, Easing } from "framer-motion";
-import { AlertTriangle, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -20,22 +20,23 @@ const ErrorPage = () => {
         initial="hidden"
         animate="visible"
       >
-        <AlertTriangle className="h-24 w-24 text-destructive mx-auto mb-8 animate-pulse" />
-        <h1 className="text-4xl font-bold mb-4 text-foreground">Oops! Something Went Wrong</h1>
-        <p className="text-lg text-muted-foreground mb-6">
-          We encountered an unexpected error. Don't worry, our team has been notified.
+        <div className="w-64 h-64 flex justify-center mx-auto mb-8">
+          <img
+            src="https://i.postimg.cc/2yrFyxKv/giphy.gif"
+            alt="error-gif"
+            className="w-full h-full object-contain animate-[fadeIn_1.6s_ease-in-out]"
+          />
+        </div>
+
+        <h1 className="text-4xl font-bold mb-4 text-foreground">This page is gone.</h1>
+        <p className="text-lg text-muted-foreground mb-8">
+          ...maybe the page you're looking for is not found or never existed.
         </p>
-        <p className="text-sm text-muted-foreground mb-8">
-          Please try navigating back or return to the homepage. If the issue persists, please contact support.
-        </p>
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Button asChild size="lg" variant="outline">
+        <div className="flex justify-center">
+          <Button asChild size="lg" variant="default">
             <Link to="/">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Return to Home
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
             </Link>
-          </Button>
-          <Button asChild size="lg" variant="destructive">
-            <Link to="/contact">Contact Support</Link>
           </Button>
         </div>
       </motion.div>
