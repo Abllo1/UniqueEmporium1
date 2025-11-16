@@ -7,9 +7,8 @@ import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext.tsx";
 
 interface OrderSummaryCardProps {
-  vatRate?: number;
   freeShippingThreshold?: number;
-  deliveryMethod?: string; // New prop for delivery method
+  deliveryMethod?: string;
 }
 
 const fadeInUp = {
@@ -18,34 +17,30 @@ const fadeInUp = {
 };
 
 const OrderSummaryCard = ({
-  vatRate = 0,
   freeShippingThreshold = 100000,
-  deliveryMethod, // Destructure new prop
+  deliveryMethod,
 }: OrderSummaryCardProps) => {
   const { cartItems, totalItems, totalPrice } = useCart();
 
   // Calculate subtotal based on cart items (unit price * quantity)
   const subtotal = cartItems.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
   
-  const vat = subtotal * vatRate;
-
   let calculatedShipping = 0;
-  let shippingDisplay = "TBD"; // To be determined
+  let shippingDisplay = "TBD";
 
   if (deliveryMethod === "pickup") {
     calculatedShipping = 0;
     shippingDisplay = "Free (Pick-up)";
-  } else if (deliveryMethod === "dispatch-rider" || deliveryMethod === "park-delivery") { // Corrected here
-    // For these methods, we show a nominal ₦1 and clarify that actual fees are negotiated.
-    calculatedShipping = 1; // Nominal charge for calculation, actual is negotiated
+  } else if (deliveryMethod === "dispatch-rider" || deliveryMethod === "park-delivery") {
+    calculatedShipping = 1;
     shippingDisplay = "₦1 (Driver handles fees)";
   } else {
-    // Default or if no method selected yet (e.g., before ShippingForm is filled)
-    calculatedShipping = subtotal >= freeShippingThreshold ? 0 : 3500; // Fallback to old logic
+    calculatedShipping = subtotal >= freeShippingThreshold ? 0 : 3500;
     shippingDisplay = calculatedShipping === 0 ? "Free" : "Calculated at next step";
   }
 
-  const total = subtotal + vat + calculatedShipping;
+  // Total without VAT
+  const total = subtotal + calculatedShipping;
 
   const formatCurrency = (amount: number) => {
     return amount.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
@@ -79,7 +74,7 @@ const OrderSummaryCard = ({
           <p className="text-sm text-muted-foreground font-normal mt-2">
             Prices are final — no VAT or hidden charges.
           </p>
-          {(deliveryMethod === "dispatch-rider" || deliveryMethod === "park-delivery") && ( // Corrected here
+          {(deliveryMethod === "dispatch-rider" || deliveryMethod === "park-delivery") && (
             <p className="text-xs text-primary font-medium mt-2">
               *Actual delivery fees for Dispatch/Park Delivery are negotiated directly with the driver.
             </p>
