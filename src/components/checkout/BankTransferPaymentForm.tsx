@@ -109,7 +109,7 @@ const BankTransferPaymentForm = ({ onNext, onPrevious, initialData }: BankTransf
             </ul>
 
             <p className="mt-4 text-xs text-muted-foreground">
-              💡 Use your <strong>Order ID</strong> or <strong>Full Name</strong> as the payment reference.
+              💡 Use your Full Name as the payment reference.
             </p>
           </div>
 
