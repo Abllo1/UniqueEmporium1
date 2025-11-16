@@ -274,8 +274,8 @@ const OrdersManagement = () => {
               newPaymentStatus = "verified";
               toast.success(`Payment for Order ${orderId} verified!`);
               break;
-            case "declinePayment": // New action
-              newPaymentStatus = "declined"; // Changed from 'failed'
+            case "declinePayment":
+              newPaymentStatus = "declined";
               toast.error(`Payment for Order ${orderId} declined!`);
               break;
             case "processOrder":
@@ -337,7 +337,7 @@ const OrdersManagement = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            <div className="flex flex-col gap-4 w-full md:w-auto sm:flex-row">
               <Select value={filterPaymentStatus} onValueChange={setFilterPaymentStatus}>
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Filter by Payment Status" />
