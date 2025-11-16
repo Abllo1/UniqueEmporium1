@@ -104,9 +104,9 @@ export default {
         float: "float 3s ease-in-out infinite",
       },
       backgroundSize: {
-        'logo-sm': '100%',
-        'logo-md': '150%',
-        'logo-lg': '200%',
+        'logo-sm': '400px',
+        'logo-md': '650px',
+        'logo-lg': '900px',
       },
     },
   },
