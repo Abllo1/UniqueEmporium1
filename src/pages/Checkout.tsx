@@ -207,7 +207,8 @@ const Checkout = () => {
         {/* Right Column: Order Summary (1/3 width on desktop, fixed) */}
         <div className={cn(
           "lg:col-span-1 lg:sticky lg:top-24 h-fit",
-          isMobile && currentStep === 1 ? "order-1" : "order-none" // order-1 on mobile for step 1, default order otherwise
+          isMobile && currentStep === 1 ? "order-1" : "order-none", // order-1 on mobile for step 1, default order otherwise
+          isMobile && currentStep === 3 && "hidden" // Hide on mobile when on Review Your Order step
         )}>
           <OrderSummaryCard
             deliveryMethod={orderData.bankTransfer?.deliveryMethod}
