@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import type { ShippingFormData } from "@/components/checkout/ShippingForm.tsx";
 import type { BankTransferFormData } from "@/components/checkout/BankTransferPaymentForm.tsx";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils"; // Import cn for conditional classNames
 
 interface OrderData {
   shipping: ShippingFormData | null;
@@ -187,9 +188,22 @@ const Checkout = () => {
       <CheckoutProgress currentStep={currentStep + 1} totalSteps={4} />
 
       <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Order Summary Card */}
+        <div className={cn(
+          "lg:col-span-1 lg:sticky lg:top-24 h-fit",
+          isMobile && currentStep === 1 ? "order-1" : "order-none" // order-1 on mobile for step 1, default order otherwise
+        )}>
+          <OrderSummaryCard
+            deliveryMethod={orderData.bankTransfer?.deliveryMethod}
+          />
+        </div>
+
         {/* Left Column: Forms (2/3 width on desktop) */}
         <motion.div
-          className="lg:col-span-2"
+          className={cn(
+            "lg:col-span-2",
+            isMobile && currentStep === 1 ? "order-2" : "order-none" // order-2 on mobile for step 1, default order otherwise
+          )}
           key={currentStep}
           custom={direction}
           variants={formTransitionVariants}
@@ -199,13 +213,6 @@ const Checkout = () => {
         >
           {renderStepContent()}
         </motion.div>
-
-        {/* Right Column: Order Summary (1/3 width on desktop, fixed) */}
-        <div className="lg:col-span-1 lg:sticky lg:top-24 h-fit">
-          <OrderSummaryCard
-            deliveryMethod={orderData.bankTransfer?.deliveryMethod}
-          />
-        </div>
       </div>
     </div>
   );
