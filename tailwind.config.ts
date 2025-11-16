@@ -103,6 +103,11 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         float: "float 3s ease-in-out infinite",
       },
+      backgroundSize: {
+        'logo-sm': '100%',
+        'logo-md': '150%',
+        'logo-lg': '200%',
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
