@@ -105,10 +105,14 @@ const OrderReview = ({ shippingInfo, bankTransferInfo, onPrevious, onPlaceOrder,
             <Banknote className="h-5 w-5" /> Payment Method
           </h3>
           <div className="text-muted-foreground space-y-1 text-sm">
-            <p>Bank Transfer to Unique Emporium (Zenith Bank)</p>
-            <p>Account Number: 0123456789</p>
+            <p>Bank Transfer to Unique Emporium</p>
+            <ul className="mt-1 space-y-1 text-muted-foreground text-sm">
+              <li><strong>Bank Name:</strong> Opay</li>
+              <li><strong>Account Name:</strong> Hashim Aishat Omowunmi</li>
+              <li><strong>Account Number:</strong> 9039144261</li>
+            </ul>
             {bankTransferInfo.receiptFile && (
-              <p>Receipt Uploaded: <span className="font-medium text-foreground">{bankTransferInfo.receiptFile.name}</span></p>
+              <p className="mt-2">Receipt Uploaded: <span className="font-medium text-foreground">{bankTransferInfo.receiptFile.name}</span></p>
             )}
             {!bankTransferInfo.receiptFile && (
               <p className="text-destructive">No receipt uploaded. Please go back to upload.</p>
