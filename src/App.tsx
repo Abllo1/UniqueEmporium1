@@ -55,12 +55,12 @@ const MainAppContent = () => {
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const location = useLocation();
   
-  // Determine if the current route is an auth page or admin page
+  // Determine if the current route is an auth page.
+  // Admin routes use their own layout and are correctly placed within the Routes structure.
   const isAuthPage = location.pathname === "/auth";
-  const isAdminRoute = location.pathname.startsWith("/admin");
   
-  // Hide header/footer/floating elements on Auth and Admin pages
-  const showLayout = !isAuthPage && !isAdminRoute;
+  // Hide header/footer/floating elements only on the Auth page
+  const showLayout = !isAuthPage;
 
   return (
     <CartProvider onOpenCartDrawer={() => setIsCartDrawerOpen(true)}>
