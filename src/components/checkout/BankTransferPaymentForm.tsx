@@ -8,15 +8,25 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Banknote, Loader2, Upload } from "lucide-react";
+import { Banknote, Loader2, Upload, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Zod schema for bank transfer information
 const bankTransferSchema = z.object({
   receiptFile: z.any()
     .refine((file) => file instanceof File, "Payment receipt is required.")
-    .optional(), // Make optional for initial load, but required for submission
+    .optional(),
+  deliveryMethod: z.enum(["pickup", "dispatch-rider", "park-delivery"], {
+    required_error: "Please select a delivery method",
+  }),
 });
 
 export type BankTransferFormData = z.infer<typeof bankTransferSchema>;
@@ -26,6 +36,12 @@ interface BankTransferPaymentFormProps {
   onPrevious: () => void;
   initialData?: BankTransferFormData | null;
 }
+
+const deliveryOptions = [
+  { value: "pickup", label: "Pick-up (Free)" },
+  { value: "dispatch-rider", label: "Dispatch Rider (@ ₦1)" },
+  { value: "park-delivery", label: "Park Delivery (@ ₦1)" },
+];
 
 const BankTransferPaymentForm = ({ onNext, onPrevious, initialData }: BankTransferPaymentFormProps) => {
   const [receiptUploaded, setReceiptUploaded] = useState(false);
@@ -40,10 +56,12 @@ const BankTransferPaymentForm = ({ onNext, onPrevious, initialData }: BankTransf
     resolver: zodResolver(bankTransferSchema),
     defaultValues: {
       receiptFile: initialData?.receiptFile,
+      deliveryMethod: initialData?.deliveryMethod || "pickup",
     },
   });
 
   const currentReceiptFile = watch("receiptFile");
+  const selectedDeliveryMethod = watch("deliveryMethod");
 
   const handleReceiptUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -65,8 +83,6 @@ const BankTransferPaymentForm = ({ onNext, onPrevious, initialData }: BankTransf
       toast.error("Please upload your payment receipt to continue.");
       return;
     }
-    // In a real application, you would upload the file to a server here.
-    // For this example, we'll just pass a confirmation.
     onNext(data);
   };
 
@@ -89,6 +105,31 @@ const BankTransferPaymentForm = ({ onNext, onPrevious, initialData }: BankTransf
 
             <p className="mt-4 text-xs text-muted-foreground">
               💡 Use your <strong>Order ID</strong> or <strong>Full Name</strong> as the payment reference.
+            </p>
+          </div>
+
+          {/* Delivery Method Selection */}
+          <div className="space-y-2">
+            <Label htmlFor="deliveryMethod" className="flex items-center gap-2">
+              <Package className="h-4 w-4" /> Delivery Method
+            </Label>
+            <Select 
+              onValueChange={(value) => setValue("deliveryMethod", value as "pickup" | "dispatch-rider" | "park-delivery")} 
+              value={selectedDeliveryMethod}
+            >
+              <SelectTrigger className={cn("w-full")}>
+                <SelectValue placeholder="Select a delivery method" />
+              </SelectTrigger>
+              <SelectContent>
+                {deliveryOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground mt-2">
+              💡 All delivery charges for Dispatch Rider and Park Delivery are handled directly with the driver. We only help negotiate.
             </p>
           </div>
 
