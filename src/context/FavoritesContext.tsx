@@ -3,8 +3,8 @@
 import React, { createContext, useState, useContext, ReactNode, useCallback, useEffect } from "react";
 import { Product } from "@/components/products/ProductCard.tsx";
 import { toast } from "sonner";
-import { useAuth } from "./AuthContext.tsx"; // Import useAuth
-import { supabase } from "@/lib/supabase";
+import { useAuth } from "./AuthContext.tsx";
+import { supabase } from "@/integrations/supabase/client"; // Fixed: Updated import path
 
 // Define the structure for the database table 'favorites'
 interface FavoriteDB {
