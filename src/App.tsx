@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Header from "./components/layout/Header.tsx";
 import Footer from "./components/layout/Footer.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
@@ -12,6 +12,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext.tsx"; // Import Aut
 import ScrollToTop from "./components/common/ScrollToTop.tsx";
 import LoadingPage from "./components/common/LoadingPage.tsx";
 import FloatingWhatsApp from "./components/layout/FloatingWhatsApp.tsx";
+import { toast } from "sonner";
 
 // Lazily load page components for code splitting
 const Index = lazy(() => import("./pages/Index.tsx"));
@@ -20,6 +21,7 @@ const ErrorPage = lazy(() => import("./pages/ErrorPage.tsx"));
 const Favorites = lazy(() => import("./pages/Favorites.tsx"));
 const Cart = lazy(() => import("./pages/Cart.tsx"));
 const Products = lazy(() => import("./pages/Products.tsx"));
+const ProductDetails = lazy(() => import("./pages/ProductDetails.tsx"));
 const About = lazy(() => import("./pages/About.tsx"));
 const Contact = lazy(() => import("./pages/Contact.tsx"));
 const FAQ = lazy(() => import("./pages/FAQ.tsx"));
