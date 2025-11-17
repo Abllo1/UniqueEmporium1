@@ -1,5 +1,5 @@
-import { supabase } from "@/integrations/supabase/client";
-import { mockProducts } from "@/data/products";
+import { supabase } from "../integrations/supabase/client";
+import { mockProducts } from "../data/products";
 
 async function seedProducts() {
   console.log("Starting product seeding...");
