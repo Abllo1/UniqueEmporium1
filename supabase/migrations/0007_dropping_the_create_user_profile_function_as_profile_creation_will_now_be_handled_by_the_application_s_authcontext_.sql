@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.create_user_profile(uuid, text, text, text);

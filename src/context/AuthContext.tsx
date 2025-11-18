@@ -92,13 +92,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { count } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
       const role = count === 0 ? 'admin' : 'customer';
 
-      // Call the new Supabase function to create the profile
-      const { error: profileError } = await supabase.rpc('create_user_profile', {
-        p_user_id: user.id,
-        p_full_name: name,
-        p_email: user.email,
-        p_role: role,
-      });
+      // Directly insert into the profiles table
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: user.id,
+          full_name: name,
+          email: user.email,
+          role: role,
+        });
 
       if (profileError) {
         toast.error("Profile creation failed.", { description: profileError.message });
