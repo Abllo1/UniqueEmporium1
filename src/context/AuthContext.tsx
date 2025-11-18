@@ -18,7 +18,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => { // Fixed: Changed { ReactNode } to { children: ReactNode }
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -32,9 +32,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => { // Fixe
         setUser(currentSession?.user ?? null);
         
         if (currentSession?.user) {
-          // Check for admin status (using a simple check on user metadata for now)
-          // In a real app, we'd use RLS and a custom function to check roles.
-          // For this mock setup, we'll assume the first user is the admin, or check metadata.
           const { data: profile, error } = await supabase
             .from('profiles')
             .select('role')
@@ -95,10 +92,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => { // Fixe
       const { count } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
       const role = count === 0 ? 'admin' : 'customer';
 
-      // Insert initial profile data
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({ id: user.id, full_name: name, email: user.email, role });
+      // Call the new Supabase function to create the profile
+      const { error: profileError } = await supabase.rpc('create_user_profile', {
+        p_user_id: user.id,
+        p_full_name: name,
+        p_email: user.email,
+        p_role: role,
+      });
 
       if (profileError) {
         toast.error("Profile creation failed.", { description: profileError.message });
