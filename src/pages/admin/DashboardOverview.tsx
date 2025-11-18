@@ -3,10 +3,20 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, Easing } from "framer-motion";
 import AdminStatCard from "@/components/admin/AdminStatCard.tsx";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShoppingBag, DollarSign, CheckCircle2, Users, Clock, Package, Loader2 } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { ShoppingBag, DollarSign, CheckCircle2, Users, Clock, Package, Activity, List, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge"; // Import Badge for activity status
+
+// Define interface for RecentActivity, consistent with AnalyticsDashboard
+interface RecentActivity {
+  id: string;
+  type: "order" | "payment" | "user" | "product";
+  description: string;
+  timestamp: string; // ISO string
+  status?: "new" | "verified" | "updated" | "deleted" | "pending" | "confirmed" | "declined";
+}
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -33,7 +43,40 @@ const DashboardOverview = () => {
     totalRevenue: 0,
     newProductsLastMonth: 0,
   });
+  const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingActivities, setIsLoadingActivities] = useState(true);
+
+  const formatCurrency = (amount: number) => {
+    return amount.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
+  };
+
+  const getStatusBadgeVariant = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "new":
+        return "default";
+      case "verified":
+        return "secondary";
+      case "updated":
+        return "outline";
+      case "deleted":
+        return "destructive";
+      case "pending":
+        return "secondary";
+      case "confirmed":
+        return "default";
+      case "declined":
+        return "destructive";
+      case "completed":
+        return "default";
+      case "processing":
+        return "secondary";
+      case "cancelled":
+        return "destructive";
+      default:
+        return "outline";
+    }
+  };
 
   const fetchDashboardStats = useCallback(async () => {
     setIsLoading(true);
@@ -99,19 +142,89 @@ const DashboardOverview = () => {
     }
   }, []);
 
+  const fetchRecentActivities = useCallback(async () => {
+    setIsLoadingActivities(true);
+    try {
+      const combinedActivities: RecentActivity[] = [];
+
+      // Fetch recent orders
+      const { data: recentOrdersData, error: recentOrdersError } = await supabase
+        .from('orders')
+        .select('id, status, created_at, profiles(first_name, last_name)')
+        .order('created_at', { ascending: false })
+        .limit(5);
+      if (recentOrdersError) throw recentOrdersError;
+
+      recentOrdersData.forEach((order: any) => {
+        const customerName = `${order.profiles?.first_name || ''} ${order.profiles?.last_name || ''}`.trim();
+        combinedActivities.push({
+          id: order.id,
+          type: "order",
+          description: `${customerName || 'A user'} placed a new order (${order.id})`,
+          timestamp: order.created_at,
+          status: order.status,
+        });
+      });
+
+      // Fetch recent payment receipts
+      const { data: recentReceiptsData, error: recentReceiptsError } = await supabase
+        .from('payment_receipts')
+        .select('id, status, created_at, orders(id)')
+        .order('created_at', { ascending: false })
+        .limit(5);
+      if (recentReceiptsError) throw recentReceiptsError;
+
+      recentReceiptsData.forEach((receipt: any) => {
+        combinedActivities.push({
+          id: receipt.id,
+          type: "payment",
+          description: `Payment for order ${receipt.orders?.id || 'N/A'} is ${receipt.status}`,
+          timestamp: receipt.created_at,
+          status: receipt.status,
+        });
+      });
+
+      // Fetch recent user sign-ups (from profiles table)
+      const { data: recentUsersData, error: recentUsersError } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, created_at')
+        .order('created_at', { ascending: false })
+        .limit(5);
+      if (recentUsersError) throw recentUsersError;
+
+      recentUsersData.forEach((user: any) => {
+        const userName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+        combinedActivities.push({
+          id: user.id,
+          type: "user",
+          description: `New user registered: ${userName || 'Unknown User'}`,
+          timestamp: user.created_at,
+          status: "new",
+        });
+      });
+
+      // Sort all activities by timestamp
+      combinedActivities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      setRecentActivities(combinedActivities.slice(0, 5)); // Limit to top 5 recent activities
+
+    } catch (error: any) {
+      console.error("Error fetching recent activities:", error);
+      toast.error("Failed to load recent activities.", { description: error.message });
+    } finally {
+      setIsLoadingActivities(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchDashboardStats();
-  }, [fetchDashboardStats]);
-
-  const formatCurrency = (amount: number) => {
-    return amount.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
-  };
+    fetchRecentActivities();
+  }, [fetchDashboardStats, fetchRecentActivities]);
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="ml-3 text-muted-foreground">Loading dashboard statistics...</p>
+        <p className="ml-3 text-muted-foreground">Loading dashboard...</p>
       </div>
     );
   }
@@ -180,14 +293,50 @@ const DashboardOverview = () => {
         />
       </div>
 
-      {/* Placeholder for recent activities or quick actions */}
+      {/* Recent Activities */}
       <motion.div variants={fadeInUp} transition={{ delay: 0.7 }}>
         <Card className="rounded-xl shadow-sm">
           <CardHeader>
-            <CardTitle className="text-xl font-bold">Recent Activities</CardTitle>
+            <CardTitle className="text-xl font-bold flex items-center gap-2">
+              <Activity className="h-5 w-5 text-primary" /> Recent Activities
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">No recent activities to display.</p>
+            {isLoadingActivities ? (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                <p className="ml-3 text-muted-foreground">Loading activities...</p>
+              </div>
+            ) : recentActivities.length === 0 ? (
+              <p className="text-muted-foreground text-center py-4">No recent activities to display.</p>
+            ) : (
+              <ul className="space-y-4">
+                {recentActivities.map((activity) => (
+                  <motion.li
+                    key={activity.id}
+                    className="flex items-start gap-3 p-3 rounded-lg bg-muted/20 border border-border"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <List className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="text-sm text-foreground">{activity.description}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(activity.timestamp).toLocaleString()}
+                        </span>
+                        {activity.status && (
+                          <Badge variant={getStatusBadgeVariant(activity.status)} className="text-xs px-2 py-0.5">
+                            {activity.status.charAt(0).toUpperCase() + activity.status.slice(1)}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </motion.li>
+                ))}
+              </ul>
+            )}
           </CardContent>
         </Card>
       </motion.div>
