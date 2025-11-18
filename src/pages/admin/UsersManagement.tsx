@@ -150,8 +150,7 @@ const UsersManagement = () => {
         phone,
         role,
         status
-        -- auth_users:auth.users(last_sign_in_at) -- Removed for client-side security
-      `)
+      `) // Removed the commented line that was causing the parsing error
       .order('created_at', { ascending: false });
 
     if (profilesError) {
