@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence, Easing } from "framer-motion";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -47,7 +47,6 @@ import {
   ChevronFirst,
   ChevronLast,
 } from "lucide-react";
-import { mockAdminProducts } from "@/data/adminData.ts"; // Using mockAdminProducts
 import { ProductDetails } from "@/data/products.ts"; // Using ProductDetails interface
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -55,6 +54,7 @@ import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -100,7 +100,7 @@ const productFormSchema = z.object({
 type ProductFormData = z.infer<typeof productFormSchema>;
 
 const ProductsManagement = () => {
-  const [products, setProducts] = useState<ProductDetails[]>(mockAdminProducts);
+  const [products, setProducts] = useState<ProductDetails[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterStockStatus, setFilterStockStatus] = useState("all");
@@ -114,6 +114,9 @@ const ProductsManagement = () => {
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [uniqueCategories, setUniqueCategories] = useState<string[]>([]);
+
 
   const {
     register,
@@ -161,15 +164,55 @@ const ProductsManagement = () => {
     }
   }, [currentImageFiles, currentImages]);
 
+  const fetchProducts = useCallback(async () => {
+    setIsLoadingProducts(true);
+    const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+
+    if (error) {
+      console.error("Error fetching products:", error);
+      toast.error("Failed to load products.", { description: error.message });
+      setProducts([]);
+    } else {
+      // Map snake_case from DB to camelCase for ProductDetails interface
+      const fetchedProducts: ProductDetails[] = data.map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        category: p.category,
+        images: p.images || [],
+        price: p.price,
+        originalPrice: p.original_price,
+        discountPercentage: p.discount_percentage,
+        rating: p.rating,
+        reviewCount: p.review_count,
+        tag: p.tag,
+        tagVariant: p.tag_variant,
+        limitedStock: p.limited_stock,
+        minOrderQuantity: p.min_order_quantity,
+        status: p.status,
+        fullDescription: p.full_description,
+        keyFeatures: p.key_features || [],
+        styleNotes: p.style_notes || "",
+        detailedSpecs: p.detailed_specs || [],
+        reviews: p.reviews || [],
+        relatedProducts: p.related_products || [],
+      }));
+      setProducts(fetchedProducts);
+
+      // Extract unique categories
+      const categories = new Set(fetchedProducts.map(p => p.category));
+      setUniqueCategories(["all", ...Array.from(categories)]);
+    }
+    setIsLoadingProducts(false);
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
 
   const formatCurrency = (amount: number) => {
     return amount.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
   };
-
-  const uniqueCategories = useMemo(() => {
-    const categories = new Set(mockAdminProducts.map(p => p.category));
-    return ["all", ...Array.from(categories)];
-  }, []);
 
   const filteredProducts = useMemo(() => {
     let filtered = products;
@@ -228,6 +271,8 @@ const ProductsManagement = () => {
       relatedProducts: [],
       tag: "", // Default empty tag
       tagVariant: "default", // Default tag variant
+      images: [], // Clear images for new product
+      newImageFiles: undefined, // Clear new image files
     }); // Clear form fields and set defaults
     setImagePreview(null);
     setIsAddModalOpen(true);
@@ -237,12 +282,17 @@ const ProductsManagement = () => {
     setEditingProduct(product);
     reset({
       ...product,
-      limitedStock: product.limitedStock,
-      status: product.status,
-      originalPrice: product.originalPrice,
-      newImageFiles: undefined,
+      originalPrice: product.originalPrice, // Ensure originalPrice is passed correctly
+      minOrderQuantity: product.minOrderQuantity,
+      fullDescription: product.fullDescription,
+      keyFeatures: product.keyFeatures,
+      styleNotes: product.styleNotes,
+      reviews: product.reviews,
+      relatedProducts: product.relatedProducts,
       tag: product.tag || "", // Pre-fill tag
       tagVariant: product.tagVariant || "default", // Pre-fill tag variant
+      images: product.images, // Existing images
+      newImageFiles: undefined, // Clear new image files input
     });
     setImagePreview(product.images?.[0] || null);
     setIsEditModalOpen(true);
@@ -254,8 +304,15 @@ const ProductsManagement = () => {
   };
 
   const handleAddOrUpdateProduct = async (data: ProductFormData) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // For now, image upload is mocked. In a real app, this would involve Supabase Storage.
+    let imageUrls: string[] = data.images || [];
+    if (data.newImageFiles && data.newImageFiles.length > 0) {
+      // Simulate upload and get URLs
+      const newUploadedUrls = Array.from(data.newImageFiles).map((file, i) => 
+        `https://via.placeholder.com/400x400?text=${data.name.replace(/\s/g, '+')}+Img${i + 1}`
+      );
+      imageUrls = newUploadedUrls; // Replace existing images with new uploads
+    }
 
     // Calculate discount percentage if originalPrice is provided and greater than current price
     let discountPercentage: number | undefined;
@@ -263,67 +320,75 @@ const ProductsManagement = () => {
       discountPercentage = Math.round(((data.originalPrice - data.price) / data.originalPrice) * 100);
     }
 
-    const newProductData: ProductDetails = {
-      id: data.id || `prod-${Date.now()}`, // Generate new ID if adding
+    const productPayload = {
       name: data.name,
       category: data.category,
       price: data.price,
-      originalPrice: data.originalPrice, // Use originalPrice from form
-      discountPercentage: discountPercentage, // Calculated discount
-      minOrderQuantity: data.minOrderQuantity,
-      fullDescription: data.fullDescription,
-      rating: data.rating || 0,
-      reviewCount: data.reviewCount || 0,
-      tag: data.tag, // Use tag from form
-      tagVariant: data.tagVariant, // Use tagVariant from form
-      limitedStock: data.limitedStock,
+      original_price: data.originalPrice, // Map to snake_case for DB
+      discount_percentage: discountPercentage, // Map to snake_case
+      min_order_quantity: data.minOrderQuantity, // Map to snake_case
       status: data.status,
-      images: (data.images && data.images.length > 0) ? data.images : (editingProduct?.images || []),
-      keyFeatures: data.keyFeatures || editingProduct?.keyFeatures || [],
-      styleNotes: data.styleNotes || editingProduct?.styleNotes || "",
-      detailedSpecs: editingProduct?.detailedSpecs || [], // Preserve existing detailedSpecs or default to empty array
-      reviews: data.reviews || editingProduct?.reviews || [],
-      relatedProducts: data.relatedProducts || editingProduct?.relatedProducts || [],
+      limited_stock: data.limitedStock, // Map to snake_case
+      full_description: data.fullDescription, // Map to snake_case
+      images: imageUrls, // Array of text
+      tag: data.tag, // Use tag from form
+      tag_variant: data.tagVariant, // Use tagVariant from form
+      rating: data.rating,
+      review_count: data.reviewCount,
+      style_notes: data.styleNotes,
+      key_features: data.keyFeatures,
+      reviews: data.reviews,
+      related_products: data.relatedProducts,
     };
 
-    // Handle new image files
-    if (data.newImageFiles && data.newImageFiles.length > 0) {
-      const newImageUrls: string[] = [];
-      for (let i = 0; i < data.newImageFiles.length; i++) {
-        const file = data.newImageFiles[i];
-        if (file instanceof File) {
-          // In a real app, upload file and get URL. For mock, use a placeholder URL based on the file index.
-          newImageUrls.push(`https://via.placeholder.com/400x400?text=${newProductData.name.replace(/\s/g, '+')}+Img${i + 1}`);
-        }
-      }
-      newProductData.images = newImageUrls;
-    }
-
-
     if (editingProduct) {
-      setProducts((prev) =>
-        prev.map((p) => (p.id === newProductData.id ? newProductData : p))
-      );
-      toast.success(`Product "${newProductData.name}" updated successfully!`);
-      setIsEditModalOpen(false);
-      setEditingProduct(null);
+      // Update existing product
+      const { error } = await supabase
+        .from('products')
+        .update(productPayload)
+        .eq('id', editingProduct.id);
+
+      if (error) {
+        toast.error("Failed to update product.", { description: error.message });
+      } else {
+        toast.success(`Product "${data.name}" updated successfully!`);
+        setIsEditModalOpen(false);
+        setEditingProduct(null);
+        fetchProducts(); // Re-fetch products to update the list
+      }
     } else {
-      setProducts((prev) => [...prev, newProductData]);
-      toast.success(`Product "${newProductData.name}" added successfully!`);
-      setIsAddModalOpen(false);
+      // Add new product
+      const { error } = await supabase
+        .from('products')
+        .insert([{ ...productPayload, id: `prod-${Date.now()}` }]); // Generate a simple ID for new products
+
+      if (error) {
+        toast.error("Failed to add product.", { description: error.message });
+      } else {
+        toast.success(`Product "${data.name}" added successfully!`);
+        setIsAddModalOpen(false);
+        fetchProducts(); // Re-fetch products to update the list
+      }
     }
   };
 
   const confirmDeleteProduct = useCallback(async () => {
     if (deletingProductId) {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setProducts((prev) => prev.filter((p) => p.id !== deletingProductId));
-      toast.info(`Product ${deletingProductId} deleted.`);
-      setDeletingProductId(null);
-      setIsDeleteAlertOpen(false);
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', deletingProductId);
+
+      if (error) {
+        toast.error("Failed to delete product.", { description: error.message });
+      } else {
+        toast.info(`Product ${deletingProductId} deleted.`);
+        setDeletingProductId(null);
+        setIsDeleteAlertOpen(false);
+        fetchProducts(); // Re-fetch products to update the list
+      }
     }
-  }, [deletingProductId]);
+  }, [deletingProductId, fetchProducts]);
 
   return (
     <motion.div
@@ -395,7 +460,12 @@ const ProductsManagement = () => {
             </div>
           </div>
 
-          {filteredProducts.length === 0 ? (
+          {isLoadingProducts ? (
+            <div className="flex items-center justify-center py-10">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="ml-3 text-muted-foreground">Loading products...</p>
+            </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="text-center py-10 text-muted-foreground">
               <Filter className="h-12 w-12 mx-auto mb-4" />
               <p>No products found matching your filters.</p>
