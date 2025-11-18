@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence, Easing } from "framer-motion";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -44,12 +44,22 @@ import {
   ChevronFirst,
   ChevronLast,
 } from "lucide-react";
-import { mockAdminCategories, AdminCategory } from "@/data/adminData.ts";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
+
+// Define the AdminCategory interface based on your database structure
+export interface AdminCategory {
+  id: string;
+  name: string;
+  product_count: number; // Changed to snake_case for consistency with DB
+  status: "active" | "inactive";
+  created_at?: string;
+  updated_at?: string;
+}
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -77,7 +87,7 @@ const categoryFormSchema = z.object({
 type CategoryFormData = z.infer<typeof categoryFormSchema>;
 
 const CategoriesManagement = () => {
-  const [categories, setCategories] = useState<AdminCategory[]>(mockAdminCategories);
+  const [categories, setCategories] = useState<AdminCategory[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -88,6 +98,8 @@ const CategoriesManagement = () => {
   const [editingCategory, setEditingCategory] = useState<AdminCategory | null>(null);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [deletingCategoryId, setDeletingCategoryId] = useState<string | null>(null);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+
 
   const {
     register,
@@ -104,6 +116,34 @@ const CategoriesManagement = () => {
   });
 
   const currentStatus = watch("status");
+
+  const fetchCategories = useCallback(async () => {
+    setIsLoadingCategories(true);
+    const { data, error } = await supabase.from('categories').select('*').order('name', { ascending: true });
+
+    if (error) {
+      console.error("Error fetching categories:", error);
+      toast.error("Failed to load categories.", { description: error.message });
+      setCategories([]);
+    } else {
+      // Map snake_case from DB to camelCase for AdminCategory interface
+      const fetchedCategories: AdminCategory[] = data.map((c: any) => ({
+        id: c.id,
+        name: c.name,
+        product_count: c.product_count,
+        status: c.status,
+        created_at: c.created_at,
+        updated_at: c.updated_at,
+      }));
+      setCategories(fetchedCategories);
+    }
+    setIsLoadingCategories(false);
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
 
   const filteredCategories = useMemo(() => {
     let filtered = categories;
@@ -160,40 +200,62 @@ const CategoriesManagement = () => {
   };
 
   const handleAddOrUpdateCategory = async (data: CategoryFormData) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const newCategoryData: AdminCategory = {
-      id: data.id || `cat-${Date.now()}`, // Generate new ID if adding
+    const categoryPayload = {
       name: data.name,
       status: data.status,
-      productCount: editingCategory?.productCount || 0, // Preserve productCount or default to 0
+      // product_count is managed by the database (e.g., via triggers or separate updates)
     };
 
     if (editingCategory) {
-      setCategories((prev) =>
-        prev.map((c) => (c.id === newCategoryData.id ? newCategoryData : c))
-      );
-      toast.success(`Category "${newCategoryData.name}" updated successfully!`);
-      setIsEditModalOpen(false);
-      setEditingCategory(null);
+      // Update existing category
+      const { error } = await supabase
+        .from('categories')
+        .update(categoryPayload)
+        .eq('id', editingCategory.id);
+
+      if (error) {
+        toast.error("Failed to update category.", { description: error.message });
+      } else {
+        toast.success(`Category "${data.name}" updated successfully!`);
+        setIsEditModalOpen(false);
+        setEditingCategory(null);
+        fetchCategories(); // Re-fetch categories to update the list
+      }
     } else {
-      setCategories((prev) => [...prev, newCategoryData]);
-      toast.success(`Category "${newCategoryData.name}" added successfully!`);
-      setIsAddModalOpen(false);
+      // Add new category
+      // Generate a simple slug-based ID for new categories
+      const newId = data.name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+      const { error } = await supabase
+        .from('categories')
+        .insert([{ ...categoryPayload, id: newId, product_count: 0 }]); // Default product_count to 0
+
+      if (error) {
+        toast.error("Failed to add category.", { description: error.message });
+      } else {
+        toast.success(`Category "${data.name}" added successfully!`);
+        setIsAddModalOpen(false);
+        fetchCategories(); // Re-fetch categories to update the list
+      }
     }
   };
 
   const confirmDeleteCategory = useCallback(async () => {
     if (deletingCategoryId) {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setCategories((prev) => prev.filter((c) => c.id !== deletingCategoryId));
-      toast.info(`Category ${deletingCategoryId} deleted.`);
-      setDeletingCategoryId(null);
-      setIsDeleteAlertOpen(false);
+      const { error } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', deletingCategoryId);
+
+      if (error) {
+        toast.error("Failed to delete category.", { description: error.message });
+      } else {
+        toast.info(`Category ${deletingCategoryId} deleted.`);
+        setDeletingCategoryId(null);
+        setIsDeleteAlertOpen(false);
+        fetchCategories(); // Re-fetch categories to update the list
+      }
     }
-  }, [deletingCategoryId]);
+  }, [deletingCategoryId, fetchCategories]);
 
   return (
     <motion.div
@@ -245,7 +307,12 @@ const CategoriesManagement = () => {
             </div>
           </div>
 
-          {filteredCategories.length === 0 ? (
+          {isLoadingCategories ? (
+            <div className="flex items-center justify-center py-10">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="ml-3 text-muted-foreground">Loading categories...</p>
+            </div>
+          ) : filteredCategories.length === 0 ? (
             <div className="text-center py-10 text-muted-foreground">
               <Filter className="h-12 w-12 mx-auto mb-4" />
               <p>No categories found matching your filters.</p>
@@ -277,7 +344,7 @@ const CategoriesManagement = () => {
                       >
                         <TableCell className="font-medium text-xs">{category.id}</TableCell>
                         <TableCell className="font-medium">{category.name}</TableCell>
-                        <TableCell>{category.productCount}</TableCell>
+                        <TableCell>{category.product_count}</TableCell>
                         <TableCell>
                           <Badge variant={category.status === "active" ? "default" : "destructive"}>
                             {category.status.charAt(0).toUpperCase() + category.status.slice(1)}

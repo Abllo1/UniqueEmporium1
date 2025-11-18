@@ -55,6 +55,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
+import { AdminCategory } from "./CategoriesManagement.tsx"; // Import AdminCategory interface
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -115,7 +116,7 @@ const ProductsManagement = () => {
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
-  const [uniqueCategories, setUniqueCategories] = useState<string[]>([]);
+  const [availableCategories, setAvailableCategories] = useState<AdminCategory[]>([]); // State for categories from DB
 
 
   const {
@@ -197,17 +198,25 @@ const ProductsManagement = () => {
         relatedProducts: p.related_products || [],
       }));
       setProducts(fetchedProducts);
-
-      // Extract unique categories
-      const categories = new Set(fetchedProducts.map(p => p.category));
-      setUniqueCategories(["all", ...Array.from(categories)]);
     }
     setIsLoadingProducts(false);
   }, []);
 
+  const fetchCategories = useCallback(async () => {
+    const { data, error } = await supabase.from('categories').select('id, name').order('name', { ascending: true });
+    if (error) {
+      console.error("Error fetching categories for product form:", error);
+      toast.error("Failed to load categories for product form.");
+      setAvailableCategories([]);
+    } else {
+      setAvailableCategories(data as AdminCategory[]);
+    }
+  }, []);
+
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+    fetchCategories();
+  }, [fetchProducts, fetchCategories]);
 
 
   const formatCurrency = (amount: number) => {
@@ -427,9 +436,10 @@ const ProductsManagement = () => {
                   <SelectValue placeholder="Filter by Category" />
                 </SelectTrigger>
                   <SelectContent>
-                    {uniqueCategories.filter(cat => cat !== "all").map((cat) => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat}
+                    <SelectItem value="all">All Categories</SelectItem>
+                    {availableCategories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.name}>
+                        {cat.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -648,9 +658,9 @@ const ProductsManagement = () => {
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {uniqueCategories.filter(cat => cat !== "all").map((cat) => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat}
+                    {availableCategories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.name}>
+                        {cat.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -796,9 +806,9 @@ const ProductsManagement = () => {
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {uniqueCategories.filter(cat => cat !== "all").map((cat) => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat}
+                    {availableCategories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.name}>
+                        {cat.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
