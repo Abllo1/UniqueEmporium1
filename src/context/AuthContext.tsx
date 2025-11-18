@@ -95,11 +95,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(handleAuthStateChange);
+    // Corrected: Destructure the unsubscribe function directly
+    const { unsubscribe } = supabase.auth.onAuthStateChange(handleAuthStateChange);
 
     return () => {
       isMounted = false;
-      authListener?.subscription.unsubscribe(); // Safely unsubscribe
+      unsubscribe(); // Directly call the destructured unsubscribe function
       console.log("AuthContext: Cleaning up auth listener.");
     };
   }, []); // Empty dependency array means this runs once on mount
