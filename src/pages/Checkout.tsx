@@ -19,6 +19,8 @@ import type { ShippingFormData } from "@/components/checkout/ShippingForm.tsx";
 import type { BankTransferFormData } from "@/components/checkout/BankTransferPaymentForm.tsx";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils"; // Import cn for conditional classNames
+import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
+import { useAuth } from "@/context/AuthContext.tsx"; // Import useAuth
 
 interface OrderData {
   shipping: ShippingFormData | null;
@@ -43,12 +45,14 @@ const formTransitionVariants = {
 };
 
 const Checkout = () => {
-  const { cartItems, clearCart } = useCart();
+  const { cartItems, clearCart, totalPrice } = useCart();
+  const { user } = useAuth(); // Get user from AuthContext
   const [currentStep, setCurrentStep] = useState(0); // Start at step 0 for delivery method selection
   const [orderData, setOrderData] = useState<OrderData>({
     shipping: null,
     bankTransfer: {
       receiptFile: undefined,
+      receiptImageUrl: undefined, // Initialize new field
       deliveryMethod: "pickup", // Default delivery method
     },
   });
@@ -105,21 +109,81 @@ const Checkout = () => {
   };
 
   const handlePlaceOrder = async () => {
+    if (!user) {
+      toast.error("You must be logged in to place an order.");
+      navigate("/auth");
+      return;
+    }
+    if (!orderData.shipping || !orderData.bankTransfer || !orderData.bankTransfer.receiptImageUrl) {
+      toast.error("Missing order details. Please complete all steps.");
+      return;
+    }
+
     setIsPlacingOrder(true);
     toast.loading("Placing your order...", { id: "place-order-toast" });
-    await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    console.log("Order Data:", orderData, "Cart Items:", cartItems);
+    try {
+      // 1. Insert into 'orders' table
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          user_id: user.id,
+          total_amount: totalPrice,
+          status: 'pending',
+          items: cartItems.map(item => ({
+            product_id: item.id,
+            product_name: item.name,
+            quantity: item.quantity,
+            unit_price: item.unitPrice,
+            image_url: item.images[0],
+          })),
+          shipping_address: {
+            name: `${orderData.shipping.firstName} ${orderData.shipping.lastName}`,
+            address: `${orderData.shipping.address}${orderData.shipping.address2 ? `, ${orderData.shipping.address2}` : ''}`,
+            city: orderData.shipping.city,
+            state: orderData.shipping.state,
+            zip_code: orderData.shipping.zipCode,
+          },
+          delivery_method: orderData.bankTransfer.deliveryMethod,
+        })
+        .select()
+        .single();
 
-    toast.dismiss("place-order-toast");
-    toast.success("Order Placed Successfully!", {
-      description: "You will receive an email confirmation shortly.",
-    });
+      if (orderError) throw orderError;
 
-    clearCart();
-    setIsOrderPlaced(true);
-    setIsPlacingOrder(false);
-    window.scrollTo(0, 0);
+      // 2. Insert into 'payment_receipts' table
+      const { error: receiptError } = await supabase
+        .from('payment_receipts')
+        .insert({
+          user_id: user.id,
+          order_id: order.id,
+          transaction_id: `TXN-${Date.now()}`, // Generate a simple transaction ID
+          date: new Date().toISOString(),
+          amount: totalPrice,
+          status: 'pending', // Payment status is pending until admin verifies
+          receipt_image_url: orderData.bankTransfer.receiptImageUrl,
+        });
+
+      if (receiptError) throw receiptError;
+
+      toast.dismiss("place-order-toast");
+      toast.success("Order Placed Successfully!", {
+        description: "You will receive an email confirmation shortly.",
+      });
+
+      clearCart();
+      setIsOrderPlaced(true);
+      window.scrollTo(0, 0);
+
+    } catch (error: any) {
+      console.error("Error placing order:", error);
+      toast.dismiss("place-order-toast");
+      toast.error("Failed to place order.", {
+        description: error.message || "An unexpected error occurred.",
+      });
+    } finally {
+      setIsPlacingOrder(false);
+    }
   };
 
   if (cartItems.length === 0 && !isOrderPlaced) {

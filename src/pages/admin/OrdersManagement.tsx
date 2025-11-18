@@ -270,7 +270,7 @@ const OrdersManagement = () => {
       const fetchedOrders: AdminOrder[] = data.map((order: any) => ({
         id: order.id,
         user_id: order.user_id,
-        orderDate: new Date(order.order_date).toLocaleDateString(),
+        orderDate: new Date(order.created_at).toLocaleDateString(), // Use created_at for order date
         totalAmount: order.total_amount,
         status: order.status,
         items: order.items,

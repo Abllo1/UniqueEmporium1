@@ -9,6 +9,8 @@ import { useCart } from "@/context/CartContext.tsx";
 import { Product } from "@/components/products/ProductCard.tsx";
 import type { ShippingFormData } from "@/components/checkout/ShippingForm.tsx";
 import type { BankTransferFormData } from "@/components/checkout/BankTransferPaymentForm.tsx"; // New import
+import ImageWithFallback from "@/components/common/ImageWithFallback.tsx"; // Import ImageWithFallback
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"; // Import Dialog components
 
 interface OrderReviewProps {
   shippingInfo: ShippingFormData;
@@ -111,10 +113,28 @@ const OrderReview = ({ shippingInfo, bankTransferInfo, onPrevious, onPlaceOrder,
               <li><strong>Account Name:</strong> Hashim Aishat Omowunmi</li>
               <li><strong>Account Number:</strong> 9039144261</li>
             </ul>
-            {bankTransferInfo.receiptFile && (
-              <p className="mt-2">Receipt Uploaded: <span className="font-medium text-foreground">{bankTransferInfo.receiptFile.name}</span></p>
-            )}
-            {!bankTransferInfo.receiptFile && (
+            {bankTransferInfo.receiptImageUrl ? (
+              <div className="mt-2">
+                <p>Receipt Uploaded: <span className="font-medium text-foreground">View Receipt</span></p>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="link" className="p-0 h-auto text-primary">View Uploaded Receipt</Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-3xl p-0">
+                    <DialogHeader className="p-4 border-b">
+                      <DialogTitle>Payment Receipt</DialogTitle>
+                    </DialogHeader>
+                    <div className="p-4">
+                      <ImageWithFallback
+                        src={bankTransferInfo.receiptImageUrl}
+                        alt="Payment Receipt"
+                        containerClassName="w-full h-auto max-h-[80vh] object-contain"
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            ) : (
               <p className="text-destructive">No receipt uploaded. Please go back to upload.</p>
             )}
           </div>

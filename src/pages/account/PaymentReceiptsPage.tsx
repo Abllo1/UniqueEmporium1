@@ -69,7 +69,7 @@ const PaymentReceiptsPage = () => {
         const transformedReceipts: PaymentReceipt[] = data.map(receipt => ({
           id: receipt.id,
           transactionId: receipt.transaction_id, // Map from snake_case
-          date: new Date(receipt.date).toLocaleDateString(),
+          date: new Date(receipt.created_at).toLocaleDateString(), // Use created_at for date
           amount: receipt.amount,
           status: receipt.status,
           receiptImageUrl: receipt.receipt_image_url, // Map from snake_case
@@ -150,7 +150,7 @@ const PaymentReceiptsPage = () => {
                       <TableCell className="text-right">
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" disabled={!receipt.receiptImageUrl}>
                               <Eye className="h-4 w-4 mr-2" /> View Receipt
                             </Button>
                           </DialogTrigger>
@@ -159,11 +159,15 @@ const PaymentReceiptsPage = () => {
                               <DialogTitle>Receipt for {receipt.transactionId}</DialogTitle>
                             </DialogHeader>
                             <div className="p-4">
-                              <ImageWithFallback
-                                src={receipt.receiptImageUrl}
-                                alt={`Payment Receipt for ${receipt.transactionId}`}
-                                containerClassName="w-full h-auto max-h-[80vh] object-contain"
-                              />
+                              {receipt.receiptImageUrl ? (
+                                <ImageWithFallback
+                                  src={receipt.receiptImageUrl}
+                                  alt={`Payment Receipt for ${receipt.transactionId}`}
+                                  containerClassName="w-full h-auto max-h-[80vh] object-contain"
+                                />
+                              ) : (
+                                <p className="text-center text-muted-foreground">No receipt image available.</p>
+                              )}
                             </div>
                           </DialogContent>
                         </Dialog>

@@ -7,6 +7,7 @@ import GoogleSignInButton from "./GoogleSignInButton";
 import { useAuth } from "@/context/AuthContext.tsx"; // Import useAuth
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client"; // Import supabase client
 
 // Helper component for social links
 const SocialLinks = () => (
@@ -85,6 +86,29 @@ export default function AuthForm() {
       // Error handled by toast in AuthContext
     } finally {
       setIsSigningUp(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!signInEmail) {
+      toast.error("Please enter your email address to reset your password.");
+      return;
+    }
+
+    toast.loading("Sending password reset link...", { id: "password-reset-link" });
+    const { error } = await supabase.auth.resetPasswordForEmail(signInEmail, {
+      redirectTo: `${window.location.origin}/auth?reset=true`, // Redirect back to auth page with a flag
+    });
+
+    if (error) {
+      toast.dismiss("password-reset-link");
+      toast.error("Password Reset Failed", { description: error.message });
+    } else {
+      toast.dismiss("password-reset-link");
+      toast.success("Password Reset Email Sent!", {
+        description: "Please check your email for instructions to reset your password.",
+      });
     }
   };
 
@@ -168,6 +192,7 @@ export default function AuthForm() {
             />
             <a
               href="#"
+              onClick={handleForgotPassword}
               className="text-sm text-primary my-4 hover:underline"
             >
               Forgot your password?
@@ -298,7 +323,7 @@ export default function AuthForm() {
           isActive ? "translate-x-full" : "translate-x-0"
         }`}
       >
-        <form onSubmit={handleSignIn} className="bg-white flex flex-col p-12 h-full justify-center items-center text-center">
+        <form onSubmit={handleSignIn} className="flex flex-col p-12 h-full justify-center items-center text-center">
           <h1 className="font-bold m-0 text-2xl text-foreground">Sign In to Your Emporium</h1>
           <SocialLinks />
           <span className="text-xs mb-2 text-muted-foreground">Or sign in using E-Mail Address</span>
@@ -316,7 +341,7 @@ export default function AuthForm() {
             value={signInPassword}
             onChange={(e) => setSignInPassword(e.target.value)}
           />
-          <a href="#" className="text-sm text-primary my-4 hover:underline">
+          <a href="#" onClick={handleForgotPassword} className="text-sm text-primary my-4 hover:underline">
             Forgot your password?
           </a>
           <button
