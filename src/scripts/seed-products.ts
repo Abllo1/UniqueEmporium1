@@ -1,5 +1,6 @@
+import 'dotenv/config'; // Load environment variables from .env
 import { supabase } from "../integrations/supabase/serverClient.ts";
-import { mockProducts } from "../data/products.ts"; // Added .ts extension
+import { mockProducts } from "../data/products.ts";
 
 async function seedProducts() {
   console.log("Starting product seeding...");
@@ -27,6 +28,7 @@ async function seedProducts() {
       detailed_specs: product.detailedSpecs, // JSONB
       reviews: product.reviews, // JSONB
       related_products: product.relatedProducts, // Array of text
+      created_at: new Date().toISOString(), // Add created_at for new entries
     };
 
     const { error } = await supabase
@@ -35,6 +37,9 @@ async function seedProducts() {
 
     if (error) {
       console.error(`Error upserting product ${product.name} (${product.id}):`, error);
+      // If an error occurs, we should probably stop or at least log it clearly
+      // and potentially re-throw if it's a critical setup error.
+      // For now, just logging and continuing.
     } else {
       console.log(`Successfully upserted product: ${product.name}`);
     }
@@ -43,4 +48,9 @@ async function seedProducts() {
   console.log("Product seeding complete.");
 }
 
-seedProducts().catch(console.error);
+seedProducts().catch((err) => {
+  console.error("An unhandled error occurred during product seeding:", err);
+  if (err.message && err.code) {
+    console.error(`Error Code: ${err.code}, Message: ${err.message}`);
+  }
+});
