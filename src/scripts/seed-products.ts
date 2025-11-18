@@ -2,6 +2,12 @@ import 'dotenv/config'; // Load environment variables from .env
 import { supabase } from "../integrations/supabase/serverClient.ts";
 import { mockProducts } from "../data/products.ts";
 
+// --- START DEBUG LOGS ---
+console.log("DEBUG: Script started.");
+console.log("DEBUG: process.env.VITE_SUPABASE_URL:", process.env.VITE_SUPABASE_URL ? "Loaded" : "NOT LOADED");
+console.log("DEBUG: process.env.SUPABASE_SERVICE_ROLE_KEY:", process.env.SUPABASE_SERVICE_ROLE_KEY ? "Loaded" : "NOT LOADED");
+// --- END DEBUG LOGS ---
+
 async function seedProducts() {
   console.log("Starting product seeding...");
 
