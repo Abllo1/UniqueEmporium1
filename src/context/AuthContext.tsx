@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email,
       password,
       options: {
-        data: { full_name: name },
+        data: { full_name: name }, // Pass full_name in options.data
       },
     });
 
@@ -88,27 +88,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     if (user) {
-      // Check if this is the very first user (to assign admin role)
-      const { count } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
-      const role = count === 0 ? 'admin' : 'customer';
-
-      // Directly insert into the profiles table
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: user.id,
-          full_name: name,
-          email: user.email,
-          role: role,
-        });
-
-      if (profileError) {
-        toast.error("Profile creation failed.", { description: profileError.message });
-        // Optionally delete the user if profile creation fails
-        await supabase.auth.admin.deleteUser(user.id);
-        throw profileError;
-      }
-
+      // Profile creation is now handled by a database trigger (handle_new_user function)
+      // We no longer need to manually insert into the profiles table here.
       toast.success("Account created successfully!", {
         description: "Please check your email to confirm your account.",
       });
