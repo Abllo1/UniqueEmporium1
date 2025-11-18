@@ -16,11 +16,11 @@ import { toast } from "sonner";
 // Define the receipt interface based on your database structure
 interface PaymentReceipt {
   id: string;
-  transaction_id: string;
+  transactionId: string; // Changed to camelCase
   date: string;
   amount: number;
   status: string;
-  receipt_image_url: string;
+  receiptImageUrl: string; // Changed to camelCase
 }
 
 const fadeInUp = {
@@ -65,14 +65,14 @@ const PaymentReceiptsPage = () => {
         console.error("Error fetching receipts:", error);
         toast.error("Failed to load receipts.", { description: error.message });
       } else {
-        // Transform the data to match the expected format
-        const transformedReceipts = data.map(receipt => ({
+        // Transform the data to match the expected camelCase format
+        const transformedReceipts: PaymentReceipt[] = data.map(receipt => ({
           id: receipt.id,
-          transactionId: receipt.transaction_id,
+          transactionId: receipt.transaction_id, // Map from snake_case
           date: new Date(receipt.date).toLocaleDateString(),
           amount: receipt.amount,
           status: receipt.status,
-          receiptImageUrl: receipt.receipt_image_url,
+          receiptImageUrl: receipt.receipt_image_url, // Map from snake_case
         }));
         setReceipts(transformedReceipts);
       }

@@ -24,17 +24,17 @@ interface OrderItem {
 
 interface Order {
   id: string;
-  order_date: string;
-  total_amount: number;
+  orderDate: string; // Changed to camelCase
+  totalAmount: number; // Changed to camelCase
   status: string;
   items: OrderItem[];
-  shipping_address: {
+  shippingAddress: { // Changed to camelCase
     name: string;
     address: string;
     city: string;
     state: string;
   };
-  delivery_method: string;
+  deliveryMethod: string; // Changed to camelCase
 }
 
 const fadeInUp = {
@@ -81,15 +81,15 @@ const OrderHistoryPage = () => {
         console.error("Error fetching orders:", error);
         toast.error("Failed to load orders.", { description: error.message });
       } else {
-        // Transform the data to match the expected format
-        const transformedOrders = data.map(order => ({
+        // Transform the data to match the expected camelCase format
+        const transformedOrders: Order[] = data.map(order => ({
           id: order.id,
-          orderDate: new Date(order.order_date).toLocaleDateString(),
-          totalAmount: order.total_amount,
+          orderDate: new Date(order.order_date).toLocaleDateString(), // Map from snake_case
+          totalAmount: order.total_amount, // Map from snake_case
           status: order.status,
           items: order.items || [],
-          shippingAddress: order.shipping_address,
-          deliveryMethod: order.delivery_method,
+          shippingAddress: order.shipping_address, // Map from snake_case
+          deliveryMethod: order.delivery_method, // Map from snake_case
         }));
         setOrders(transformedOrders);
       }

@@ -21,7 +21,7 @@ const ProfilePage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [formData, setFormData] = useState({
-    fullName: "",
+    fullName: "", // Changed from firstName/lastName
     email: "",
     phone: "",
     currentPassword: "",
@@ -39,7 +39,7 @@ const ProfilePage = () => {
     // Fetch profile data using the correct column names
     const { data, error } = await supabase
       .from('profiles')
-      .select('full_name, email, phone')
+      .select('full_name, email, phone') // Select 'full_name'
       .eq('id', user.id)
       .single();
 
@@ -54,7 +54,7 @@ const ProfilePage = () => {
     } else if (data) {
       setFormData((prev) => ({
         ...prev,
-        fullName: data.full_name || "",
+        fullName: data.full_name || "", // Use 'full_name'
         email: data.email || user.email || "",
         phone: data.phone || "",
       }));
@@ -100,7 +100,7 @@ const ProfilePage = () => {
     const { error: profileError } = await supabase
       .from('profiles')
       .update({
-        full_name: formData.fullName,
+        full_name: formData.fullName, // Update 'full_name'
         phone: formData.phone,
       })
       .eq('id', user.id);
@@ -163,7 +163,7 @@ const ProfilePage = () => {
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} disabled />
-                <p className="text-xs text-muted-foreground">Email cannot be changed directly here.</p>
+                <p className="text-xs text-muted-foreground">Email cannot be changed directly here. It's linked to your authentication.</p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
