@@ -1,5 +1,5 @@
-import { supabase } from "../integrations/supabase/serverClient.ts"; // Use serverClient
-import { mockProducts } from "../data/products";
+import { supabase } from "../integrations/supabase/serverClient.ts";
+import { mockProducts } from "../data/products.ts"; // Added .ts extension
 
 async function seedProducts() {
   console.log("Starting product seeding...");
