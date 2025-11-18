@@ -18,7 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-  DialogDescription, // Added DialogDescription
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -48,11 +48,11 @@ import {
   Mail,
   Phone,
   ShoppingBag,
-  User as UserIcon, // Renamed to avoid conflict with Users icon
+  User as UserIcon,
   ChevronFirst,
   ChevronLast,
 } from "lucide-react";
-import { mockOrders } from "@/data/accountData.ts"; // Corrected import path for mockOrders
+import { mockOrders } from "@/data/accountData.ts";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -69,8 +69,8 @@ export interface AdminUser {
   phone: string;
   role: "admin" | "customer";
   status: "active" | "inactive";
-  last_login_at: string; // Changed from lastLogin to match Supabase auth.users
-  total_orders: number; // Changed from totalOrders to snake_case
+  // last_login_at: string; // Removed for client-side security
+  total_orders: number;
 }
 
 const fadeInUp = {
@@ -149,8 +149,8 @@ const UsersManagement = () => {
         email,
         phone,
         role,
-        status,
-        auth_users:auth.users(last_sign_in_at)
+        status
+        -- auth_users:auth.users(last_sign_in_at) -- Removed for client-side security
       `)
       .order('created_at', { ascending: false });
 
@@ -181,7 +181,7 @@ const UsersManagement = () => {
           phone: profile.phone,
           role: profile.role,
           status: profile.status,
-          last_login_at: profile.auth_users?.last_sign_in_at || 'N/A',
+          // last_login_at: profile.auth_users?.last_sign_in_at || 'N/A', // Removed for client-side security
           total_orders: totalOrders || 0,
         };
       })
@@ -451,7 +451,7 @@ const UsersManagement = () => {
               </Button>
             </div>
           ) : (
-            <div className="overflow-x-auto w-full"> {/* Added w-full to ensure the container takes full width */}
+            <div className="overflow-x-auto w-full">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -796,12 +796,13 @@ const UsersManagement = () => {
                     {viewingUser.status.charAt(0).toUpperCase() + viewingUser.status.slice(1)}
                   </Badge>
                 </div>
-                <div className="space-y-1">
+                {/* Removed Last Login for client-side display */}
+                {/* <div className="space-y-1">
                   <p className="text-sm text-muted-foreground">Last Login</p>
                   <p className="font-medium text-foreground">
                     {viewingUser.last_login_at !== 'N/A' ? new Date(viewingUser.last_login_at).toLocaleString() : 'N/A'}
                   </p>
-                </div>
+                </div> */}
               </div>
 
               <div className="border-t pt-4 mt-4">
