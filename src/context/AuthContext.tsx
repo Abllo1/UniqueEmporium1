@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Session, User } from "@supabase/supabase-js";
 import { toast } from "sonner";
@@ -30,99 +30,72 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // Keep initial state as true
   const navigate = useNavigate();
+  const isInitialLoadRef = useRef(true); // Track if it's the very first load
 
   useEffect(() => {
-    let isMounted = true; // To prevent state updates on unmounted component
+    let isMounted = true;
 
-    const getInitialSession = async () => {
-      console.log("AuthContext: Attempting to get initial session...");
-      const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession();
-
+    const handleAuthStateChange = async (event: string, currentSession: Session | null) => {
       if (!isMounted) return;
+      console.log("AuthContext: onAuthStateChange event:", event);
 
-      if (sessionError) {
-        console.error("AuthContext: Error getting initial session:", sessionError);
-        setSession(null);
+      setSession(currentSession);
+      const currentUser = currentSession?.user ?? null;
+
+      if (currentUser) {
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('first_name, last_name, role')
+          .eq('id', currentUser.id)
+          .single();
+
+        if (!isMounted) return;
+
+        if (profileError) {
+          console.error("AuthContext: Error fetching user profile during state change:", profileError);
+          setUser(currentUser);
+          setIsAdmin(false);
+        } else if (profile) {
+          setUser({
+            ...currentUser,
+            first_name: profile.first_name,
+            last_name: profile.last_name,
+          });
+          setIsAdmin(profile.role === 'admin');
+        } else {
+          setUser(currentUser);
+          setIsAdmin(false);
+        }
+      } else {
         setUser(null);
         setIsAdmin(false);
-      } else {
-        setSession(initialSession);
-        const currentUser = initialSession?.user ?? null;
-        if (currentUser) {
-          const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('first_name, last_name, role')
-            .eq('id', currentUser.id)
-            .single();
-
-          if (!isMounted) return;
-
-          if (profileError) {
-            console.error("AuthContext: Error fetching initial user profile:", profileError);
-            setUser(currentUser);
-            setIsAdmin(false);
-          } else if (profile) {
-            setUser({
-              ...currentUser,
-              first_name: profile.first_name,
-              last_name: profile.last_name,
-            });
-            setIsAdmin(profile.role === 'admin');
-          } else {
-            setUser(currentUser);
-            setIsAdmin(false);
-          }
-        } else {
-          setUser(null);
-          setIsAdmin(false);
-        }
       }
-      setIsLoading(false); // Set loading to false after initial session check
-      console.log("AuthContext: Initial session check complete, isLoading set to false.");
+
+      // Crucially, set isLoading to false after the initial session determination
+      // This ensures the loading screen is dismissed once the auth state is known.
+      if (isInitialLoadRef.current) {
+        setIsLoading(false);
+        isInitialLoadRef.current = false;
+        console.log("AuthContext: Initial auth state determined, isLoading set to false.");
+      }
     };
 
-    getInitialSession(); // Call immediately on mount
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, currentSession) => {
-        if (!isMounted) return;
-        console.log("AuthContext: onAuthStateChange event:", event);
-
-        setSession(currentSession);
-        const currentUser = currentSession?.user ?? null;
-
-        if (currentUser) {
-          const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('first_name, last_name, role')
-            .eq('id', currentUser.id)
-            .single();
-
-          if (!isMounted) return;
-
-          if (profileError) {
-            console.error("AuthContext: Error fetching user profile during state change:", profileError);
-            setUser(currentUser);
-            setIsAdmin(false);
-          } else if (profile) {
-            setUser({
-              ...currentUser,
-              first_name: profile.first_name,
-              last_name: profile.last_name,
-            });
-            setIsAdmin(profile.role === 'admin');
-          } else {
-            setUser(currentUser);
-            setIsAdmin(false);
-          }
-        } else {
-          setUser(null);
-          setIsAdmin(false);
-        }
-        // No need to set isLoading here again, as getInitialSession already handles the initial load.
-        // This listener handles *changes* after the initial load.
+    // Immediately get the session and then set up the listener
+    // The listener will handle the subsequent state updates, including the initial one.
+    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+      if (!isMounted) return;
+      // Manually trigger the handler for the initial session
+      handleAuthStateChange('INITIAL_SESSION', initialSession);
+    }).catch(error => {
+      console.error("AuthContext: Error getting initial session:", error);
+      if (isInitialLoadRef.current) {
+        setIsLoading(false); // Ensure loading is false even if initial fetch fails
+        isInitialLoadRef.current = false;
       }
-    );
+    });
+
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(handleAuthStateChange);
 
     return () => {
       isMounted = false;
