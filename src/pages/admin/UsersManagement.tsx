@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
+  DialogDescription, // Added DialogDescription
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -608,6 +609,9 @@ const UsersManagement = () => {
             <DialogTitle className="text-2xl font-bold flex items-center gap-2">
               <Plus className="h-6 w-6 text-primary" /> Add New User
             </DialogTitle>
+            <DialogDescription>
+              Fill in the details to create a new user account.
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(handleAddOrUpdateUser)} className="space-y-6 py-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -686,6 +690,9 @@ const UsersManagement = () => {
             <DialogTitle className="text-2xl font-bold flex items-center gap-2">
               <Edit className="h-6 w-6 text-primary" /> Edit User
             </DialogTitle>
+            <DialogDescription>
+              Update the details for this user account.
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(handleAddOrUpdateUser)} className="space-y-6 py-4">
             <input type="hidden" {...register("id")} />
@@ -758,6 +765,9 @@ const UsersManagement = () => {
             <DialogTitle className="text-2xl font-bold flex items-center gap-2">
               <UserIcon className="h-6 w-6 text-primary" /> User Details: {viewingUser?.first_name} {viewingUser?.last_name}
             </DialogTitle>
+            <DialogDescription>
+              Detailed information about this user's account and activity.
+            </DialogDescription>
           </DialogHeader>
           {viewingUser && (
             <div className="space-y-6 py-4">

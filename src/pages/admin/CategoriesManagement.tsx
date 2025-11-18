@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
+  DialogDescription, // Added DialogDescription
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -459,6 +460,9 @@ const CategoriesManagement = () => {
             <DialogTitle className="text-2xl font-bold flex items-center gap-2">
               <Plus className="h-6 w-6 text-primary" /> Add New Category
             </DialogTitle>
+            <DialogDescription>
+              Enter the details for the new product category.
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(handleAddOrUpdateCategory)} className="space-y-6 py-4">
             <div className="space-y-2">
@@ -501,6 +505,9 @@ const CategoriesManagement = () => {
             <DialogTitle className="text-2xl font-bold flex items-center gap-2">
               <Edit className="h-6 w-6 text-primary" /> Edit Category
             </DialogTitle>
+            <DialogDescription>
+              Update the details for this product category.
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(handleAddOrUpdateCategory)} className="space-y-6 py-4">
             <input type="hidden" {...register("id")} /> {/* Hidden field for category ID */}
