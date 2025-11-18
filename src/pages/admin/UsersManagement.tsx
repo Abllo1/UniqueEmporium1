@@ -724,21 +724,21 @@ const UsersManagement = () => {
                 <SelectTrigger className={cn(errors.role && "border-destructive")}>
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="customer">Customer</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.role && <p className="text-destructive text-sm">{errors.role.message}</p>}
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="status-toggle-edit"
-                checked={currentStatus === "active"}
-                onCheckedChange={(checked) => setValue("status", checked ? "active" : "inactive")}
-              />
-              <Label htmlFor="status-toggle-edit">Account Status: {currentStatus === "active" ? "Active" : "Inactive"}</Label>
-            </div>
+                  <SelectContent>
+                    <SelectItem value="customer">Customer</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.role && <p className="text-destructive text-sm">{errors.role.message}</p>}
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="status-toggle-edit"
+                  checked={currentStatus === "active"}
+                  onCheckedChange={(checked) => setValue("status", checked ? "active" : "inactive")}
+                />
+                <Label htmlFor="status-toggle-edit">Account Status: {currentStatus === "active" ? "Active" : "Inactive"}</Label>
+              </div>
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)}>
