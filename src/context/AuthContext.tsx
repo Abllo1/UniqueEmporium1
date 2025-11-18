@@ -32,8 +32,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("AuthContext: useEffect started.");
+
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, currentSession) => {
+        console.log("AuthContext: onAuthStateChange event:", event);
         setSession(currentSession);
         const currentUser = currentSession?.user ?? null;
         
@@ -46,7 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             .single();
 
           if (error) {
-            console.error("Error fetching user profile:", error);
+            console.error("AuthContext: Error fetching user profile:", error);
             // Fallback to basic user data if profile fetch fails
             setUser(currentUser);
             setIsAdmin(false);
@@ -67,11 +70,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setIsAdmin(false);
         }
         setIsLoading(false);
+        console.log("AuthContext: onAuthStateChange - setIsLoading(false) called.");
       }
     );
 
     // Initial session check
+    console.log("AuthContext: Performing initial getSession check.");
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      console.log("AuthContext: getSession resolved.");
       setSession(session);
       const currentUser = session?.user ?? null;
 
@@ -83,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           .single();
 
         if (error) {
-          console.error("Error fetching initial user profile:", error);
+          console.error("AuthContext: Error fetching initial user profile:", error);
           setUser(currentUser);
           setIsAdmin(false);
         } else if (profile) {
@@ -102,9 +108,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsAdmin(false);
       }
       setIsLoading(false);
+      console.log("AuthContext: getSession - setIsLoading(false) called.");
+    }).catch(error => {
+      console.error("AuthContext: Error during initial getSession:", error);
+      setIsLoading(false); // Ensure loading state is cleared even on error
     });
 
     return () => {
+      console.log("AuthContext: Cleaning up auth listener.");
       authListener.subscription.unsubscribe();
     };
   }, []);
