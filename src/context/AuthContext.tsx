@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       async (event, currentSession) => {
         if (!isMounted) return;
         console.log("AuthContext: onAuthStateChange event:", event);
-        
+
         setSession(currentSession);
         const currentUser = currentSession?.user ?? null;
 
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             .single();
 
           if (error) {
-            console.error("AuthContext: Error fetching user profile on change:", error);
+            console.error("AuthContext: Error fetching user profile:", error);
             setUser(currentUser);
             setIsAdmin(false);
           } else if (profile) {
@@ -61,6 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             });
             setIsAdmin(profile.role === 'admin');
           } else {
+            // User exists but no profile found (shouldn't happen with trigger)
             setUser(currentUser);
             setIsAdmin(false);
           }
@@ -69,19 +70,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setIsAdmin(false);
         }
         
-        // Set isLoading to false after the initial session is handled
-        // This ensures the app doesn't get stuck on loading if onAuthStateChange is the first to fire.
-        if (isLoading) { // Only set to false once
-          setIsLoading(false);
-          console.log("AuthContext: onAuthStateChange - setIsLoading(false) called.");
-        }
+        // Crucially, set isLoading to false after the initial session is processed
+        // This will cover 'INITIAL_SESSION' and subsequent events.
+        setIsLoading(false); 
+        console.log("AuthContext: setIsLoading(false) called after event:", event);
       }
     );
 
     return () => {
-      console.log("AuthContext: Cleaning up auth listener.");
       isMounted = false;
       authListener.subscription.unsubscribe();
+      console.log("AuthContext: Cleaning up auth listener.");
     };
   }, []); // Empty dependency array means this runs once on mount
 
