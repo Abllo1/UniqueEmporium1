@@ -8,37 +8,29 @@ export default function CheckAuth({ children }: { children: React.ReactNode }) {
   const { session, setAuthState, isLoading, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const hasRedirected = useRef(false); // To prevent multiple redirects
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
-    const loadProfileAndRedirect = async () => {
-      if (!session) {
-        setAuthState(null, null);
-        hasRedirected.current = false; // Reset if session is null
-        return;
-      }
+    let isMounted = true;
 
-      // If user data is already loaded and we haven't redirected yet, or if we're on the auth page
-      // and the user is now logged in, perform the redirect.
-      if (user && !isLoading && !hasRedirected.current) {
-        if (location.pathname === '/auth') { // Only redirect from auth page after login
-          if (user.role === 'admin') {
-            navigate('/admin', { replace: true });
-          } else {
-            navigate('/account', { replace: true });
-          }
-          hasRedirected.current = true;
+    const fetchProfileAndRedirect = async () => {
+      if (!session) {
+        if (isMounted) {
+          setAuthState(null, null);
+          hasRedirected.current = false;
         }
         return;
       }
 
-      // If session exists but user profile isn't loaded yet, fetch it
-      if (session && !user && isLoading) {
+      // If session exists but user profile isn't fully loaded in context yet
+      if (session && (!user || !user.role)) { // Check for user.role to ensure profile is loaded
         const { data: profile, error } = await supabase
           .from('profiles')
           .select('first_name, last_name, role')
           .eq('id', session.user.id)
           .single();
+
+        if (!isMounted) return;
 
         if (error) {
           console.error('Profile fetch error:', error);
@@ -51,14 +43,29 @@ export default function CheckAuth({ children }: { children: React.ReactNode }) {
             role: profile.role
           });
         } else {
-          // Handle case where profile might not exist immediately after signup
+          // Profile might not exist immediately after signup, set basic user
           setAuthState(session, session.user);
         }
+        return; // Important: return after setting state to let useEffect re-run with updated state
+      }
+
+      // After user is loaded (or if already loaded), handle redirection
+      if (isMounted && user && !isLoading && location.pathname === '/auth' && !hasRedirected.current) {
+        if (user.role === 'admin') {
+          navigate('/admin', { replace: true });
+        } else {
+          navigate('/account', { replace: true });
+        }
+        hasRedirected.current = true;
       }
     };
 
-    loadProfileAndRedirect();
-  }, [session, setAuthState, isLoading, user, navigate, location.pathname]);
+    fetchProfileAndRedirect();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [session, user, isLoading, setAuthState, navigate, location.pathname]); // Dependencies
 
   if (isLoading) return <LoadingPage />;
 
