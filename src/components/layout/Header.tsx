@@ -147,7 +147,7 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
             {user ? (
               <>
                 {/* Account Dashboard Link (Desktop) */}
-                {!isMobile && (
+                {!isMobile && !isAdmin && (
                   <Link to="/account" className="relative">
                     <Button variant="ghost" size="icon" className="text-foreground hover:bg-muted/50">
                       <User className="h-5 w-5" />
@@ -155,7 +155,7 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
                   </Link>
                 )}
                 {/* Logout Button (Desktop) */}
-                {!isMobile && (
+                {!isMobile && !isAdmin && (
                   <Button variant="ghost" size="icon" onClick={signOut} className="text-foreground hover:bg-muted/50">
                     <LogOut className="h-5 w-5" />
                   </Button>
