@@ -8,8 +8,8 @@ import Header from "./components/layout/Header.tsx";
 import Footer from "./components/layout/Footer.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
 import { FavoritesProvider } from "./context/FavoritesContext.tsx";
-import { AuthProvider, useAuth } from "./context/AuthContext.tsx"; // Import AuthProvider and useAuth
-import CheckAuth from "./components/auth/CheckAuth.tsx"; // Import CheckAuth
+import { AuthProvider, useAuth } from "./context/AuthContext.tsx";
+import CheckAuth from "./components/auth/CheckAuth.tsx";
 import ScrollToTop from "./components/common/ScrollToTop.tsx";
 import LoadingPage from "./components/common/LoadingPage.tsx";
 import FloatingWhatsApp from "./components/layout/FloatingWhatsApp.tsx";
