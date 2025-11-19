@@ -177,8 +177,8 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
             </Button>
           )}
           
-          {/* 9. Logout (top-level, only visible if logged in and not admin) */}
-          {user && !isAdmin && (
+          {/* 9. Logout (top-level, only visible if logged in) */}
+          {user && ( // Corrected: Show logout if user is logged in
             <Button
               variant="ghost"
               className="justify-start text-base py-1 text-foreground hover:text-destructive hover:bg-destructive/70"

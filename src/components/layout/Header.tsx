@@ -155,7 +155,7 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
                   </Link>
                 )}
                 {/* Logout Button (Desktop) */}
-                {!isMobile && !isAdmin && (
+                {!isMobile && user && ( // Corrected: Show logout if user is logged in and not mobile
                   <Button variant="ghost" size="icon" onClick={signOut} className="text-foreground hover:bg-muted/50">
                     <LogOut className="h-5 w-5" />
                   </Button>
