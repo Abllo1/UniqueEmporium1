@@ -8,6 +8,17 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { accountNavItems, linkVariants } from "@/data/accountNavItems.ts";
 import { useAuth } from "@/context/AuthContext.tsx"; // Import useAuth
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface AccountSidebarProps {
   onCloseMobileMenu?: () => void;
@@ -37,14 +48,31 @@ const AccountSidebar = ({ onCloseMobileMenu }: AccountSidebarProps) => {
         </motion.li>
       ))}
       <motion.li variants={linkVariants} className="pt-4 border-t border-border mt-4">
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-          onClick={signOut} // Use the real signOut function
-        >
-          <LogOut className="mr-3 h-5 w-5" />
-          Logout
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+            >
+              <LogOut className="mr-3 h-5 w-5" />
+              Logout
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to log out of your account?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={signOut}>
+                Logout
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </motion.li>
     </motion.ul>
   );

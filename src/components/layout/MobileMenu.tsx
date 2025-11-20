@@ -19,6 +19,17 @@ import {
 } from "@/components/ui/accordion";
 import { accountNavItems } from "@/data/accountNavItems.ts";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -180,13 +191,30 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
           
           {/* 9. Logout (top-level, only visible if logged in) */}
           {user && (
-            <Button
-              variant="ghost"
-              className="justify-start text-base py-1 text-foreground hover:text-destructive hover:bg-destructive/70 rounded-full"
-              onClick={handleLogout}
-            >
-              <LogOut className="mr-2 h-5 w-5" /> Logout
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="justify-start text-base py-1 text-foreground hover:text-destructive hover:bg-destructive/70 rounded-full"
+                >
+                  <LogOut className="mr-2 h-5 w-5" /> Logout
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to log out of your account?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleLogout}>
+                    Logout
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </motion.nav>
       </SheetContent>

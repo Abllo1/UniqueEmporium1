@@ -11,6 +11,17 @@ import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx";
 import { adminNavItems, linkVariants } from "@/data/adminNavItems.ts";
 import { useAuth } from "@/context/AuthContext.tsx"; // Import useAuth
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface AdminMobileMenuProps {
   isOpen: boolean;
@@ -73,14 +84,31 @@ const AdminMobileMenu = ({ isOpen, onClose }: AdminMobileMenuProps) => {
               </motion.li>
             ))}
             <motion.li variants={linkVariants} className="pt-4 border-t border-border mt-4">
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                onClick={handleLogout}
-              >
-                <LogOut className="mr-3 h-5 w-5" />
-                Logout
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                  >
+                    <LogOut className="mr-3 h-5 w-5" />
+                    Logout
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to log out of your admin account?
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleLogout}>
+                      Logout
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </motion.li>
           </motion.ul>
         </motion.nav>
