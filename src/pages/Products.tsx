@@ -198,7 +198,7 @@ const Products = () => {
               onChange={handleSearchChange}
             />
           </div>
-          <Button type="submit">Search</Button>
+          <Button type="submit" className="rounded-full">Search</Button>
         </form>
 
         {/* Desktop Filters */}
