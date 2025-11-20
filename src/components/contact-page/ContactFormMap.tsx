@@ -52,6 +52,10 @@ const ContactFormMap = () => {
     });
   };
 
+  // URL-encoded address for Google Maps search
+  const mapAddress = encodeURIComponent("No 4 crescent Street opposite Ace supermarket unity, Ilorin, Kwara State, Nigeria");
+  const mapLink = `https://www.google.com/maps/search/?api=1&query=${mapAddress}`;
+
   return (
     <section className="py-12 md:py-20 px-4 max-w-6xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
@@ -199,7 +203,7 @@ const ContactFormMap = () => {
                     <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" /> Personalized shopping experience
                   </li>
                 </ul>
-                <Button className="w-full mt-8" variant="outline">
+                <Button className="w-full mt-8 rounded-full" variant="outline">
                   Get Directions
                 </Button>
               </div>
