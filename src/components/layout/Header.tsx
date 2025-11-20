@@ -99,13 +99,13 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-64 p-2 grid grid-cols-2 gap-2 bg-card border rounded-xl shadow-lg" // Changed rounded-md to rounded-xl
+                className="w-64 p-2 grid grid-cols-2 gap-2 bg-card border rounded-xl shadow-lg"
               >
                 {categories.map((category) => (
                   <DropdownMenuItem 
                     key={category.name} 
                     asChild 
-                    className="rounded-full p-2 hover:bg-accent" // Changed p-0 to p-2
+                    className="rounded-full p-2 hover:bg-accent"
                   >
                     <Link 
                       to={category.link} 
@@ -163,19 +163,24 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
 
             <CartIcon onOpenCartDrawer={() => setIsCartDrawerOpen(true)} />
 
-            {user ? (
-              <>
-                {/* Account Dashboard Link (Desktop) */}
-                {!isMobile && !isAdmin && (
-                  <Link to="/account" className="relative">
-                    <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/80 rounded-full">
-                      <User className="h-5 w-5" />
-                    </Button>
-                  </Link>
-                )}
-              </>
-            ) : (
-              null
+            {/* User/Account Icon (Always visible on desktop) */}
+            {!isMobile && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-foreground hover:bg-secondary/80 rounded-full"
+                onClick={() => {
+                  if (!user) {
+                    navigate("/auth", { state: { from: location.pathname } });
+                  } else if (isAdmin) {
+                    navigate("/admin");
+                  } else {
+                    navigate("/account");
+                  }
+                }}
+              >
+                <User className="h-5 w-5" />
+              </Button>
             )}
 
             {/* Mobile Menu Button (visible on mobile/tablet, hidden on large screens) */}
