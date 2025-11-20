@@ -53,7 +53,7 @@ const SlideOutSearchBar = ({ isOpen, onClose }: SlideOutSearchBarProps) => {
                   ref={inputRef}
                   type="text"
                   placeholder="Search for products..."
-                  className="w-full pl-9 pr-10"
+                  className="w-full pl-9 pr-10 rounded-full"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
