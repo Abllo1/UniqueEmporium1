@@ -151,7 +151,6 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
 
             <CartIcon onOpenCartDrawer={() => setIsCartDrawerOpen(true)} />
 
-            {/* Auth/Account Icon */}
             {user ? (
               <>
                 {/* Account Dashboard Link (Desktop) */}
@@ -170,12 +169,8 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
                 )}
               </>
             ) : (
-              /* Sign In Icon */
-              <Link to="/auth" state={{ from: location.pathname }} className="relative"> {/* Added state here */}
-                <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/80 rounded-full">
-                  <LogIn className="h-5 w-5" />
-                </Button>
-              </Link>
+              // Removed the Sign In / Register button
+              null
             )}
 
             {/* Mobile Menu Button (visible on mobile/tablet, hidden on large screens) */}
