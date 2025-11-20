@@ -307,6 +307,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
               <Button
                 variant="ghost"
                 size="icon"
+                className="rounded-full"
                 onClick={handleToggleFavorite}
               >
                 <Heart className={cn("h-4 w-4", favorited && "fill-red-500 text-red-500")} />
@@ -321,6 +322,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
               <Button
                 variant="ghost"
                 size="icon"
+                className="rounded-full"
                 onClick={handleToggleFavorite}
               >
                 <Heart className={cn("h-4 w-4", favorited && "fill-red-500 text-red-500")} />
