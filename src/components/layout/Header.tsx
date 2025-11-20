@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Link, NavLink, useNavigate, useLocation } from "react-router-dom"; // Import useLocation
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Menu, X, Search, Heart, ChevronDown, Shirt, Baby, Gem, ShoppingBag, User, LayoutDashboard, LogIn, LogOut } from "lucide-react";
@@ -11,10 +11,10 @@ import SlideOutSearchBar from "./SlideOutSearchBar.tsx";
 import MobileMenu from "./MobileMenu.tsx";
 import CartDrawer from "./CartDrawer.tsx";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { motion, AnimatePresence, Easing } from "framer-motion"; // Keep for other animations if needed
+import { motion, AnimatePresence, Easing } from "framer-motion";
 import { useCart } from "@/context/CartContext.tsx";
 import { useFavorites } from "@/context/FavoritesContext.tsx";
-import { useAuth } from "@/context/AuthContext.tsx"; // Use AuthContext
+import { useAuth } from "@/context/AuthContext.tsx";
 import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx";
 import { cn } from "@/lib/utils";
 
@@ -37,13 +37,13 @@ const categories = [
 const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
-  const [isCategoriesDropdownOpen, setIsCategoriesDropdownOpen] = useState(false); // New state for categories dropdown
+  // Removed isCategoriesDropdownOpen state
   const navigate = useNavigate();
-  const location = useLocation(); // Initialize useLocation
+  const location = useLocation();
   const isMobile = useIsMobile();
   const { totalItems } = useCart();
   const { totalFavorites } = useFavorites();
-  const { user, isAdmin, signOut } = useAuth(); // Use AuthContext
+  const { user, isAdmin, signOut } = useAuth();
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
@@ -56,31 +56,10 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
 
   const handleFavoritesClick = (e: React.MouseEvent) => {
     if (!user) {
-      e.preventDefault(); // Prevent default Link navigation
+      e.preventDefault();
       navigate("/auth", { state: { from: location.pathname } });
     }
   };
-
-  // Timeout ref for delayed closing
-  const dropdownCloseTimeout = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const openCategoriesDropdown = () => {
-    if (dropdownCloseTimeout.current) {
-      clearTimeout(dropdownCloseTimeout.current);
-    }
-    setIsCategoriesDropdownOpen(true);
-  };
-
-  const closeCategoriesDropdown = () => {
-    if (dropdownCloseTimeout.current) {
-      clearTimeout(dropdownCloseTimeout.current);
-    }
-    dropdownCloseTimeout.current = setTimeout(() => {
-      setIsCategoriesDropdownOpen(false);
-    }, 150); // Small delay to allow moving mouse to dropdown content
-  };
-
-  // Removed dropdownVariants as it's no longer needed for this dropdown
 
   return (
     <>
@@ -110,43 +89,38 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
               Shop All
             </NavLink>
 
-            {/* Categories Dropdown (Desktop) - Animation removed */}
-            <DropdownMenu open={isCategoriesDropdownOpen} onOpenChange={setIsCategoriesDropdownOpen}>
+            {/* Categories Dropdown (Desktop) */}
+            <DropdownMenu> {/* Removed open and onOpenChange props */}
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   className="flex items-center gap-1 text-foreground hover:bg-secondary/80 rounded-full"
-                  onMouseEnter={openCategoriesDropdown}
-                  onMouseLeave={closeCategoriesDropdown}
+                  // Removed onMouseEnter and onMouseLeave
                 >
                   Categories <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              {/* Directly render DropdownMenuContent without motion.div and AnimatePresence */}
-              {isCategoriesDropdownOpen && (
-                <DropdownMenuContent
-                  onMouseEnter={openCategoriesDropdown}
-                  onMouseLeave={closeCategoriesDropdown}
-                  className="w-64 p-2 grid grid-cols-2 gap-2 bg-card border rounded-md shadow-lg"
-                >
-                  {categories.map((category) => (
-                    <DropdownMenuItem 
-                      key={category.name} 
-                      asChild 
-                      className="rounded-full p-0 hover:bg-accent"
+              <DropdownMenuContent
+                // Removed onMouseEnter and onMouseLeave
+                className="w-64 p-2 grid grid-cols-2 gap-2 bg-card border rounded-md shadow-lg"
+              >
+                {categories.map((category) => (
+                  <DropdownMenuItem 
+                    key={category.name} 
+                    asChild 
+                    className="rounded-full p-0 hover:bg-accent"
+                  >
+                    <Link 
+                      to={category.link} 
+                      className="flex items-center gap-2 cursor-pointer w-full h-full p-2"
+                      // Removed onClick handler to close dropdown, as Radix handles it
                     >
-                      <Link 
-                        to={category.link} 
-                        className="flex items-center gap-2 cursor-pointer w-full h-full p-2"
-                        onClick={() => setIsCategoriesDropdownOpen(false)}
-                      >
-                        <category.icon className="h-4 w-4" />
-                        {category.name}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              )}
+                      <category.icon className="h-4 w-4" />
+                      {category.name}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
             </DropdownMenu>
 
             <NavLink
