@@ -73,7 +73,7 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
           variants={menuVariants}
         >
           {/* 1. Home */}
-          <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70" onClick={() => handleLinkClick("/")}>
+          <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70 rounded-full" onClick={() => handleLinkClick("/")}>
             <Home className="mr-2 h-5 w-5" /> Home
           </Button>
 
@@ -93,7 +93,7 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
                         <Button
                           key={item.name}
                           variant="ghost"
-                          className="justify-start text-sm py-1 text-foreground hover:bg-primary/70"
+                          className="justify-start text-sm py-1 text-foreground hover:bg-primary/70 rounded-full"
                           onClick={() => handleLinkClick(item.path)}
                         >
                           <item.icon className="mr-2 h-4 w-4" /> {item.name}
@@ -106,7 +106,7 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
             </div>
           ) : (
             !user && (
-              <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70" onClick={() => handleLinkClick("/auth", { from: location.pathname })}> {/* Added state here */}
+              <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70 rounded-full" onClick={() => handleLinkClick("/auth", { from: location.pathname })}> {/* Added state here */}
                 <LogIn className="mr-2 h-5 w-5" /> Sign In / Register
               </Button>
             )
@@ -141,13 +141,13 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
           </div>
 
           {/* 4. Shop All */}
-          <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70" onClick={() => handleLinkClick("/products")}>
+          <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70 rounded-full" onClick={() => handleLinkClick("/products")}>
             <ShoppingBag className="mr-2 h-5 w-5" /> Shop All
           </Button>
 
           {/* 5. Favorites (Only visible if logged in and not admin) */}
           {user && !isAdmin && (
-            <Button variant="ghost" className="justify-start text-base relative w-full py-1 text-foreground hover:bg-primary/70" onClick={() => handleLinkClick("/favorites")}>
+            <Button variant="ghost" className="justify-start text-base relative w-full py-1 text-foreground hover:bg-primary/70 rounded-full" onClick={() => handleLinkClick("/favorites")}>
               <Heart className="mr-2 h-5 w-5" /> Favorites
               <Badge count={totalFavorites} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />
             </Button>
@@ -155,25 +155,25 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
 
           {/* 6. Cart (Only visible if not admin) */}
           {!isAdmin && (
-            <Button variant="ghost" className="justify-start text-base relative w-full py-1 text-foreground hover:bg-primary/70" onClick={() => handleLinkClick("/cart")}>
+            <Button variant="ghost" className="justify-start text-base relative w-full py-1 text-foreground hover:bg-primary/70 rounded-full" onClick={() => handleLinkClick("/cart")}>
               <ShoppingBag className="mr-2 h-5 w-5" /> Cart
               <Badge count={totalItems} variant="destructive" className="absolute right-4 top-1/2 -translate-y-1/2" />
             </Button>
           )}
 
           {/* 7. About Us */}
-          <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70" onClick={() => handleLinkClick("/about")}>
+          <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70 rounded-full" onClick={() => handleLinkClick("/about")}>
             <Info className="mr-2 h-5 w-5" /> About Us
           </Button>
 
           {/* 8. Contact */}
-          <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70" onClick={() => handleLinkClick("/contact")}>
+          <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70 rounded-full" onClick={() => handleLinkClick("/contact")}>
             <Mail className="mr-2 h-5 w-5" /> Contact
           </Button>
 
           {/* Admin Link (Only visible if user is admin) */}
           {isAdmin && (
-            <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70" onClick={() => handleLinkClick("/admin")}>
+            <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70 rounded-full" onClick={() => handleLinkClick("/admin")}>
               <LayoutDashboard className="mr-2 h-5 w-5" /> Admin Dashboard
             </Button>
           )}
@@ -182,7 +182,7 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
           {user && (
             <Button
               variant="ghost"
-              className="justify-start text-base py-1 text-foreground hover:text-destructive hover:bg-destructive/70"
+              className="justify-start text-base py-1 text-foreground hover:text-destructive hover:bg-destructive/70 rounded-full"
               onClick={handleLogout}
             >
               <LogOut className="mr-2 h-5 w-5" /> Logout
