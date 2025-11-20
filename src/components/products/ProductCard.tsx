@@ -228,7 +228,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
 
           {/* Mobile "Add to Cart" Button */}
           <div className="md:hidden absolute bottom-2 right-2 z-10">
-            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8" onClick={handleAddToCart} disabled={isAddingToCart}>
+            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 rounded-full" onClick={handleAddToCart} disabled={isAddingToCart}>
               {isAddingToCart ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
