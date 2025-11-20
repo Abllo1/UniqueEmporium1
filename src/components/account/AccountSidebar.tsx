@@ -66,8 +66,8 @@ const AccountSidebar = ({ onCloseMobileMenu }: AccountSidebarProps) => {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={signOut}>
+              <AlertDialogCancel className="rounded-full">Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={signOut} className="rounded-full">
                 Logout
               </AlertDialogAction>
             </AlertDialogFooter>

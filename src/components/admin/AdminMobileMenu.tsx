@@ -102,8 +102,8 @@ const AdminMobileMenu = ({ isOpen, onClose }: AdminMobileMenuProps) => {
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleLogout}>
+                    <AlertDialogCancel className="rounded-full">Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleLogout} className="rounded-full">
                       Logout
                     </AlertDialogAction>
                   </AlertDialogFooter>
