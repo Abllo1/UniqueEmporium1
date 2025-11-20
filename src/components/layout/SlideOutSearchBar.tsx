@@ -58,7 +58,7 @@ const SlideOutSearchBar = ({ isOpen, onClose }: SlideOutSearchBarProps) => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button type="submit" className="shrink-0">
+              <Button type="submit" className="shrink-0 rounded-full">
                 Search
               </Button>
               <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0">
