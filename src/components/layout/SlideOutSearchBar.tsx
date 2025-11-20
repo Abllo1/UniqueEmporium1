@@ -17,6 +17,7 @@ const SlideOutSearchBar = ({ isOpen, onClose }: SlideOutSearchBarProps) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const inputRef = useRef<HTMLInputElement>(null);
+  const searchBarRef = useRef<HTMLDivElement>(null); // Ref for the search bar container
 
   useEffect(() => {
     if (isOpen) {
@@ -24,8 +25,20 @@ const SlideOutSearchBar = ({ isOpen, onClose }: SlideOutSearchBarProps) => {
       inputRef.current?.focus();
       // Pre-fill search query if present in URL
       setSearchQuery(searchParams.get("query") || "");
+
+      // Add event listener for clicks outside
+      const handleClickOutside = (event: MouseEvent) => {
+        if (searchBarRef.current && !searchBarRef.current.contains(event.target as Node)) {
+          onClose();
+        }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
     }
-  }, [isOpen, searchParams]);
+  }, [isOpen, searchParams, onClose]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +52,7 @@ const SlideOutSearchBar = ({ isOpen, onClose }: SlideOutSearchBarProps) => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          ref={searchBarRef} // Attach the ref here
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
