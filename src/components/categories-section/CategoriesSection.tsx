@@ -95,7 +95,7 @@ const CategoriesSection = () => {
       <motion.div
         className={cn(
           "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center",
-          "p-6 rounded-3xl bg-primary/20" // Changed rounded-xl to rounded-3xl
+          "pt-6 pb-4 rounded-3xl bg-primary/20" // Changed p-6 to pt-6 pb-4
         )}
         variants={staggerContainer}
         initial="hidden"
