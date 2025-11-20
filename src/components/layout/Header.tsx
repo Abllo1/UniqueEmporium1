@@ -37,7 +37,6 @@ const categories = [
 const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
-  // Removed isCategoriesDropdownOpen state
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useIsMobile();
@@ -90,30 +89,27 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
             </NavLink>
 
             {/* Categories Dropdown (Desktop) */}
-            <DropdownMenu> {/* Removed open and onOpenChange props */}
+            <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   className="flex items-center gap-1 text-foreground hover:bg-secondary/80 rounded-full"
-                  // Removed onMouseEnter and onMouseLeave
                 >
                   Categories <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                // Removed onMouseEnter and onMouseLeave
-                className="w-64 p-2 grid grid-cols-2 gap-2 bg-card border rounded-md shadow-lg"
+                className="w-64 p-2 grid grid-cols-2 gap-2 bg-card border rounded-xl shadow-lg" // Changed rounded-md to rounded-xl
               >
                 {categories.map((category) => (
                   <DropdownMenuItem 
                     key={category.name} 
                     asChild 
-                    className="rounded-full p-0 hover:bg-accent"
+                    className="rounded-full p-2 hover:bg-accent" // Changed p-0 to p-2
                   >
                     <Link 
                       to={category.link} 
                       className="flex items-center gap-2 cursor-pointer w-full h-full p-2"
-                      // Removed onClick handler to close dropdown, as Radix handles it
                     >
                       <category.icon className="h-4 w-4" />
                       {category.name}
