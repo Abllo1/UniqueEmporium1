@@ -100,7 +100,7 @@ const HeroSection = ({ onScrollToFeatured }: HeroSectionProps) => {
           >
             <Button
               onClick={onScrollToFeatured}
-              className="px-4 py-1.5 text-sm md:px-8 md:py-3 md:text-lg w-full"
+              className="px-4 py-1.5 text-sm md:px-8 md:py-3 md:text-lg w-full rounded-full"
             >
               {heroItem.ctaText1}
             </Button>
