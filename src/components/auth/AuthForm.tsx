@@ -40,7 +40,7 @@ const InputField: React.FC<InputFieldProps> = ({
       required
       value={value}
       onChange={onChange}
-      className="bg-gray-100 border-none rounded-full py-3 px-4 w-full text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-secondary transition duration-300 hover:scale-[1.01]"
+      className="bg-gray-100 border-none rounded-full py-3 px-4 pr-10 w-full text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-secondary transition duration-300 hover:scale-[1.01]"
     />
     {Icon && (
       <Icon className="absolute right-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
