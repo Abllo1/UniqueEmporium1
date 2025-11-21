@@ -123,7 +123,7 @@ export default function AuthForm() {
           }`}
         >
           <form onSubmit={handleSignUp} className="flex flex-col p-8 h-full w-full justify-center items-center text-center">
-            <UniqueEmporiumLogo className="h-[60px] w-auto mb-[10px]" /> {/* Logo for Sign Up */}
+            {/* Removed logo from here */}
             <h1 className="font-bold text-[19px] text-foreground">Create Your Unique Account</h1>
             <SocialLinks />
             <span className="text-xs mb-2 text-muted-foreground">
@@ -306,7 +306,7 @@ export default function AuthForm() {
             Icon={Mail}
             value={signUpEmail}
             onChange={(e) => setSignUpEmail(e.target.value)}
-            />
+          />
           <InputField
             type="password"
             placeholder="Password"
