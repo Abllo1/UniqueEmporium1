@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { User, Lock, Mail, Loader2, Eye, EyeOff } from "lucide-react"; // Added Eye and EyeOff
+import React, { useState, useEffect, useRef } from "react";
+import { User, Lock, Mail, Loader2, Eye, EyeOff, ArrowLeft } from "lucide-react"; // Added Eye, EyeOff, ArrowLeft
 import { useIsMobile } from "@/hooks/use-mobile";
 import GoogleSignInButton from "./GoogleSignInButton";
 import { useAuth } from "@/context/AuthContext.tsx"; // Import useAuth
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom"; // Import useSearchParams
 import { supabase } from "@/integrations/supabase/client"; // Import supabase client
 import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx"; // Import the logo
+import { Button } from "@/components/ui/button"; // Import Button for consistency
 
 // Helper component for social links
 const SocialLinks = () => (
@@ -24,6 +25,7 @@ interface InputFieldProps {
   Icon: React.ElementType;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string; // Added className prop
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -32,6 +34,7 @@ const InputField: React.FC<InputFieldProps> = ({
   Icon,
   value,
   onChange,
+  className, // Destructure className
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -50,7 +53,7 @@ const InputField: React.FC<InputFieldProps> = ({
         required
         value={value}
         onChange={onChange}
-        className="bg-gray-100 border-none rounded-full py-3 px-4 pr-10 w-full text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-secondary transition duration-300 hover:scale-[1.01]"
+        className={`bg-gray-100 border-none rounded-full py-3 px-4 pr-10 w-full text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-secondary transition duration-300 hover:scale-[1.01] ${className}`} // Apply className
       />
       {isPasswordInput && value ? ( // Only show eye icon if it's a password field and has a value
         <button
@@ -73,17 +76,44 @@ const InputField: React.FC<InputFieldProps> = ({
 export default function AuthForm() {
   const { signInWithEmail, signUpWithEmail } = useAuth();
   const navigate = useNavigate();
-  const [isActive, setIsActive] = useState(false);
+  const [searchParams] = useSearchParams(); // Initialize useSearchParams
+
+  const [isActive, setIsActive] = useState(false); // Controls desktop sliding panel
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isSigningUp, setIsSigningUp] = useState(false);
+  const [isResettingPassword, setIsResettingPassword] = useState(false); // For new password form submission
 
+  // States for Sign In form
   const [signInEmail, setSignInEmail] = useState("");
   const [signInPassword, setSignInPassword] = useState("");
-  const [signUpFirstName, setSignUpFirstName] = useState(""); // New state
-  const [signUpLastName, setSignUpLastName] = useState("");   // New state
+
+  // States for Sign Up form
+  const [signUpFirstName, setSignUpFirstName] = useState("");
+  const [signUpLastName, setSignUpLastName] = useState("");
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
+
+  // States for Forgot Password flow
+  const [showForgotPasswordInput, setShowForgotPasswordInput] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [showSetNewPasswordForm, setShowSetNewPasswordForm] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+
   const isMobile = useIsMobile();
+
+  // Effect to check URL for password recovery parameters
+  useEffect(() => {
+    const type = searchParams.get("type");
+    if (type === "recovery") {
+      setShowSetNewPasswordForm(true);
+      setShowForgotPasswordInput(false); // Ensure other forms are hidden
+      setIsActive(false); // Ensure desktop sliding panel is in default state
+      toast.info("Please set your new password.", { description: "You've been redirected from your password reset email." });
+    } else {
+      setShowSetNewPasswordForm(false);
+    }
+  }, [searchParams]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,7 +132,7 @@ export default function AuthForm() {
     e.preventDefault();
     setIsSigningUp(true);
     try {
-      await signUpWithEmail(signUpEmail, signUpPassword, signUpFirstName, signUpLastName); // Updated call
+      await signUpWithEmail(signUpEmail, signUpPassword, signUpFirstName, signUpLastName);
       // Redirection is now handled by CheckAuth
     } catch (error) {
       // Error handled by toast in AuthContext
@@ -111,16 +141,23 @@ export default function AuthForm() {
     }
   };
 
-  const handleForgotPassword = async (e: React.MouseEvent) => {
+  const handleForgotPasswordClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!signInEmail) {
-      toast.error("Please enter your email address to reset your password.");
+    setShowForgotPasswordInput(true);
+    setForgotPasswordEmail(signInEmail); // Pre-fill with current sign-in email if available
+  };
+
+  const handleSendResetEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotPasswordEmail) {
+      toast.error("Please enter your email address.");
       return;
     }
 
+    setIsResettingPassword(true);
     toast.loading("Sending password reset link...", { id: "password-reset-link" });
-    const { error } = await supabase.auth.resetPasswordForEmail(signInEmail, {
-      redirectTo: `${window.location.origin}/auth?reset=true`, // Redirect back to auth page with a flag
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotPasswordEmail, {
+      redirectTo: `${window.location.origin}/auth?type=recovery`, // Redirect back to auth page with recovery type
     });
 
     if (error) {
@@ -131,10 +168,125 @@ export default function AuthForm() {
       toast.success("Password Reset Email Sent!", {
         description: "Please check your email for instructions to reset your password.",
       });
+      setShowForgotPasswordInput(false); // Hide the email input form
+      setForgotPasswordEmail(""); // Clear email field
     }
+    setIsResettingPassword(false);
   };
 
-  // Mobile View with vertical sliding prompt
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPassword || !confirmNewPassword) {
+      toast.error("Please enter and confirm your new password.");
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      toast.error("New passwords do not match.");
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast.error("Password must be at least 6 characters long.");
+      return;
+    }
+
+    setIsResettingPassword(true);
+    toast.loading("Updating password...", { id: "update-password" });
+
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+    if (error) {
+      toast.dismiss("update-password");
+      toast.error("Failed to update password.", { description: error.message });
+    } else {
+      toast.dismiss("update-password");
+      toast.success("Password updated successfully!", {
+        description: "You can now sign in with your new password.",
+      });
+      // Clear fields and redirect to main login view
+      setNewPassword("");
+      setConfirmNewPassword("");
+      setShowSetNewPasswordForm(false);
+      navigate("/auth", { replace: true }); // Remove recovery params from URL
+    }
+    setIsResettingPassword(false);
+  };
+
+  // Render "Set New Password" form if type=recovery is in URL
+  if (showSetNewPasswordForm) {
+    return (
+      <div className="bg-gray-50 rounded-2xl shadow-2xl relative overflow-hidden w-full max-w-md min-h-[480px] flex flex-col justify-center items-center p-8 text-center">
+        <UniqueEmporiumLogo className="h-[80px] w-auto mb-6" />
+        <h1 className="font-bold text-xl text-foreground mb-4">Set Your New Password</h1>
+        <p className="text-sm text-muted-foreground mb-6">
+          Enter your new password below.
+        </p>
+        <form onSubmit={handleUpdatePassword} className="flex flex-col w-full items-center">
+          <InputField
+            type="password"
+            placeholder="New Password"
+            Icon={Lock}
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="mb-2"
+          />
+          <InputField
+            type="password"
+            placeholder="Confirm New Password"
+            Icon={Lock}
+            value={confirmNewPassword}
+            onChange={(e) => setConfirmNewPassword(e.target.value)}
+            className="mb-4"
+          />
+          <Button
+            type="submit"
+            className="rounded-full border border-secondary bg-secondary text-white text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-secondary/80 disabled:opacity-50"
+            disabled={isResettingPassword}
+          >
+            {isResettingPassword ? <Loader2 className="h-4 w-4 animate-spin" /> : "Set Password"}
+          </Button>
+        </form>
+      </div>
+    );
+  }
+
+  // Render "Forgot Password" email input form
+  if (showForgotPasswordInput) {
+    return (
+      <div className="bg-gray-50 rounded-2xl shadow-2xl relative overflow-hidden w-full max-w-md min-h-[480px] flex flex-col justify-center items-center p-8 text-center">
+        <UniqueEmporiumLogo className="h-[80px] w-auto mb-6" />
+        <h1 className="font-bold text-xl text-foreground mb-4">Forgot Your Password?</h1>
+        <p className="text-sm text-muted-foreground mb-6">
+          Enter your email address and we'll send you a link to reset your password.
+        </p>
+        <form onSubmit={handleSendResetEmail} className="flex flex-col w-full items-center">
+          <InputField
+            type="email"
+            placeholder="Email"
+            Icon={Mail}
+            value={forgotPasswordEmail}
+            onChange={(e) => setForgotPasswordEmail(e.target.value)}
+            className="mb-4"
+          />
+          <Button
+            type="submit"
+            className="rounded-full border border-secondary bg-secondary text-white text-xs font-bold py-3 px-11 tracking-wider uppercase transition duration-80 active:scale-95 focus:outline-none hover:bg-secondary/80 disabled:opacity-50"
+            disabled={isResettingPassword}
+          >
+            {isResettingPassword ? <Loader2 className="h-4 w-4 animate-spin" /> : "Send Reset Link"}
+          </Button>
+          <Button
+            variant="link"
+            onClick={() => setShowForgotPasswordInput(false)}
+            className="mt-4 text-sm text-primary hover:underline"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Sign In
+          </Button>
+        </form>
+      </div>
+    );
+  }
+
+  // Mobile View with vertical sliding prompt (default state)
   if (isMobile) {
     return (
       <div className="bg-gray-50 rounded-2xl shadow-2xl relative overflow-hidden w-full max-w-md h-[650px]">
@@ -145,13 +297,12 @@ export default function AuthForm() {
           }`}
         >
           <form onSubmit={handleSignUp} className="flex flex-col p-8 h-full w-full justify-center items-center text-center">
-            {/* Removed logo from here */}
             <h1 className="font-bold text-[19px] text-foreground">Create Your Unique Account</h1>
             <SocialLinks />
             <span className="text-xs mb-2 text-muted-foreground">
               Or use your email for registration
             </span>
-            <div className="flex w-full gap-2"> {/* Added flex container for first name and surname */}
+            <div className="flex w-full gap-2">
               <InputField
                 type="text"
                 placeholder="First Name"
@@ -198,7 +349,7 @@ export default function AuthForm() {
           }`}
         >
           <form onSubmit={handleSignIn} className="flex flex-col p-8 h-full w-full justify-center items-center text-center">
-            <UniqueEmporiumLogo className="h-[60px] w-auto mb-[10px]" /> {/* Logo for Sign In */}
+            <UniqueEmporiumLogo className="h-[60px] w-auto mb-[10px]" />
             <h1 className="font-bold text-[19px] text-foreground">Sign In to Your Emporium</h1>
             <SocialLinks />
             <span className="text-xs mb-2 text-muted-foreground">Or use your email account</span>
@@ -218,7 +369,7 @@ export default function AuthForm() {
             />
             <a
               href="#"
-              onClick={handleForgotPassword}
+              onClick={handleForgotPasswordClick} // Use the new handler
               className="text-sm text-primary my-4 hover:underline"
             >
               Forgot your password?
@@ -250,7 +401,6 @@ export default function AuthForm() {
           >
             {/* Sign Up Prompt (Top half) - Shown when Sign-In form is active */}
             <div className="absolute top-0 left-0 w-full h-[50%] flex flex-col items-center justify-center text-center px-8 py-[0.4rem]">
-              {/* Logo removed as per request: when on sign-in form, logo should not appear on overlay */}
               <h1 className="font-bold text-2xl">Start Your Journey!</h1>
               <p className="text-sm font-light leading-5 tracking-wider my-4">
                 Enter your details and discover unique wholesale fashion.
@@ -265,7 +415,7 @@ export default function AuthForm() {
 
             {/* Sign In Prompt (Bottom half) - Shown when Sign-Up form is active */}
             <div className="absolute top-1/2 left-0 w-full h-[50%] flex flex-col items-center justify-center text-center px-8 py-[0.4rem]">
-              <UniqueEmporiumLogo className="h-16 w-auto mb-[10px]" /> {/* Logo added back as per request */}
+              <UniqueEmporiumLogo className="h-16 w-auto mb-[10px]" />
               <h1 className="font-bold text-2xl">Welcome Back!</h1>
               <p className="text-sm font-light leading-5 tracking-wider my-4">
                 Log in to manage your orders and explore new collections.
@@ -283,7 +433,7 @@ export default function AuthForm() {
     );
   }
 
-  // Desktop View
+  // Desktop View (default state)
   return (
     <div
       className={`bg-white rounded-[90px] shadow-2xl relative overflow-hidden w-[768px] max-w-full min-h-[480px] transition-all duration-300`}
@@ -300,13 +450,13 @@ export default function AuthForm() {
         }`}
       >
         <form onSubmit={handleSignUp} className="bg-white flex flex-col p-12 h-full justify-center items-center text-center">
-          <UniqueEmporiumLogo className="h-[80px] w-auto mb-[10px]" /> {/* Logo for Sign Up */}
+          <UniqueEmporiumLogo className="h-[80px] w-auto mb-[10px]" />
           <h1 className="font-bold m-0 text-[19px] text-foreground">Create Your Unique Account</h1>
           <SocialLinks />
           <span className="text-xs mb-2 text-muted-foreground">
             Or use your Email for registration
           </span>
-          <div className="flex w-full gap-2"> {/* Added flex container */}
+          <div className="flex w-full gap-2">
             <InputField
               type="text"
               placeholder="First Name"
@@ -353,7 +503,7 @@ export default function AuthForm() {
         }`}
       >
         <form onSubmit={handleSignIn} className="flex flex-col p-12 h-full justify-center items-center text-center">
-          <UniqueEmporiumLogo className="h-[80px] w-auto mb-[10px]" /> {/* Logo for Sign In */}
+          <UniqueEmporiumLogo className="h-[80px] w-auto mb-[10px]" />
           <h1 className="font-bold m-0 text-[19px] text-foreground">Sign In to Your Emporium</h1>
           <SocialLinks />
           <span className="text-xs mb-2 text-muted-foreground">Or sign in using E-Mail Address</span>
@@ -371,7 +521,7 @@ export default function AuthForm() {
             value={signInPassword}
             onChange={(e) => setSignInPassword(e.target.value)}
           />
-          <a href="#" onClick={handleForgotPassword} className="text-sm text-primary my-4 hover:underline">
+          <a href="#" onClick={handleForgotPasswordClick} className="text-sm text-primary my-4 hover:underline">
             Forgot your password?
           </a>
           <button
@@ -401,7 +551,7 @@ export default function AuthForm() {
               isActive ? "translate-y-0" : "translate-y-[-20%]"
             }`}
           >
-            <UniqueEmporiumLogo className="h-20 w-auto mb-[10px]" /> {/* Logo for Sign In Prompt */}
+            <UniqueEmporiumLogo className="h-20 w-auto mb-[10px]" />
             <h1 className="font-bold m-0 text-3xl">Welcome Back!</h1>
             <p className="text-sm font-light leading-5 tracking-wider my-5">
               Log in to manage your orders and explore new collections.
@@ -421,7 +571,7 @@ export default function AuthForm() {
               isActive ? "translate-y-[20%]" : "translate-y-0"
             }`}
           >
-            <UniqueEmporiumLogo className="h-20 w-auto mb-[10px]" /> {/* Logo for Sign Up Prompt */}
+            <UniqueEmporiumLogo className="h-20 w-auto mb-[10px]" />
             <h1 className="font-bold m-0 text-3xl">Start Your Journey!</h1>
             <p className="text-sm font-light leading-5 tracking-wider my-5">
               Sign up if you still don't have an account to discover unique wholesale fashion.
