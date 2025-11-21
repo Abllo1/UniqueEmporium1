@@ -119,13 +119,13 @@ const SlideOutSearchBar = ({ isOpen, onClose }: SlideOutSearchBarProps) => {
 
             {/* Product Suggestions */}
             {(isLoadingSuggestions || suggestions.length > 0 || searchQuery.trim().length > 1) && (
-              <div className="w-full max-w-md mt-4 bg-card border border-border rounded-lg shadow-lg overflow-hidden">
+              <div className="w-full max-w-md mt-4 bg-card border border-border rounded-2xl shadow-lg overflow-hidden">
                 {isLoadingSuggestions ? (
                   <div className="flex items-center justify-center p-4 text-muted-foreground">
                     <Loader2 className="h-5 w-5 animate-spin mr-2" /> Loading suggestions...
                   </div>
                 ) : suggestions.length > 0 ? (
-                  <ul className="divide-y divide-border">
+                  <ul className="divide-y divide-border rounded-2xl">
                     {suggestions.map((product) => (
                       <li
                         key={product.id}
