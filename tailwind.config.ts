@@ -22,7 +22,7 @@ export default {
         poppins: ["Poppins", "sans-serif"],
       },
       transitionDuration: {
-        '1600': '1600ms',
+        '1600': '1600ms', // This is the custom duration
       },
       colors: {
         border: "hsl(var(--border))",
