@@ -228,7 +228,7 @@ export default function AuthForm() {
           >
             {/* Sign Up Prompt (Top half) */}
             <div className="absolute top-0 left-0 w-full h-[50%] flex flex-col items-center justify-center text-center px-8 py-[0.4rem]">
-              <UniqueEmporiumLogo className="h-16 w-auto mb-[10px]" /> {/* Logo for Sign Up Prompt */}
+              {/* <UniqueEmporiumLogo className="h-16 w-auto mb-[10px]" /> Removed logo */}
               <h1 className="font-bold text-2xl">Start Your Journey!</h1>
               <p className="text-sm font-light leading-5 tracking-wider my-4">
                 Enter your details and discover unique wholesale fashion.
@@ -243,7 +243,7 @@ export default function AuthForm() {
 
             {/* Sign In Prompt (Bottom half) */}
             <div className="absolute top-1/2 left-0 w-full h-[50%] flex flex-col items-center justify-center text-center px-8 py-[0.4rem]">
-              <UniqueEmporiumLogo className="h-16 w-auto mb-[10px]" /> {/* Logo for Sign In Prompt */}
+              {/* <UniqueEmporiumLogo className="h-16 w-auto mb-[10px]" /> Removed logo */}
               <h1 className="font-bold text-2xl">Welcome Back!</h1>
               <p className="text-sm font-light leading-5 tracking-wider my-4">
                 Log in to manage your orders and explore new collections.
