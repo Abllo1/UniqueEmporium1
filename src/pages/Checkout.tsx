@@ -167,6 +167,31 @@ const Checkout = () => {
 
       if (receiptError) throw receiptError;
 
+      // 3. Check and update user profile with shipping phone if missing
+      const { data: userProfile, error: profileFetchError } = await supabase
+        .from('profiles')
+        .select('phone')
+        .eq('id', user.id)
+        .single();
+
+      if (profileFetchError) {
+        console.error("Error fetching user profile to check phone:", profileFetchError);
+        // Continue without updating profile, as order is already placed
+      } else if (userProfile && (!userProfile.phone || userProfile.phone.trim() === '')) {
+        // If profile phone is missing, update it with the shipping phone
+        const { error: profileUpdateError } = await supabase
+          .from('profiles')
+          .update({ phone: orderData.shipping.phone })
+          .eq('id', user.id);
+
+        if (profileUpdateError) {
+          console.error("Error updating user profile with shipping phone:", profileUpdateError);
+          // Log the error but don't block the order completion
+        } else {
+          console.log(`User ${user.id} profile phone updated with shipping phone.`);
+        }
+      }
+
       toast.dismiss("place-order-toast");
       toast.success("Order Placed Successfully!", {
         description: "You will receive an email confirmation shortly.",
