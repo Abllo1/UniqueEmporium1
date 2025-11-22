@@ -74,11 +74,12 @@ export interface AdminOrder {
     address: string;
     city: string;
     state: string;
+    phone?: string; // Added phone to shippingAddress
   };
   deliveryMethod: string;
   customerName: string;
   customerEmail: string;
-  customerPhone: string;
+  customerPhone: string; // This is the profile phone, not necessarily shipping phone
   paymentStatus: "pending" | "confirmed" | "declined";
   paymentReceiptId?: string;
   receiptImageUrl?: string;
@@ -140,9 +141,9 @@ const OrderDetailsDialog = ({ order, onClose }: OrderDetailsDialogProps) => {
     return amount.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
   };
 
-  const handleCopyPhone = () => {
-    navigator.clipboard.writeText(order.customerPhone);
-    toast.success("Phone number copied!", { description: order.customerPhone });
+  const handleCopyPhone = (phone: string) => {
+    navigator.clipboard.writeText(phone);
+    toast.success("Phone number copied!", { description: phone });
   };
 
   return (
@@ -163,25 +164,25 @@ const OrderDetailsDialog = ({ order, onClose }: OrderDetailsDialogProps) => {
           </h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div className="space-y-1">
-              <p className="text-muted-foreground">Name</p>
+              <p className="text-muted-foreground">Name (from profile)</p>
               <p className="font-bold text-foreground">{order.customerName}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-muted-foreground">Email</p>
+              <p className="text-muted-foreground">Email (from profile)</p>
               <p className="font-medium text-foreground">{order.customerEmail}</p>
             </div>
             <div className="space-y-1 col-span-2">
-              <p className="text-muted-foreground">Phone Number</p>
+              <p className="text-muted-foreground">Phone Number (from profile)</p>
               <div className="flex items-center gap-2">
                 <p className="font-bold text-xl text-primary">{order.customerPhone}</p>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon" onClick={handleCopyPhone} className="h-8 w-8">
+                      <Button variant="ghost" size="icon" onClick={() => handleCopyPhone(order.customerPhone)} className="h-8 w-8">
                         <Copy className="h-4 w-4" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Copy Phone Number</TooltipContent>
+                    <TooltipContent>Copy Profile Phone</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
@@ -198,6 +199,24 @@ const OrderDetailsDialog = ({ order, onClose }: OrderDetailsDialogProps) => {
             <p><strong>Recipient:</strong> {order.shippingAddress.name}</p>
             <p><strong>Address:</strong> {order.shippingAddress.address}</p>
             <p><strong>City, State:</strong> {order.shippingAddress.city}, {order.shippingAddress.state}</p>
+            {order.shippingAddress.phone && ( // Display shipping phone if available
+              <div className="space-y-1">
+                <p><strong>Shipping Phone:</strong></p>
+                <div className="flex items-center gap-2">
+                  <p className="font-bold text-xl text-primary">{order.shippingAddress.phone}</p>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon" onClick={() => handleCopyPhone(order.shippingAddress.phone!)} className="h-8 w-8">
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Copy Shipping Phone</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </div>
+            )}
             <p><strong>Delivery Method:</strong> <Badge variant="secondary">{order.deliveryMethod}</Badge></p>
           </div>
         </div>
@@ -274,7 +293,13 @@ const OrdersManagement = () => {
         totalAmount: order.total_amount,
         status: order.status,
         items: order.items,
-        shippingAddress: order.shipping_address,
+        shippingAddress: {
+          name: order.shipping_address.name,
+          address: order.shipping_address.address,
+          city: order.shipping_address.city,
+          state: order.shipping_address.state,
+          phone: order.shipping_address.phone, // Map phone from shipping_address
+        },
         deliveryMethod: order.delivery_method,
         customerName: `${order.profiles?.first_name || ''} ${order.profiles?.last_name || ''}`.trim(),
         customerEmail: order.profiles?.email || 'N/A',
@@ -302,7 +327,8 @@ const OrdersManagement = () => {
           order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
           order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
           order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          order.customerPhone.includes(searchTerm)
+          order.customerPhone.includes(searchTerm) ||
+          order.shippingAddress.phone?.includes(searchTerm) // Search by shipping phone too
       );
     }
 

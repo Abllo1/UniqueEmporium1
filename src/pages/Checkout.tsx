@@ -143,6 +143,7 @@ const Checkout = () => {
             city: orderData.shipping.city,
             state: orderData.shipping.state,
             zip_code: orderData.shipping.zipCode,
+            phone: orderData.shipping.phone, // Added phone number here
           },
           delivery_method: orderData.bankTransfer.deliveryMethod,
         })
