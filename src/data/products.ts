@@ -19,12 +19,13 @@ export interface Product {
 }
 
 export interface ProductDetails extends Product {
+  shortDescription?: string; // Fix 3: Added shortDescription
   fullDescription: string;
   keyFeatures: string[];
   styleNotes: string; // New field for fashion styling tips
   detailedSpecs: {
     group: string;
-    items: { label: string; value: string; icon?: React.ElementType }[];
+    items: { label: string; value: string; icon?: string }[]; // Fix 2: Changed icon type to string
   }[];
   reviews: {
     id: string;

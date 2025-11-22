@@ -18,7 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-  DialogDescription, // Added DialogDescription
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -47,16 +47,18 @@ import {
   Image as ImageIcon,
   ChevronFirst,
   ChevronLast,
+  MinusCircle, // Added for removing dynamic fields
+  PlusCircle, // Added for adding dynamic fields
 } from "lucide-react";
-import { ProductDetails } from "@/data/products.ts"; // Using ProductDetails interface
+import { ProductDetails } from "@/data/products.ts";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form"; // Import useFieldArray
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
-import { AdminCategory } from "./CategoriesManagement.tsx"; // Import AdminCategory interface
+import { supabase } from "@/integrations/supabase/client";
+import { AdminCategory } from "./CategoriesManagement.tsx";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -76,26 +78,33 @@ const staggerContainer = {
 
 // Form Schema for Add/Edit Product
 const productFormSchema = z.object({
-  id: z.string().optional(), // For editing
+  id: z.string().optional(),
   name: z.string().min(1, "Product Name is required"),
   category: z.string().min(1, "Category is required"),
-  price: z.coerce.number().min(1, "Price is required and must be positive"), // Price for MOQ
-  originalPrice: z.coerce.number().optional().refine((val) => val === undefined || val > 0, "Original Price must be positive if provided"), // New: Optional original price
+  price: z.coerce.number().min(1, "Price is required and must be positive"),
+  originalPrice: z.coerce.number().optional().refine((val) => val === undefined || val > 0, "Original Price must be positive if provided"),
   minOrderQuantity: z.coerce.number().min(1, "Minimum Order Quantity is required and must be positive"),
   status: z.enum(["active", "inactive"]).default("active"),
   limitedStock: z.boolean().default(false),
-  fullDescription: z.string().min(1, "Description is required"),
-  images: z.array(z.string()).optional(), // For existing images (URLs)
-  newImageFiles: z.instanceof(FileList).optional(), // For new file uploads (FileList)
-  // New fields for product tag
+  shortDescription: z.string().max(500, "Concise description cannot exceed 500 characters.").optional(), // New: Concise description
+  fullDescription: z.string().min(1, "Full Description is required"),
+  images: z.array(z.string()).optional(),
+  newImageFiles: z.instanceof(FileList).optional(),
   tag: z.string().optional(),
   tagVariant: z.enum(["default", "secondary", "destructive", "outline"]).optional(),
-  // Simplified other fields for admin UI, providing defaults
   rating: z.coerce.number().min(0).max(5).default(4.5),
   reviewCount: z.coerce.number().min(0).default(0),
   styleNotes: z.string().optional(),
-  keyFeatures: z.array(z.string()).optional(),
-  reviews: z.array(z.any()).optional(), // Simplified
+  keyFeatures: z.array(z.string().min(1, "Feature cannot be empty")).optional(), // New: Key Features
+  detailedSpecs: z.array(z.object({ // New: Detailed Specifications
+    group: z.string().min(1, "Group name is required"),
+    items: z.array(z.object({
+      label: z.string().min(1, "Label is required"),
+      value: z.string().min(1, "Value is required"),
+      icon: z.string().optional(), // Store Lucide icon name as string
+    })),
+  })).optional(),
+  reviews: z.array(z.any()).optional(),
   relatedProducts: z.array(z.string()).optional(),
 });
 
@@ -117,8 +126,7 @@ const ProductsManagement = () => {
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
-  const [availableCategories, setAvailableCategories] = useState<AdminCategory[]>([]); // State for categories from DB
-
+  const [availableCategories, setAvailableCategories] = useState<AdminCategory[]>([]);
 
   const {
     register,
@@ -126,6 +134,7 @@ const ProductsManagement = () => {
     reset,
     setValue,
     watch,
+    control, // Added control for useFieldArray
     formState: { errors, isSubmitting },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
@@ -137,16 +146,31 @@ const ProductsManagement = () => {
       keyFeatures: [],
       reviews: [],
       relatedProducts: [],
-      tag: "", // Default empty tag
-      tagVariant: "default", // Default tag variant
+      tag: "",
+      tagVariant: "default",
+      shortDescription: "", // Default for new field
+      styleNotes: "", // Default for new field
+      detailedSpecs: [], // Default for new field
     }
+  });
+
+  // useFieldArray for Key Features
+  const { fields: keyFeaturesFields, append: appendKeyFeature, remove: removeKeyFeature } = useFieldArray({
+    control,
+    name: "keyFeatures" as const, // Fix 1: Add 'as const'
+  });
+
+  // useFieldArray for Detailed Specs Groups
+  const { fields: detailedSpecsGroups, append: appendDetailedSpecGroup, remove: removeDetailedSpecGroup } = useFieldArray({
+    control,
+    name: "detailedSpecs" as const, // Fix 1: Add 'as const'
   });
 
   const currentImageFiles = watch("newImageFiles");
   const currentImages = watch("images");
   const currentLimitedStock = watch("limitedStock");
   const currentProductStatus = watch("status");
-  const currentTagVariant = watch("tagVariant"); // Watch tag variant
+  const currentTagVariant = watch("tagVariant");
 
   // Effect to update image preview when newImageFiles changes
   React.useEffect(() => {
@@ -175,7 +199,6 @@ const ProductsManagement = () => {
       toast.error("Failed to load products.", { description: error.message });
       setProducts([]);
     } else {
-      // Map snake_case from DB to camelCase for ProductDetails interface
       const fetchedProducts: ProductDetails[] = data.map((p: any) => ({
         id: p.id,
         name: p.name,
@@ -191,6 +214,7 @@ const ProductsManagement = () => {
         limitedStock: p.limited_stock,
         minOrderQuantity: p.min_order_quantity,
         status: p.status,
+        shortDescription: p.short_description, // Map new field
         fullDescription: p.full_description,
         keyFeatures: p.key_features || [],
         styleNotes: p.style_notes || "",
@@ -264,7 +288,6 @@ const ProductsManagement = () => {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
   
-  // New pagination functions
   const goToFirstPage = () => setCurrentPage(1);
   const goToLastPage = () => setCurrentPage(totalPages);
   const goToPrevPage = () => setCurrentPage(prev => Math.max(1, prev - 1));
@@ -279,11 +302,15 @@ const ProductsManagement = () => {
       keyFeatures: [],
       reviews: [],
       relatedProducts: [],
-      tag: "", // Default empty tag
-      tagVariant: "default", // Default tag variant
-      images: [], // Clear images for new product
-      newImageFiles: undefined, // Clear new image files
-    }); // Clear form fields and set defaults
+      tag: "",
+      tagVariant: "default",
+      images: [],
+      newImageFiles: undefined,
+      shortDescription: "", // Reset new field
+      fullDescription: "", // Reset full description
+      styleNotes: "", // Reset new field
+      detailedSpecs: [], // Reset new field
+    });
     setImagePreview(null);
     setIsAddModalOpen(true);
   };
@@ -292,17 +319,19 @@ const ProductsManagement = () => {
     setEditingProduct(product);
     reset({
       ...product,
-      originalPrice: product.originalPrice, // Ensure originalPrice is passed correctly
+      originalPrice: product.originalPrice,
       minOrderQuantity: product.minOrderQuantity,
       fullDescription: product.fullDescription,
-      keyFeatures: product.keyFeatures,
-      styleNotes: product.styleNotes,
+      keyFeatures: product.keyFeatures || [], // Ensure array is not null/undefined
+      styleNotes: product.styleNotes || "", // Ensure string is not null/undefined
+      detailedSpecs: product.detailedSpecs || [], // Ensure array is not null/undefined
       reviews: product.reviews,
       relatedProducts: product.relatedProducts,
-      tag: product.tag || "", // Pre-fill tag
-      tagVariant: product.tagVariant || "default", // Pre-fill tag variant
-      images: product.images, // Existing images
-      newImageFiles: undefined, // Clear new image files input
+      tag: product.tag || "",
+      tagVariant: product.tagVariant || "default",
+      images: product.images,
+      newImageFiles: undefined,
+      shortDescription: product.shortDescription || "", // Populate new field
     });
     setImagePreview(product.images?.[0] || null);
     setIsEditModalOpen(true);
@@ -314,26 +343,24 @@ const ProductsManagement = () => {
   };
 
   const handleAddOrUpdateProduct = async (data: ProductFormData) => {
-    let imageUrls: string[] = data.images || []; // Start with existing images
+    let imageUrls: string[] = data.images || [];
 
     if (data.newImageFiles && data.newImageFiles.length > 0) {
-      const uploadedUrls: string[] = [];
       const uploadPromises = Array.from(data.newImageFiles).map(async (file) => {
         const fileExtension = file.name.split('.').pop();
-        // Generate a unique file path for each image
         const filePath = `products/${data.id || `new-${Date.now()}`}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
 
         const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('product_images') // Use the new product_images bucket
+          .from('product_images')
           .upload(filePath, file, {
             cacheControl: '3600',
-            upsert: false, // Do not upsert, create new files
+            upsert: false,
           });
 
         if (uploadError) {
           console.error(`Error uploading image ${file.name}:`, uploadError);
           toast.error(`Failed to upload image: ${file.name}.`, { description: uploadError.message });
-          return null; // Return null for failed uploads
+          return null;
         } else {
           const { data: publicUrlData } = supabase.storage.from('product_images').getPublicUrl(uploadData.path);
           return publicUrlData.publicUrl;
@@ -343,20 +370,15 @@ const ProductsManagement = () => {
       const results = await Promise.all(uploadPromises);
       const successfulUploads = results.filter(url => url !== null) as string[];
 
-      // If new images are successfully uploaded, replace all existing images with the new ones.
-      // This simplifies management; old images in storage might become orphaned but won't be linked.
       if (successfulUploads.length > 0) {
         imageUrls = successfulUploads;
       } else if (data.images && data.images.length > 0) {
-        // If no new images were successfully uploaded, but there were existing images, keep them.
         imageUrls = data.images;
       } else {
-        // If no new images and no existing images, ensure it's an empty array.
         imageUrls = [];
       }
     }
 
-    // Calculate discount percentage if originalPrice is provided and greater than current price
     let discountPercentage: number | undefined;
     if (data.originalPrice && data.price < data.originalPrice) {
       discountPercentage = Math.round(((data.originalPrice - data.price) / data.originalPrice) * 100);
@@ -366,25 +388,26 @@ const ProductsManagement = () => {
       name: data.name,
       category: data.category,
       price: data.price,
-      original_price: data.originalPrice, // Map to snake_case for DB
-      discount_percentage: discountPercentage, // Map to snake_case
-      min_order_quantity: data.minOrderQuantity, // Map to snake_case
+      original_price: data.originalPrice,
+      discount_percentage: discountPercentage,
+      min_order_quantity: data.minOrderQuantity,
       status: data.status,
-      limited_stock: data.limitedStock, // Map to snake_case
-      full_description: data.fullDescription, // Map to snake_case
-      images: imageUrls, // Array of text - now contains real URLs
-      tag: data.tag, // Use tag from form
-      tag_variant: data.tagVariant, // Use tagVariant from form
+      limited_stock: data.limitedStock,
+      short_description: data.shortDescription, // New field
+      full_description: data.fullDescription,
+      images: imageUrls,
+      tag: data.tag,
+      tag_variant: data.tagVariant,
       rating: data.rating,
       review_count: data.reviewCount,
       style_notes: data.styleNotes,
-      key_features: data.keyFeatures,
+      key_features: data.keyFeatures, // New field
+      detailed_specs: data.detailedSpecs, // New field
       reviews: data.reviews,
       related_products: data.relatedProducts,
     };
 
     if (editingProduct) {
-      // Update existing product
       const { error } = await supabase
         .from('products')
         .update(productPayload)
@@ -396,32 +419,29 @@ const ProductsManagement = () => {
         toast.success(`Product "${data.name}" updated successfully!`);
         setIsEditModalOpen(false);
         setEditingProduct(null);
-        fetchProducts(); // Re-fetch products to update the list
+        fetchProducts();
       }
     } else {
-      // Add new product
-      const newProductId = `prod-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`; // Generate a more robust ID
+      const newProductId = `prod-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
       const { error } = await supabase
         .from('products')
-        .insert([{ ...productPayload, id: newProductId }]); // Generate a simple ID for new products
+        .insert([{ ...productPayload, id: newProductId }]);
 
       if (error) {
         toast.error("Failed to add product.", { description: error.message });
       } else {
         toast.success(`Product "${data.name}" added successfully!`);
         setIsAddModalOpen(false);
-        fetchProducts(); // Re-fetch products to update the list
+        fetchProducts();
       }
     }
   };
 
   const confirmDeleteProduct = useCallback(async () => {
     if (deletingProductId) {
-      // First, get the product to delete its images from storage
       const productToDelete = products.find(p => p.id === deletingProductId);
       if (productToDelete && productToDelete.images && productToDelete.images.length > 0) {
         const filePathsToDelete = productToDelete.images.map(url => {
-          // Extract the path from the public URL
           const urlParts = url.split('/public/storage/v1/object/public/product_images/');
           return urlParts.length > 1 ? urlParts[1] : null;
         }).filter(path => path !== null) as string[];
@@ -434,14 +454,12 @@ const ProductsManagement = () => {
           if (deleteStorageError) {
             console.error("Error deleting product images from storage:", deleteStorageError);
             toast.error("Failed to delete some product images from storage.", { description: deleteStorageError.message });
-            // Continue with product deletion even if image deletion fails
           } else {
             toast.info("Product images deleted from storage.");
           }
         }
       }
 
-      // Then, delete the product record from the database
       const { error } = await supabase
         .from('products')
         .delete()
@@ -453,7 +471,7 @@ const ProductsManagement = () => {
         toast.info(`Product ${deletingProductId} deleted.`);
         setDeletingProductId(null);
         setIsDeleteAlertOpen(false);
-        fetchProducts(); // Re-fetch products to update the list
+        fetchProducts();
       }
     }
   }, [deletingProductId, products, fetchProducts]);
@@ -697,7 +715,7 @@ const ProductsManagement = () => {
 
       {/* Add Product Dialog */}
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-        <DialogContent className="sm:max-w-[600px] p-6 rounded-full shadow-lg bg-card/80 backdrop-blur-md border border-border/50 overflow-y-auto max-h-[90vh]">
+        <DialogContent className="sm:max-w-[600px] p-6 rounded-xl shadow-lg bg-card/80 backdrop-blur-md border border-border/50 overflow-y-auto max-h-[90vh]">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold flex items-center gap-2">
               <Plus className="h-6 w-6 text-primary" /> Add New Product
@@ -752,10 +770,71 @@ const ProductsManagement = () => {
               </div>
             </div>
 
+            {/* New: Concise Description */}
             <div className="space-y-2">
-              <Label htmlFor="fullDescription">Product Description</Label>
+              <Label htmlFor="shortDescription">Concise Description (Max 500 chars)</Label>
+              <Textarea id="shortDescription" rows={2} {...register("shortDescription")} className={cn(errors.shortDescription && "border-destructive")} />
+              {errors.shortDescription && <p className="text-destructive text-sm">{errors.shortDescription.message}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="fullDescription">Full Product Description</Label>
               <Textarea id="fullDescription" rows={4} {...register("fullDescription")} className={cn(errors.fullDescription && "border-destructive")} />
               {errors.fullDescription && <p className="text-destructive text-sm">{errors.fullDescription.message}</p>}
+            </div>
+
+            {/* New: Key Features */}
+            <div className="space-y-2 border p-4 rounded-md">
+              <div className="flex items-center justify-between">
+                <Label className="text-base">Key Features</Label>
+                <Button type="button" variant="outline" size="sm" onClick={() => appendKeyFeature("")}>
+                  <PlusCircle className="mr-2 h-4 w-4" /> Add Feature
+                </Button>
+              </div>
+              {keyFeaturesFields.map((field, index) => (
+                <div key={field.id} className="flex items-center space-x-2">
+                  <Input
+                    {...register(`keyFeatures.${index}` as const)}
+                    placeholder="e.g., High-quality fabric"
+                    className={cn(errors.keyFeatures?.[index] && "border-destructive")}
+                  />
+                  <Button type="button" variant="ghost" size="icon" onClick={() => removeKeyFeature(index)}>
+                    <MinusCircle className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              ))}
+              {errors.keyFeatures && <p className="text-destructive text-sm">{errors.keyFeatures.message}</p>}
+            </div>
+
+            {/* New: Detailed Specifications */}
+            <div className="space-y-4 border p-4 rounded-md">
+              <div className="flex items-center justify-between">
+                <Label className="text-base">Detailed Specifications</Label>
+                <Button type="button" variant="outline" size="sm" onClick={() => appendDetailedSpecGroup({ group: "", items: [{ label: "", value: "" }] })}>
+                  <PlusCircle className="mr-2 h-4 w-4" /> Add Spec Group
+                </Button>
+              </div>
+              {detailedSpecsGroups.map((groupField, groupIndex) => (
+                <Card key={groupField.id} className="p-4 space-y-3 border-l-2 border-primary/50">
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      {...register(`detailedSpecs.${groupIndex}.group` as const)}
+                      placeholder="Group Name (e.g., Material, Dimensions)"
+                      className={cn(errors.detailedSpecs?.[groupIndex]?.group && "border-destructive")}
+                    />
+                    <Button type="button" variant="ghost" size="icon" onClick={() => removeDetailedSpecGroup(groupIndex)}>
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                  {errors.detailedSpecs?.[groupIndex]?.group && <p className="text-destructive text-sm">{errors.detailedSpecs?.[groupIndex]?.group?.message}</p>}
+
+                  <div className="space-y-2 pl-4 border-l border-border">
+                    <Label className="text-sm">Items in Group</Label>
+                    <NestedFieldArray control={control} name={`detailedSpecs.${groupIndex}.items`} errors={errors} />
+                  </div>
+                </Card>
+              ))}
+              {errors.detailedSpecs && <p className="text-destructive text-sm">{errors.detailedSpecs.message}</p>}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -786,7 +865,7 @@ const ProductsManagement = () => {
                   id="newImageFiles"
                   type="file"
                   accept="image/*"
-                  multiple // Allow multiple files
+                  multiple
                   {...register("newImageFiles")}
                 />
                 <p className="text-xs text-muted-foreground">Upload up to 5 images. Only the first image will be used for preview.</p>
@@ -847,7 +926,7 @@ const ProductsManagement = () => {
 
       {/* Edit Product Dialog */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent className="sm:max-w-[600px] p-6 rounded-full shadow-lg bg-card/80 backdrop-blur-md border border-border/50 overflow-y-auto max-h-[90vh]">
+        <DialogContent className="sm:max-w-[600px] p-6 rounded-xl shadow-lg bg-card/80 backdrop-blur-md border border-border/50 overflow-y-auto max-h-[90vh]">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold flex items-center gap-2">
               <Edit className="h-6 w-6 text-primary" /> Edit Product
@@ -857,7 +936,7 @@ const ProductsManagement = () => {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(handleAddOrUpdateProduct)} className="space-y-6 py-4">
-            <input type="hidden" {...register("id")} /> {/* Hidden field for product ID */}
+            <input type="hidden" {...register("id")} />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Product Name</Label>
@@ -903,10 +982,71 @@ const ProductsManagement = () => {
               </div>
             </div>
 
+            {/* New: Concise Description */}
             <div className="space-y-2">
-              <Label htmlFor="fullDescription">Product Description</Label>
+              <Label htmlFor="shortDescription">Concise Description (Max 500 chars)</Label>
+              <Textarea id="shortDescription" rows={2} {...register("shortDescription")} className={cn(errors.shortDescription && "border-destructive")} />
+              {errors.shortDescription && <p className="text-destructive text-sm">{errors.shortDescription.message}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="fullDescription">Full Product Description</Label>
               <Textarea id="fullDescription" rows={4} {...register("fullDescription")} className={cn(errors.fullDescription && "border-destructive")} />
               {errors.fullDescription && <p className="text-destructive text-sm">{errors.fullDescription.message}</p>}
+            </div>
+
+            {/* New: Key Features */}
+            <div className="space-y-2 border p-4 rounded-md">
+              <div className="flex items-center justify-between">
+                <Label className="text-base">Key Features</Label>
+                <Button type="button" variant="outline" size="sm" onClick={() => appendKeyFeature("")}>
+                  <PlusCircle className="mr-2 h-4 w-4" /> Add Feature
+                </Button>
+              </div>
+              {keyFeaturesFields.map((field, index) => (
+                <div key={field.id} className="flex items-center space-x-2">
+                  <Input
+                    {...register(`keyFeatures.${index}` as const)}
+                    placeholder="e.g., High-quality fabric"
+                    className={cn(errors.keyFeatures?.[index] && "border-destructive")}
+                  />
+                  <Button type="button" variant="ghost" size="icon" onClick={() => removeKeyFeature(index)}>
+                    <MinusCircle className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              ))}
+              {errors.keyFeatures && <p className="text-destructive text-sm">{errors.keyFeatures.message}</p>}
+            </div>
+
+            {/* New: Detailed Specifications */}
+            <div className="space-y-4 border p-4 rounded-md">
+              <div className="flex items-center justify-between">
+                <Label className="text-base">Detailed Specifications</Label>
+                <Button type="button" variant="outline" size="sm" onClick={() => appendDetailedSpecGroup({ group: "", items: [{ label: "", value: "" }] })}>
+                  <PlusCircle className="mr-2 h-4 w-4" /> Add Spec Group
+                </Button>
+              </div>
+              {detailedSpecsGroups.map((groupField, groupIndex) => (
+                <Card key={groupField.id} className="p-4 space-y-3 border-l-2 border-primary/50">
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      {...register(`detailedSpecs.${groupIndex}.group` as const)}
+                      placeholder="Group Name (e.g., Material, Dimensions)"
+                      className={cn(errors.detailedSpecs?.[groupIndex]?.group && "border-destructive")}
+                    />
+                    <Button type="button" variant="ghost" size="icon" onClick={() => removeDetailedSpecGroup(groupIndex)}>
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                  {errors.detailedSpecs?.[groupIndex]?.group && <p className="text-destructive text-sm">{errors.detailedSpecs?.[groupIndex]?.group?.message}</p>}
+
+                  <div className="space-y-2 pl-4 border-l border-border">
+                    <Label className="text-sm">Items in Group</Label>
+                    <NestedFieldArray control={control} name={`detailedSpecs.${groupIndex}.items`} errors={errors} />
+                  </div>
+                </Card>
+              ))}
+              {errors.detailedSpecs && <p className="text-destructive text-sm">{errors.detailedSpecs.message}</p>}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -937,7 +1077,7 @@ const ProductsManagement = () => {
                   id="newImageFiles"
                   type="file"
                   accept="image/*"
-                  multiple // Allow multiple files
+                  multiple
                   {...register("newImageFiles")}
                 />
                 <p className="text-xs text-muted-foreground">Upload new images to replace existing ones. Only the first image will be used for preview.</p>
@@ -996,6 +1136,50 @@ const ProductsManagement = () => {
         </DialogContent>
       </Dialog>
     </motion.div>
+  );
+};
+
+// Nested Field Array Component for Detailed Specs Items
+interface NestedFieldArrayProps {
+  control: any;
+  name: string;
+  errors: any;
+}
+
+const NestedFieldArray = ({ control, name, errors }: NestedFieldArrayProps) => {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: name as `detailedSpecs.${number}.items`, // Type assertion for nested array
+  });
+
+  return (
+    <div className="space-y-2">
+      {fields.map((itemField, itemIndex) => (
+        <div key={itemField.id} className="flex items-center space-x-2">
+          <Input
+            {...control.register(`${name}.${itemIndex}.label` as const)}
+            placeholder="Label (e.g., Color)"
+            className={cn(errors?.[name]?.[itemIndex]?.label && "border-destructive")}
+          />
+          <Input
+            {...control.register(`${name}.${itemIndex}.value` as const)}
+            placeholder="Value (e.g., Black)"
+            className={cn(errors?.[name]?.[itemIndex]?.value && "border-destructive")}
+          />
+          <Input
+            {...control.register(`${name}.${itemIndex}.icon` as const)}
+            placeholder="Icon (Lucide name, optional)"
+            className="w-32"
+          />
+          <Button type="button" variant="ghost" size="icon" onClick={() => remove(itemIndex)}>
+            <MinusCircle className="h-4 w-4 text-destructive" />
+          </Button>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={() => append({ label: "", value: "", icon: "" })}>
+        <PlusCircle className="mr-2 h-4 w-4" /> Add Item
+      </Button>
+    </div>
   );
 };
 

@@ -7,7 +7,7 @@ import { motion, Easing } from "framer-motion";
 
 interface DetailedSpecGroup {
   group: string;
-  items: { label: string; value: string; icon?: React.ElementType }[];
+  items: { label: string; value: string; icon?: string }[]; // Changed icon type to string
 }
 
 interface ProductSpecsTabProps {
