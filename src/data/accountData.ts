@@ -35,21 +35,8 @@ export interface PaymentReceipt {
   receiptImageUrl: string; // Placeholder for actual image URL
 }
 
-// Helper to get the new ID for an old product name
-const getNewIdByName = (name: string) => {
-  // Find the product by name in mockProducts and return its new ID
-  const product = getProductById(name);
-  if (product) return product.id;
-  
-  // Fallback logic to search by name if ID lookup fails (since getProductById expects ID)
-  // We need to import mockProducts here to search by name if the ID map logic failed in products.ts
-  // Since we can't import mockProducts directly here without circular dependency issues, 
-  // we rely on the fact that the names are unique and the IDs are generated in products.ts.
-  
-  // To avoid circular dependency, we'll assume the names are unique and use a placeholder if not found.
-  return "unknown-id";
-};
-
+// Removed getNewIdByName as it was causing async issues with static mock data.
+// For mock data, we will use static product IDs and placeholder image URLs.
 
 // Mock Orders
 export const mockOrders: Order[] = [
@@ -59,8 +46,8 @@ export const mockOrders: Order[] = [
     totalAmount: 70000.00,
     status: "completed",
     items: [
-      { productId: getNewIdByName("SHEIN Elegant Floral Maxi Gown"), productName: "SHEIN Elegant Floral Maxi Gown", quantity: 10, unitPrice: 3500, imageUrl: getProductById(getNewIdByName("SHEIN Elegant Floral Maxi Gown"))?.images[0] || "" },
-      { productId: getNewIdByName("Luxury Thrift Silk Scarf (Designer)"), productName: "Luxury Thrift Silk Scarf (Designer)", quantity: 10, unitPrice: 2800, imageUrl: getProductById(getNewIdByName("Luxury Thrift Silk Scarf (Designer)"))?.images[0] || "" },
+      { productId: "shein-floral-maxi-gown-12345", productName: "SHEIN Elegant Floral Maxi Gown", quantity: 10, unitPrice: 3500, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=SHEIN+Gown" },
+      { productId: "luxury-thrift-silk-scarf-67890", productName: "Luxury Thrift Silk Scarf (Designer)", quantity: 10, unitPrice: 2800, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Silk+Scarf" },
     ],
     shippingAddress: {
       name: "Aisha O.",
@@ -76,8 +63,8 @@ export const mockOrders: Order[] = [
     totalAmount: 120000.00,
     status: "processing",
     items: [
-      { productId: getNewIdByName("Men's Urban Streetwear Fashion Bundle"), productName: "Men's Urban Streetwear Fashion Bundle", quantity: 5, unitPrice: 15000, imageUrl: getProductById(getNewIdByName("Men's Urban Streetwear Fashion Bundle"))?.images[0] || "" },
-      { productId: getNewIdByName("Kids' Stylish Distressed Denim Jeans"), productName: "Kids' Stylish Distressed Denim Jeans", quantity: 10, unitPrice: 1800, imageUrl: getProductById(getNewIdByName("Kids' Stylish Distressed Denim Jeans"))?.images[0] || "" },
+      { productId: "mens-urban-streetwear-bundle-11223", productName: "Men's Urban Streetwear Fashion Bundle", quantity: 5, unitPrice: 15000, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Mens+Bundle" },
+      { productId: "kids-distressed-denim-jeans-33445", productName: "Kids' Stylish Distressed Denim Jeans", quantity: 10, unitPrice: 1800, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Kids+Jeans" },
     ],
     shippingAddress: {
       name: "Chinedu E.",
@@ -93,7 +80,7 @@ export const mockOrders: Order[] = [
     totalAmount: 40000.00,
     status: "pending",
     items: [
-      { productId: getNewIdByName("Vintage 90s Graphic T-Shirt"), productName: "Vintage 90s Graphic T-Shirt", quantity: 10, unitPrice: 1200, imageUrl: getProductById(getNewIdByName("Vintage 90s Graphic T-Shirt"))?.images[0] || "" },
+      { productId: "vintage-90s-graphic-tshirt-55667", productName: "Vintage 90s Graphic T-Shirt", quantity: 10, unitPrice: 1200, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Vintage+Tee" },
     ],
     shippingAddress: {
       name: "Blessing N.",
@@ -109,8 +96,8 @@ export const mockOrders: Order[] = [
     totalAmount: 95000.00,
     status: "completed",
     items: [
-      { productId: getNewIdByName("SHEIN Flowy Summer Midi Dress"), productName: "SHEIN Flowy Summer Midi Dress", quantity: 10, unitPrice: 3000, imageUrl: getProductById(getNewIdByName("SHEIN Flowy Summer Midi Dress"))?.images[0] || "" },
-      { productId: getNewIdByName("Vintage Leather Crossbody Bag"), productName: "Vintage Leather Crossbody Bag", quantity: 10, unitPrice: 5500, imageUrl: getProductById(getNewIdByName("Vintage Leather Crossbody Bag"))?.images[0] || "" },
+      { productId: "shein-flowy-summer-midi-dress-77889", productName: "SHEIN Flowy Summer Midi Dress", quantity: 10, unitPrice: 3000, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Midi+Dress" },
+      { productId: "vintage-leather-crossbody-bag-99001", productName: "Vintage Leather Crossbody Bag", quantity: 10, unitPrice: 5500, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Crossbody+Bag" },
     ],
     shippingAddress: {
       name: "Amaka J.",

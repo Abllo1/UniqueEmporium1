@@ -21,8 +21,8 @@ export const mockAdminStats: AdminStats = {
   newProductsLastMonth: 12,
 };
 
-// Helper to get the new ID for an old product name
-const getNewIdByName = (name: string) => mockProducts.find(p => p.name === name)?.id || "unknown-id";
+// Removed getNewIdByName as it was causing async issues with static mock data.
+// For mock data, we will use static product IDs and placeholder image URLs.
 
 // --- Admin Orders Data (Extended from existing mockOrders) ---
 export interface AdminOrder extends Order {
@@ -45,8 +45,8 @@ export const mockAdminOrders: AdminOrder[] = [
     paymentStatus: "pending",
     paymentReceiptId: "PR-20240725-001",
     items: [
-      { productId: getNewIdByName("SHEIN Elegant Floral Maxi Gown"), productName: "SHEIN Elegant Floral Maxi Gown", quantity: 10, unitPrice: 3500, imageUrl: getProductById(getNewIdByName("SHEIN Elegant Floral Maxi Gown"))?.images[0] || "" },
-      { productId: getNewIdByName("Luxury Thrift Silk Scarf (Designer)"), productName: "Luxury Thrift Silk Scarf (Designer)", quantity: 10, unitPrice: 2800, imageUrl: getProductById(getNewIdByName("Luxury Thrift Silk Scarf (Designer)"))?.images[0] || "" },
+      { productId: "shein-elegant-floral-maxi-gown-12345", productName: "SHEIN Elegant Floral Maxi Gown", quantity: 10, unitPrice: 3500, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=SHEIN+Gown" },
+      { productId: "luxury-thrift-silk-scarf-67890", productName: "Luxury Thrift Silk Scarf (Designer)", quantity: 10, unitPrice: 2800, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Silk+Scarf" },
     ],
     shippingAddress: {
       name: "Aisha O.",
@@ -67,8 +67,8 @@ export const mockAdminOrders: AdminOrder[] = [
     paymentStatus: "verified",
     paymentReceiptId: "PR-20240720-002",
     items: [
-      { productId: getNewIdByName("Men's Urban Streetwear Fashion Bundle"), productName: "Men's Urban Streetwear Fashion Bundle", quantity: 5, unitPrice: 15000, imageUrl: getProductById(getNewIdByName("Men's Urban Streetwear Fashion Bundle"))?.images[0] || "" },
-      { productId: getNewIdByName("Kids' Stylish Distressed Denim Jeans"), productName: "Kids' Stylish Distressed Denim Jeans", quantity: 10, unitPrice: 1800, imageUrl: getProductById(getNewIdByName("Kids' Stylish Distressed Denim Jeans"))?.images[0] || "" },
+      { productId: "mens-urban-streetwear-bundle-11223", productName: "Men's Urban Streetwear Fashion Bundle", quantity: 5, unitPrice: 15000, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Mens+Bundle" },
+      { productId: "kids-stylish-distressed-denim-jeans-33445", productName: "Kids' Stylish Distressed Denim Jeans", quantity: 10, unitPrice: 1800, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Kids+Jeans" },
     ],
     shippingAddress: {
       name: "Chinedu E.",
@@ -89,7 +89,7 @@ export const mockAdminOrders: AdminOrder[] = [
     paymentStatus: "verified",
     paymentReceiptId: "PR-20240715-003",
     items: [
-      { productId: getNewIdByName("Vintage 90s Graphic T-Shirt"), productName: "Vintage 90s Graphic T-Shirt", quantity: 10, unitPrice: 1200, imageUrl: getProductById(getNewIdByName("Vintage 90s Graphic T-Shirt"))?.images[0] || "" },
+      { productId: "vintage-90s-graphic-tshirt-55667", productName: "Vintage 90s Graphic T-Shirt", quantity: 10, unitPrice: 1200, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Vintage+Tee" },
     ],
     shippingAddress: {
       name: "Blessing N.",
@@ -110,8 +110,8 @@ export const mockAdminOrders: AdminOrder[] = [
     paymentStatus: "declined", // Changed from 'failed'
     paymentReceiptId: "PR-20240710-004",
     items: [
-      { productId: getNewIdByName("SHEIN Flowy Summer Midi Dress"), productName: "SHEIN Flowy Summer Midi Dress", quantity: 10, unitPrice: 3000, imageUrl: getProductById(getNewIdByName("SHEIN Flowy Summer Midi Dress"))?.images[0] || "" },
-      { productId: getNewIdByName("Vintage Leather Crossbody Bag"), productName: "Vintage Leather Crossbody Bag", quantity: 10, unitPrice: 5500, imageUrl: getProductById(getNewIdByName("Vintage Leather Crossbody Bag"))?.images[0] || "" },
+      { productId: "shein-flowy-summer-midi-dress-77889", productName: "SHEIN Flowy Summer Midi Dress", quantity: 10, unitPrice: 3000, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Midi+Dress" },
+      { productId: "vintage-leather-crossbody-bag-99001", productName: "Vintage Leather Crossbody Bag", quantity: 10, unitPrice: 5500, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Crossbody+Bag" },
     ],
     shippingAddress: {
       name: "Amaka J.",
@@ -131,7 +131,7 @@ export const mockAdminOrders: AdminOrder[] = [
     customerPhone: "+2348123456789", // Added phone
     paymentStatus: "pending",
     items: [
-      { productId: getNewIdByName("Luxury Thrift Designer Sunglasses"), productName: "Luxury Thrift Designer Sunglasses", quantity: 10, unitPrice: 6000, imageUrl: getProductById(getNewIdByName("Luxury Thrift Designer Sunglasses"))?.images[0] || "" },
+      { productId: "luxury-thrift-designer-sunglasses-22334", productName: "Luxury Thrift Designer Sunglasses", quantity: 10, unitPrice: 6000, imageUrl: "https://via.placeholder.com/150/D8C4A6/000000?text=Sunglasses" },
     ],
     shippingAddress: {
       name: "Fatima G.",

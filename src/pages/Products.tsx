@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,12 +8,11 @@ import { Search, Shirt, Baby, Gem, ShoppingBag, SlidersHorizontal } from "lucide
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
 import { motion, AnimatePresence, Easing } from "framer-motion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { mockProducts, ProductDetails, getProductsByIds } from "@/data/products.ts";
+import { ProductDetails, getRecentlyViewedProducts } from "@/data/products.ts";
 import RecommendedProductsSection from "@/components/recommended-products/RecommendedProductsSection.tsx";
 import RecentlyViewedProductsSection from "@/components/product-details/RecentlyViewedProductsSection.tsx";
 import ProductCardSkeleton from "@/components/products/ProductCardSkeleton.tsx";
-
-const allProducts: ProductDetails[] = mockProducts;
+import { fetchProductsFromSupabase } from "@/integrations/supabase/products";
 
 const categories = [
   { name: "All Categories", value: "all" },
@@ -64,19 +63,23 @@ const Products = () => {
   const [sortBy, setSortBy] = useState("default");
   const [isMobileFilterPanelOpen, setIsMobileFilterPanelOpen] = useState(false);
   const [recentlyViewedProductIds, setRecentlyViewedProductIds] = useState<string[]>([]);
-  const [isInitialLoad, setIsInitialLoad] = useState(true); // New state for initial load
+  const [allAvailableProducts, setAllAvailableProducts] = useState<ProductDetails[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      setIsLoadingProducts(true);
+      const products = await fetchProductsFromSupabase();
+      setAllAvailableProducts(products);
+      setIsLoadingProducts(false);
+    };
+    loadProducts();
+  }, []);
 
   useEffect(() => {
     setCurrentQuery(initialQuery);
     setSelectedCategory(initialCategory);
-    // Simulate initial load delay only once
-    if (isInitialLoad) {
-      const timer = setTimeout(() => {
-        setIsInitialLoad(false);
-      }, 800);
-      return () => clearTimeout(timer);
-    }
-  }, [initialQuery, initialCategory, isInitialLoad]); // Added isInitialLoad to dependencies
+  }, [initialQuery, initialCategory]);
 
   useEffect(() => {
     const storedViewed = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || "[]") as string[];
@@ -89,12 +92,13 @@ const Products = () => {
 
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
+    const newSearchParams = new URLSearchParams(searchParams);
     if (value === "all") {
-      searchParams.delete("category");
+      newSearchParams.delete("category");
     } else {
-      searchParams.set("category", value);
+      newSearchParams.set("category", value);
     }
-    setSearchParams(searchParams);
+    setSearchParams(newSearchParams);
   };
 
   const handleSortByChange = (value: string) => {
@@ -103,16 +107,17 @@ const Products = () => {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const newSearchParams = new URLSearchParams(searchParams);
     if (currentQuery.trim()) {
-      searchParams.set("query", currentQuery.trim());
+      newSearchParams.set("query", currentQuery.trim());
     } else {
-      searchParams.delete("query");
+      newSearchParams.delete("query");
     }
-    setSearchParams(searchParams);
+    setSearchParams(newSearchParams);
   };
 
-  const filterAndSortProducts = () => {
-    let filtered = allProducts.filter((product) => {
+  const filterAndSortProducts = useCallback(() => {
+    let filtered = allAvailableProducts.filter((product) => {
       const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
       const matchesQuery = product.name.toLowerCase().includes(currentQuery.toLowerCase());
       return matchesCategory && matchesQuery;
@@ -138,10 +143,10 @@ const Products = () => {
         break;
     }
     return filtered;
-  };
+  }, [allAvailableProducts, selectedCategory, currentQuery, sortBy]);
 
   const displayedProducts = filterAndSortProducts();
-  const productForRecommendationsId = displayedProducts[0]?.id || mockProducts[0]?.id;
+  const productForRecommendationsId = displayedProducts[0]?.id || allAvailableProducts[0]?.id;
 
   const handleClearFilters = () => {
     setCurrentQuery("");
@@ -151,7 +156,14 @@ const Products = () => {
     setIsMobileFilterPanelOpen(false);
   };
 
-  const actualRecentlyViewedProducts = getProductsByIds(recentlyViewedProductIds);
+  const [actualRecentlyViewedProducts, setActualRecentlyViewedProducts] = useState<Product[]>([]);
+  useEffect(() => {
+    const loadRecentlyViewed = async () => {
+      const products = await getRecentlyViewedProducts(recentlyViewedProductIds);
+      setActualRecentlyViewedProducts(products);
+    };
+    loadRecentlyViewed();
+  }, [recentlyViewedProductIds]);
 
   return (
     <div className="max-w-7xl mx-auto py-12 pt-8 px-4 sm:px-6 lg:px-8">
@@ -292,11 +304,11 @@ const Products = () => {
         viewport={{ once: true, amount: 0.1 }}
         className="text-muted-foreground text-center mb-8"
       >
-        {isInitialLoad ? "Loading products..." : `Showing ${displayedProducts.length} of ${allProducts.length} unique wears`}
+        {isLoadingProducts ? "Loading products..." : `Showing ${displayedProducts.length} of ${allAvailableProducts.length} unique wears`}
       </motion.p>
 
       {/* Product Grid Display */}
-      {isInitialLoad ? (
+      {isLoadingProducts ? (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 sm:gap-5">
           {Array.from({ length: 8 }).map((_, i) => (
             <ProductCardSkeleton key={i} />

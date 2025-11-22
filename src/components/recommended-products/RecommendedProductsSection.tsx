@@ -3,11 +3,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, Easing } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react"; // Changed icon to Sparkles for recommendations
+import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
-import { mockProducts, getProductById, ProductDetails as ProductDetailsType } from "@/data/products.ts";
+import { getProductById, ProductDetails as ProductDetailsType } from "@/data/products.ts";
 import ProductCardSkeleton from "@/components/products/ProductCardSkeleton.tsx";
+import { fetchProductsFromSupabase } from "@/integrations/supabase/products";
 
 interface RecommendedProductsSectionProps {
   currentProductId: string;
@@ -53,62 +54,62 @@ const RecommendedProductsSection = ({ currentProductId }: RecommendedProductsSec
 
   useEffect(() => {
     setLoading(true);
-    const timer = setTimeout(() => {
-      const generateRecommendations = () => {
-        const currentProduct = getProductById(currentProductId);
-        if (!currentProduct) {
-          setRecommendedProducts([]);
-          return;
+    const loadRecommendations = async () => {
+      const currentProduct = await getProductById(currentProductId);
+      if (!currentProduct) {
+        setRecommendedProducts([]);
+        setLoading(false);
+        return;
+      }
+
+      const allLiveProducts = await fetchProductsFromSupabase();
+
+      const recommendations: Product[] = [];
+      const recommendationIds = new Set<string>();
+
+      // 1. Category Match (excluding current product)
+      const categoryMatches = allLiveProducts.filter(
+        (p) => p.category === currentProduct.category && p.id !== currentProduct.id
+      );
+      categoryMatches.forEach((p) => {
+        if (!recommendationIds.has(p.id)) {
+          recommendations.push(p);
+          recommendationIds.add(p.id);
         }
+      });
 
-        const recommendations: Product[] = [];
-        const recommendationIds = new Set<string>();
-
-        // 1. Category Match (excluding current product)
-        const categoryMatches = mockProducts.filter(
-          (p) => p.category === currentProduct.category && p.id !== currentProduct.id
+      // 2. Related Attributes: Same tag.variant
+      if (currentProduct.tagVariant) {
+        const tagMatches = allLiveProducts.filter(
+          (p) => p.tagVariant === currentProduct.tagVariant && p.id !== currentProduct.id
         );
-        categoryMatches.forEach((p) => {
+        tagMatches.forEach((p) => {
           if (!recommendationIds.has(p.id)) {
             recommendations.push(p);
             recommendationIds.add(p.id);
           }
         });
+      }
 
-        // 2. Related Attributes: Same tag.variant
-        if (currentProduct.tagVariant) {
-          const tagMatches = mockProducts.filter(
-            (p) => p.tagVariant === currentProduct.tagVariant && p.id !== currentProduct.id
-          );
-          tagMatches.forEach((p) => {
-            if (!recommendationIds.has(p.id)) {
-              recommendations.push(p);
-              recommendationIds.add(p.id);
-            }
-          });
+      // 3. Related Attributes: Price within 20% range
+      const priceRange = 0.20;
+      const minPrice = currentProduct.price * (1 - priceRange);
+      const maxPrice = currentProduct.price * (1 + priceRange);
+
+      const priceMatches = allLiveProducts.filter(
+        (p) => p.id !== currentProduct.id && p.price >= minPrice && p.price <= maxPrice
+      );
+      priceMatches.forEach((p) => {
+        if (!recommendationIds.has(p.id)) {
+          recommendations.push(p);
+          recommendationIds.add(p.id);
         }
+      });
 
-        // 3. Related Attributes: Price within 20% range
-        const priceRange = 0.20;
-        const minPrice = currentProduct.price * (1 - priceRange);
-        const maxPrice = currentProduct.price * (1 + priceRange);
-
-        const priceMatches = mockProducts.filter(
-          (p) => p.id !== currentProduct.id && p.price >= minPrice && p.price <= maxPrice
-        );
-        priceMatches.forEach((p) => {
-          if (!recommendationIds.has(p.id)) {
-            recommendations.push(p);
-            recommendationIds.add(p.id);
-          }
-        });
-
-        setRecommendedProducts(recommendations.slice(0, 10));
-      };
-      generateRecommendations();
+      setRecommendedProducts(recommendations.slice(0, 10));
       setLoading(false);
-    }, 600);
-    return () => clearTimeout(timer);
+    };
+    loadRecommendations();
   }, [currentProductId]);
 
   if (recommendedProducts.length === 0 && !loading) {

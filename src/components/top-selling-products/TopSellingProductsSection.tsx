@@ -3,31 +3,29 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, Easing } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, TrendingUp, Shirt } from "lucide-react"; // Changed icon to Shirt
+import { ChevronLeft, ChevronRight, TrendingUp, Shirt } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import ProductCard, { Product } from "@/components/products/ProductCard.tsx";
-import { mockProducts, ProductDetails } from "@/data/products.ts";
+import { ProductDetails } from "@/data/products.ts";
 import ProductCardSkeleton from "@/components/products/ProductCardSkeleton.tsx";
+import { fetchProductsFromSupabase } from "@/integrations/supabase/products";
 
-// Hand-pick some products to represent "Top Selling"
-const topSellingProductIds = [
-  mockProducts.find(p => p.name === "SHEIN Elegant Floral Maxi Gown")?.id || "",
-  mockProducts.find(p => p.name === "Vintage 90s Graphic T-Shirt")?.id || "",
-  mockProducts.find(p => p.name === "Ladies' Casual Chic Fashion Bundle")?.id || "",
-  mockProducts.find(p => p.name === "Kids' Stylish Distressed Denim Jeans")?.id || "",
-  mockProducts.find(p => p.name === "Luxury Thrift Silk Scarf (Designer)")?.id || "",
-  mockProducts.find(p => p.name === "Men's Urban Streetwear Fashion Bundle")?.id || "",
-].filter(id => id !== "");
+// Hand-pick some products to represent "Top Selling" by name
+const topSellingProductNames = [
+  "SHEIN Elegant Floral Maxi Gown",
+  "Vintage 90s Graphic T-Shirt",
+  "Ladies' Casual Chic Fashion Bundle",
+  "Kids' Stylish Distressed Denim Jeans",
+  "Luxury Thrift Silk Scarf (Designer)",
+  "Men's Urban Streetwear Fashion Bundle",
+];
 
-const getTopSellingProducts = (): Promise<Product[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const products = topSellingProductIds
-        .map(id => mockProducts.find(p => p.id === id))
-        .filter((product): product is ProductDetails => product !== undefined);
-      resolve(products);
-    }, 700);
-  });
+const getTopSellingProducts = async (): Promise<Product[]> => {
+  const allLiveProducts = await fetchProductsFromSupabase();
+  const products = topSellingProductNames
+    .map(name => allLiveProducts.find(p => p.name === name))
+    .filter((product): product is ProductDetails => product !== undefined);
+  return products;
 };
 
 const fadeInUp = {

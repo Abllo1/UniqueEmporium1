@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, Easing } from "framer-motion";
-import { getProductById, ProductDetails as ProductDetailsType, getRandomProducts, getRecentlyViewedProducts } from "@/data/products.ts";
+import { ProductDetails as ProductDetailsType, getRecentlyViewedProducts } from "@/data/products.ts";
 import ProductBreadcrumb from "@/components/product-details/ProductBreadcrumb.tsx";
 import ProductImageGallery from "@/components/product-details/ProductImageGallery.tsx";
 import ProductInfoSection from "@/components/product-details/ProductInfoSection.tsx";
@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import ProductDetailsSkeleton from "@/components/product-details/ProductDetailsSkeleton.tsx";
+import { fetchProductByIdFromSupabase } from "@/integrations/supabase/products";
+import { Product } from "@/components/products/ProductCard.tsx";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 50, x: -50 },
@@ -34,9 +36,9 @@ const ProductDetails = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    const timer = setTimeout(() => {
+    const loadProduct = async () => {
       if (productId) {
-        const fetchedProduct = getProductById(productId);
+        const fetchedProduct = await fetchProductByIdFromSupabase(productId);
         if (fetchedProduct) {
           setProduct(fetchedProduct);
 
@@ -56,14 +58,25 @@ const ProductDetails = () => {
         toast.error("Invalid product ID.", { description: "Please provide a valid product identifier." });
       }
       setLoading(false);
-    }, 700);
-    return () => clearTimeout(timer);
+    };
+    loadProduct();
   }, [productId]);
 
   useEffect(() => {
     const storedViewed = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || "[]") as string[];
     setRecentlyViewedProductIds(storedViewed);
   }, []);
+
+  const [actualRecentlyViewedProducts, setActualRecentlyViewedProducts] = useState<Product[]>([]);
+  useEffect(() => {
+    const loadRecentlyViewed = async () => {
+      if (product) { // Only load if product is available
+        const products = await getRecentlyViewedProducts(recentlyViewedProductIds, product.id);
+        setActualRecentlyViewedProducts(products);
+      }
+    };
+    loadRecentlyViewed();
+  }, [recentlyViewedProductIds, product]);
 
 
   if (loading) {
@@ -95,8 +108,6 @@ const ProductDetails = () => {
       </div>
     );
   }
-
-  const actualRecentlyViewedProducts = getRecentlyViewedProducts(recentlyViewedProductIds, product.id);
 
   return (
     <div className="min-h-screen w-full bg-background">

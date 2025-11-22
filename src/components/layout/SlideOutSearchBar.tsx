@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X, Loader2 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { mockProducts, Product } from "@/data/products"; // Import mockProducts
-import ImageWithFallback from "@/components/common/ImageWithFallback"; // Import ImageWithFallback
+import { Product } from "@/data/products";
+import ImageWithFallback from "@/components/common/ImageWithFallback";
 import { cn } from "@/lib/utils";
+import { fetchProductsFromSupabase } from "@/integrations/supabase/products";
 
 interface SlideOutSearchBarProps {
   isOpen: boolean;
@@ -19,10 +20,19 @@ const SlideOutSearchBar = ({ isOpen, onClose }: SlideOutSearchBarProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+  const [allLiveProducts, setAllLiveProducts] = useState<Product[]>([]);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const inputRef = useRef<HTMLInputElement>(null);
-  const searchBarRef = useRef<HTMLDivElement>(null); // Ref for the search bar container
+  const searchBarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const loadAllProducts = async () => {
+      const products = await fetchProductsFromSupabase();
+      setAllLiveProducts(products);
+    };
+    loadAllProducts();
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -40,7 +50,7 @@ const SlideOutSearchBar = ({ isOpen, onClose }: SlideOutSearchBarProps) => {
         document.removeEventListener("mousedown", handleClickOutside);
       };
     } else {
-      setSuggestions([]); // Clear suggestions when closing
+      setSuggestions([]);
     }
   }, [isOpen, searchParams, onClose]);
 
@@ -48,12 +58,11 @@ const SlideOutSearchBar = ({ isOpen, onClose }: SlideOutSearchBarProps) => {
     const fetchSuggestions = async () => {
       if (searchQuery.trim().length > 1) {
         setIsLoadingSuggestions(true);
-        // Simulate API call delay
         await new Promise(resolve => setTimeout(resolve, 300)); 
-        const filtered = mockProducts.filter(product =>
+        const filtered = allLiveProducts.filter(product =>
           product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           product.category.toLowerCase().includes(searchQuery.toLowerCase())
-        ).slice(0, 5); // Limit to 5 suggestions
+        ).slice(0, 5);
         setSuggestions(filtered);
         setIsLoadingSuggestions(false);
       } else {
@@ -64,13 +73,13 @@ const SlideOutSearchBar = ({ isOpen, onClose }: SlideOutSearchBarProps) => {
 
     const handler = setTimeout(() => {
       fetchSuggestions();
-    }, 200); // Debounce search input
+    }, 200);
 
     return () => {
       clearTimeout(handler);
-      setIsLoadingSuggestions(false); // Clear loading on unmount or query change
+      setIsLoadingSuggestions(false);
     };
-  }, [searchQuery]);
+  }, [searchQuery, allLiveProducts]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

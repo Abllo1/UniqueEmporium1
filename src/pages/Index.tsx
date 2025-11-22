@@ -8,24 +8,25 @@ import CustomerReviewsSection from "@/components/customer-reviews/CustomerReview
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion, Easing } from "framer-motion";
-import { mockProducts, ProductDetails, getProductsByIds } from "@/data/products.ts";
+import { ProductDetails, getProductsByIds, getRecentlyViewedProducts } from "@/data/products.ts";
 import RecentlyViewedProductsSection from "@/components/product-details/RecentlyViewedProductsSection.tsx";
 import TopSellingProductsSection from "@/components/top-selling-products/TopSellingProductsSection.tsx";
 import React, { useEffect, useState, useRef } from "react";
 import ProductCardSkeleton from "@/components/products/ProductCardSkeleton.tsx";
-import ImageWithFallback from "@/components/common/ImageWithFallback.tsx"; // Import ImageWithFallback
+import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
+import { fetchProductsFromSupabase } from "@/integrations/supabase/products";
 
 // Select specific products from mockProducts to be featured
-const featuredProductIds = [
-  mockProducts.find(p => p.name === "SHEIN Elegant Floral Maxi Gown")?.id || "",
-  mockProducts.find(p => p.name === "Vintage 90s Graphic T-Shirt")?.id || "",
-  mockProducts.find(p => p.name === "Kids' Stylish Distressed Denim Jeans")?.id || "",
-  mockProducts.find(p => p.name === "Ladies' Casual Chic Fashion Bundle")?.id || "",
-  mockProducts.find(p => p.name === "Luxury Thrift Silk Scarf (Designer)")?.id || "",
-  mockProducts.find(p => p.name === "Men's Urban Streetwear Fashion Bundle")?.id || "",
-  mockProducts.find(p => p.name === "SHEIN Flowy Summer Midi Dress")?.id || "", // Added new product
-  mockProducts.find(p => p.name === "Vintage Leather Crossbody Bag")?.id || "", // Added new product
-].filter(id => id !== "");
+const featuredProductNames = [
+  "SHEIN Elegant Floral Maxi Gown",
+  "Vintage 90s Graphic T-Shirt",
+  "Kids' Stylish Distressed Denim Jeans",
+  "Ladies' Casual Chic Fashion Bundle",
+  "Luxury Thrift Silk Scarf (Designer)",
+  "Men's Urban Streetwear Fashion Bundle",
+  "SHEIN Flowy Summer Midi Dress",
+  "Vintage Leather Crossbody Bag",
+];
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -49,24 +50,45 @@ const Index = () => {
   const [recentlyViewedProductIds, setRecentlyViewedProductIds] = useState<string[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loadingFeatured, setLoadingFeatured] = useState(true);
+  const [allAvailableProducts, setAllAvailableProducts] = useState<ProductDetails[]>([]); // State to hold all products
+  const [loadingAllProducts, setLoadingAllProducts] = useState(true); // Loading state for all products
   const featuredProductsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const loadAllProducts = async () => {
+      setLoadingAllProducts(true);
+      const products = await fetchProductsFromSupabase();
+      setAllAvailableProducts(products);
+      setLoadingAllProducts(false);
+    };
+    loadAllProducts();
+  }, []);
 
   useEffect(() => {
     const storedViewed = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || "[]") as string[];
     setRecentlyViewedProductIds(storedViewed);
+  }, []);
 
-    setLoadingFeatured(true);
-    const timer = setTimeout(() => {
-      const fetchedFeatured = featuredProductIds
-        .map(id => mockProducts.find(p => p.id === id))
+  useEffect(() => {
+    if (!loadingAllProducts) {
+      setLoadingFeatured(true);
+      const fetchedFeatured = featuredProductNames
+        .map(name => allAvailableProducts.find(p => p.name === name))
         .filter((product): product is ProductDetails => product !== undefined);
       setFeaturedProducts(fetchedFeatured);
       setLoadingFeatured(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+    }
+  }, [loadingAllProducts, allAvailableProducts]);
 
-  const actualRecentlyViewedProducts = getProductsByIds(recentlyViewedProductIds);
+  const [actualRecentlyViewedProducts, setActualRecentlyViewedProducts] = useState<Product[]>([]);
+  useEffect(() => {
+    const loadRecentlyViewed = async () => {
+      const products = await getRecentlyViewedProducts(recentlyViewedProductIds);
+      setActualRecentlyViewedProducts(products);
+    };
+    loadRecentlyViewed();
+  }, [recentlyViewedProductIds]);
+
 
   const scrollToFeaturedProducts = () => {
     featuredProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -99,7 +121,7 @@ const Index = () => {
         >
           {/* Moved paragraph */}
           <motion.p
-            className="text-sm md:text-lg lg:text-xl text-muted-foreground mt-2 mb-8 md:mb-12" // Changed mt-4 to mt-2
+            className="text-sm md:text-lg lg:text-xl text-muted-foreground mt-2 mb-8 md:mb-12"
             variants={fadeInUp}
           >
             Explore the latest SHEIN gowns, vintage shirts, kids’ jeans, and fashion bundles with easy navigation, smart picks, and clear checkout.
