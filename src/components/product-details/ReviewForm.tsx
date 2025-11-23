@@ -156,14 +156,25 @@ const ReviewForm = ({ productId, onReviewSubmitted }: ReviewFormProps) => {
           {/* Title Input */}
           <div className="space-y-2">
             <Label htmlFor="title">Review Title</Label>
-            <Input id="title" {...register("title")} className={cn(errors.title && "border-destructive")} />
+            <Input 
+              id="title" 
+              {...register("title")} 
+              className={cn(errors.title && "border-destructive")} 
+              placeholder="E.g., Amazing quality and fast delivery!"
+            />
             {errors.title && <p className="text-destructive text-sm">{errors.title.message}</p>}
           </div>
 
           {/* Comment Input */}
           <div className="space-y-2">
             <Label htmlFor="comment">Your Comment</Label>
-            <Textarea id="comment" rows={4} {...register("comment")} className={cn(errors.comment && "border-destructive")} />
+            <Textarea 
+              id="comment" 
+              rows={4} 
+              {...register("comment")} 
+              className={cn(errors.comment && "border-destructive")} 
+              placeholder="E.g., I was impressed by the fabric quality and the fit was perfect. Highly recommend this bundle!"
+            />
             {errors.comment && <p className="text-destructive text-sm">{errors.comment.message}</p>}
           </div>
 
