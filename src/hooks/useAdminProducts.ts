@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ProductDetails } from "@/data/products.ts";
 import { AdminCategory } from "@/pages/admin/CategoriesManagement.tsx";
-import { ProductFormData } from "@/components/admin/products/ProductForm.tsx"; // Corrected import path
+import { ProductFormData } from "@/components/admin/products/ProductForm.tsx";
 
 interface UseAdminProductsResult {
   products: ProductDetails[];
@@ -51,7 +51,7 @@ export const useAdminProducts = (): UseAdminProductsResult => {
         status: p.status,
         shortDescription: p.short_description,
         fullDescription: p.full_description,
-        keyFeatures: p.key_features || [],
+        keyFeatures: (p.key_features || []).map((feature: string) => ({ value: feature })), // Map to new structure
         styleNotes: p.style_notes || "",
         detailedSpecs: p.detailed_specs || [],
         reviews: p.reviews || [],
@@ -143,7 +143,7 @@ export const useAdminProducts = (): UseAdminProductsResult => {
       rating: data.rating,
       review_count: data.reviewCount,
       style_notes: data.styleNotes,
-      key_features: data.keyFeatures,
+      key_features: data.keyFeatures.map(f => f.value), // Map back to string[] for DB
       detailed_specs: data.detailedSpecs,
       reviews: data.reviews,
       related_products: data.relatedProducts,
@@ -193,7 +193,7 @@ export const useAdminProducts = (): UseAdminProductsResult => {
       rating: data.rating,
       review_count: data.reviewCount,
       style_notes: data.styleNotes,
-      key_features: data.keyFeatures,
+      key_features: data.keyFeatures.map(f => f.value), // Map back to string[] for DB
       detailed_specs: data.detailedSpecs,
       reviews: data.reviews,
       related_products: data.relatedProducts,
@@ -246,6 +246,8 @@ export const useAdminProducts = (): UseAdminProductsResult => {
       return false;
     } else {
       toast.info(`Product ${id} deleted.`);
+      setDeletingProductId(null);
+      setIsDeleteAlertOpen(false);
       fetchProducts();
       return true;
     }

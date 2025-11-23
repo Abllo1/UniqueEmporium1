@@ -36,7 +36,7 @@ export const productFormSchema = z.object({
   rating: z.coerce.number().min(0).max(5).default(4.5),
   reviewCount: z.coerce.number().min(0).default(0),
   styleNotes: z.string().optional(),
-  keyFeatures: z.array(z.string().min(1, "Feature cannot be empty")),
+  keyFeatures: z.array(z.object({ value: z.string().min(1, "Feature cannot be empty") })), // Changed to array of objects
   detailedSpecs: z.array(z.object({
     group: z.string().min(1, "Group name is required"),
     items: z.array(z.object({
@@ -76,12 +76,16 @@ const ProductForm = ({
     formState: { errors },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
-    defaultValues: initialData || {
+    defaultValues: initialData ? {
+      ...initialData,
+      keyFeatures: initialData.keyFeatures?.map(f => ({ value: f })) || [], // Map to new structure
+      detailedSpecs: initialData.detailedSpecs || [],
+    } : {
       status: "active",
       limitedStock: false,
       rating: 4.5,
       reviewCount: 0,
-      keyFeatures: [],
+      keyFeatures: [], // Initialize as empty array of objects
       reviews: [],
       relatedProducts: [],
       tag: "",
@@ -95,12 +99,12 @@ const ProductForm = ({
     },
   });
 
-  const { fields: keyFeaturesFields, append: appendKeyFeature, remove: removeKeyFeature } = useFieldArray<ProductFormData, "keyFeatures">({ // Explicitly typed
+  const { fields: keyFeaturesFields, append: appendKeyFeature, remove: removeKeyFeature } = useFieldArray<ProductFormData, "keyFeatures">({
     control: control,
     name: "keyFeatures",
   });
 
-  const { fields: detailedSpecsGroups, append: appendDetailedSpecGroup, remove: removeDetailedSpecGroup } = useFieldArray<ProductFormData, "detailedSpecs">({ // Explicitly typed
+  const { fields: detailedSpecsGroups, append: appendDetailedSpecGroup, remove: removeDetailedSpecGroup } = useFieldArray<ProductFormData, "detailedSpecs">({
     control: control,
     name: "detailedSpecs",
   });
@@ -115,7 +119,11 @@ const ProductForm = ({
 
   useEffect(() => {
     if (initialData) {
-      reset(initialData);
+      reset({
+        ...initialData,
+        keyFeatures: initialData.keyFeatures?.map(f => ({ value: f })) || [], // Map to new structure
+        detailedSpecs: initialData.detailedSpecs || [],
+      });
       setImagePreviewUrl(initialData.images?.[0] || null);
     } else {
       reset({
@@ -219,16 +227,16 @@ const ProductForm = ({
       <div className="space-y-2 border p-4 rounded-md">
         <div className="flex items-center justify-between">
           <Label className="text-base">Key Features</Label>
-          <Button type="button" variant="outline" size="sm" onClick={() => appendKeyFeature("")}>
+          <Button type="button" variant="outline" size="sm" onClick={() => appendKeyFeature({ value: "" })}>
             <PlusCircle className="mr-2 h-4 w-4" /> Add Feature
           </Button>
         </div>
         {keyFeaturesFields.map((field, index) => (
           <div key={field.id} className="flex items-center space-x-2">
             <Input
-              {...register(`keyFeatures.${index}` as const)}
+              {...register(`keyFeatures.${index}.value` as const)}
               placeholder="e.g., High-quality fabric"
-              className={cn(errors.keyFeatures?.[index] && "border-destructive")}
+              className={cn(errors.keyFeatures?.[index]?.value && "border-destructive")}
             />
             <Button type="button" variant="ghost" size="icon" onClick={() => removeKeyFeature(index)}>
               <Trash2 className="h-4 w-4 text-destructive" />

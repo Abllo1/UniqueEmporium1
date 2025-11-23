@@ -30,7 +30,7 @@ export async function fetchProductsFromSupabase(): Promise<ProductDetails[]> {
     minOrderQuantity: p.min_order_quantity,
     status: p.status,
     fullDescription: p.full_description,
-    keyFeatures: p.key_features || [],
+    keyFeatures: (p.key_features || []).map((feature: string) => ({ value: feature })), // Map to new structure
     styleNotes: p.style_notes || "",
     detailedSpecs: p.detailed_specs || [],
     reviews: p.reviews || [],
@@ -72,7 +72,7 @@ export async function fetchProductByIdFromSupabase(id: string): Promise<ProductD
     minOrderQuantity: data.min_order_quantity,
     status: data.status,
     fullDescription: data.full_description,
-    keyFeatures: data.key_features || [],
+    keyFeatures: (data.key_features || []).map((feature: string) => ({ value: feature })), // Map to new structure
     styleNotes: data.style_notes || "",
     detailedSpecs: data.detailed_specs || [],
     reviews: data.reviews || [],

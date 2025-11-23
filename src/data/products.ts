@@ -21,7 +21,7 @@ export interface Product {
 export interface ProductDetails extends Product {
   shortDescription?: string; // Fix 3: Added shortDescription
   fullDescription: string;
-  keyFeatures: string[];
+  keyFeatures: { value: string }[]; // Changed to array of objects
   styleNotes: string; // New field for fashion styling tips
   detailedSpecs: {
     group: string;
