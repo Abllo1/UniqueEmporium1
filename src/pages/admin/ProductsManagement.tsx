@@ -47,6 +47,7 @@ import {
   Image as ImageIcon,
   ChevronFirst,
   ChevronLast,
+  X,
 } from "lucide-react";
 import { ProductDetails } from "@/data/products.ts";
 import { cn } from "@/lib/utils";
@@ -74,7 +75,7 @@ const staggerContainer = {
   },
 };
 
-// Form Schema for Add/Edit Product (Updated: Removed keyFeatures and detailedSpecs)
+// Form Schema for Add/Edit Product
 const productFormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Product Name is required"),
@@ -111,9 +112,9 @@ const ProductsManagement = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductDetails | null>(null);
+  const [originalImages, setOriginalImages] = useState<string[]>([]); // Store original images for deletion tracking
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [availableCategories, setAvailableCategories] = useState<AdminCategory[]>([]);
 
@@ -123,7 +124,6 @@ const ProductsManagement = () => {
     reset,
     setValue,
     watch,
-    // Removed control as useFieldArray is no longer used
     formState: { errors, isSubmitting },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
@@ -136,37 +136,19 @@ const ProductsManagement = () => {
       relatedProducts: [],
       tag: "",
       tagVariant: "default",
+      images: [],
+      newImageFiles: undefined,
       shortDescription: "",
+      fullDescription: "",
       styleNotes: "",
-      // Removed keyFeatures and detailedSpecs from default values
     }
   });
 
-  // Removed useFieldArray definitions
-
   const currentImageFiles = watch("newImageFiles");
-  const currentImages = watch("images");
+  const currentImages = watch("images") || [];
   const currentLimitedStock = watch("limitedStock");
   const currentProductStatus = watch("status");
   const currentTagVariant = watch("tagVariant");
-
-  // Effect to update image preview when newImageFiles changes
-  React.useEffect(() => {
-    if (currentImageFiles && currentImageFiles.length > 0) {
-      const file = currentImageFiles[0];
-      if (file instanceof File) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImagePreview(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      }
-    } else if (currentImages && currentImages.length > 0) {
-      setImagePreview(currentImages[0]);
-    } else {
-      setImagePreview(null);
-    }
-  }, [currentImageFiles, currentImages]);
 
   const fetchProducts = useCallback(async () => {
     setIsLoadingProducts(true);
@@ -194,9 +176,9 @@ const ProductsManagement = () => {
         status: p.status,
         shortDescription: p.short_description,
         fullDescription: p.full_description,
-        keyFeatures: p.key_features || [], // Keep mapping for existing DB data compatibility
+        keyFeatures: p.key_features || [],
         styleNotes: p.style_notes || "",
-        detailedSpecs: p.detailed_specs || [], // Keep mapping for existing DB data compatibility
+        detailedSpecs: p.detailed_specs || [],
         reviews: p.reviews || [],
         relatedProducts: p.related_products || [],
       }));
@@ -286,14 +268,14 @@ const ProductsManagement = () => {
       shortDescription: "",
       fullDescription: "",
       styleNotes: "",
-      // Removed keyFeatures and detailedSpecs from reset
     });
-    setImagePreview(null);
+    setOriginalImages([]);
     setIsAddModalOpen(true);
   };
 
   const handleEditProductClick = (product: ProductDetails) => {
     setEditingProduct(product);
+    setOriginalImages(product.images || []); // Store original images
     reset({
       ...product,
       originalPrice: product.originalPrice,
@@ -303,14 +285,11 @@ const ProductsManagement = () => {
       relatedProducts: product.relatedProducts,
       tag: product.tag || "",
       tagVariant: product.tagVariant || "default",
-      images: product.images,
+      images: product.images, // Set current images
       newImageFiles: undefined,
       shortDescription: product.shortDescription || "",
       styleNotes: product.styleNotes || "",
-      // Note: keyFeatures and detailedSpecs are still present in the ProductDetails interface
-      // but are excluded from the form schema and payload now.
     });
-    setImagePreview(product.images?.[0] || null);
     setIsEditModalOpen(true);
   };
 
@@ -319,13 +298,57 @@ const ProductsManagement = () => {
     setIsDeleteAlertOpen(true);
   };
 
-  const handleAddOrUpdateProduct = async (data: ProductFormData) => {
-    let imageUrls: string[] = data.images || [];
+  const handleRemoveExistingImage = (indexToRemove: number) => {
+    const updatedImages = currentImages.filter((_, index) => index !== indexToRemove);
+    setValue("images", updatedImages, { shouldDirty: true });
+    toast.info("Image marked for removal on save.");
+  };
 
+  const handleRemoveNewImage = (indexToRemove: number) => {
+    const files = Array.from(currentImageFiles || []);
+    files.splice(indexToRemove, 1);
+    
+    // Create a new FileList object
+    const dataTransfer = new DataTransfer();
+    files.forEach(file => dataTransfer.items.add(file));
+    
+    setValue("newImageFiles", dataTransfer.files, { shouldDirty: true });
+  };
+
+  const handleAddOrUpdateProduct = async (data: ProductFormData) => {
+    let keptExistingUrls: string[] = data.images || [];
+    let newlyUploadedUrls: string[] = [];
+    const isEditing = !!editingProduct;
+    const productId = data.id || `prod-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
+    if (isEditing) {
+      // 1. Identify images removed by the user (only if editing)
+      const removedUrls = originalImages.filter(url => !keptExistingUrls.includes(url));
+      
+      if (removedUrls.length > 0) {
+        const filePathsToDelete = removedUrls.map(url => {
+          const urlParts = url.split('/public/storage/v1/object/public/product_images/');
+          return urlParts.length > 1 ? urlParts[1] : null;
+        }).filter(path => path !== null) as string[];
+
+        if (filePathsToDelete.length > 0) {
+          const { error: deleteStorageError } = await supabase.storage
+            .from('product_images')
+            .remove(filePathsToDelete);
+
+          if (deleteStorageError) {
+            console.error("Error deleting removed product images from storage:", deleteStorageError);
+            toast.error("Failed to delete some old images from storage.", { description: deleteStorageError.message });
+          }
+        }
+      }
+    }
+
+    // 2. Upload new images
     if (data.newImageFiles && data.newImageFiles.length > 0) {
       const uploadPromises = Array.from(data.newImageFiles).map(async (file) => {
         const fileExtension = file.name.split('.').pop();
-        const filePath = `products/${data.id || `new-${Date.now()}`}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
+        const filePath = `products/${productId}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
 
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('product_images')
@@ -345,15 +368,15 @@ const ProductsManagement = () => {
       });
 
       const results = await Promise.all(uploadPromises);
-      const successfulUploads = results.filter(url => url !== null) as string[];
+      newlyUploadedUrls = results.filter(url => url !== null) as string[];
+    }
 
-      if (successfulUploads.length > 0) {
-        imageUrls = successfulUploads;
-      } else if (data.images && data.images.length > 0) {
-        imageUrls = data.images;
-      } else {
-        imageUrls = [];
-      }
+    // 3. Construct final image list
+    const imageUrls: string[] = [...keptExistingUrls, ...newlyUploadedUrls];
+
+    if (imageUrls.length === 0) {
+      toast.error("Product must have at least one image.");
+      return;
     }
 
     let discountPercentage: number | undefined;
@@ -378,16 +401,15 @@ const ProductsManagement = () => {
       rating: data.rating,
       review_count: data.reviewCount,
       style_notes: data.styleNotes,
-      // Removed key_features and detailed_specs from payload
       reviews: data.reviews,
       related_products: data.relatedProducts,
     };
 
-    if (editingProduct) {
+    if (isEditing) {
       const { error } = await supabase
         .from('products')
         .update(productPayload)
-        .eq('id', editingProduct.id);
+        .eq('id', editingProduct!.id);
 
       if (error) {
         toast.error("Failed to update product.", { description: error.message });
@@ -398,10 +420,9 @@ const ProductsManagement = () => {
         fetchProducts();
       }
     } else {
-      const newProductId = `prod-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
       const { error } = await supabase
         .from('products')
-        .insert([{ ...productPayload, id: newProductId }]);
+        .insert([{ ...productPayload, id: productId }]);
 
       if (error) {
         toast.error("Failed to add product.", { description: error.message });
@@ -451,6 +472,91 @@ const ProductsManagement = () => {
       }
     }
   }, [deletingProductId, products, fetchProducts]);
+
+  // Helper component for image gallery
+  const ImageGallery = ({ isEditing }: { isEditing: boolean }) => {
+    const newFiles = Array.from(currentImageFiles || []);
+    const totalImages = currentImages.length + newFiles.length;
+
+    return (
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="newImageFiles">Upload Product Images (Max 5)</Label>
+          <Input
+            id="newImageFiles"
+            type="file"
+            accept="image/*"
+            multiple
+            {...register("newImageFiles")}
+          />
+          <p className="text-xs text-muted-foreground">
+            Current Images: {totalImages} / 5. Upload new images to replace or add.
+          </p>
+        </div>
+
+        {(currentImages.length > 0 || newFiles.length > 0) && (
+          <div className="space-y-2">
+            <Label>Image Gallery</Label>
+            <div className="flex flex-wrap gap-3 p-3 border rounded-lg bg-muted/20">
+              {/* Existing Images */}
+              {currentImages.map((url, index) => (
+                <div key={`existing-${index}`} className="relative h-24 w-24 rounded-md border overflow-hidden group">
+                  <ImageWithFallback
+                    src={url}
+                    alt={`Existing image ${index + 1}`}
+                    containerClassName="h-full w-full"
+                  />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute top-1 right-1 h-5 w-5 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => handleRemoveExistingImage(index)}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Remove existing image</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              ))}
+
+              {/* New File Previews */}
+              {newFiles.map((file, index) => (
+                <div key={`new-${index}`} className="relative h-24 w-24 rounded-md border overflow-hidden group">
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`New image ${index + 1}`}
+                    className="h-full w-full object-cover"
+                  />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="icon"
+                          className="absolute top-1 right-1 h-5 w-5 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => handleRemoveNewImage(index)}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Remove new file</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <motion.div
@@ -765,9 +871,6 @@ const ProductsManagement = () => {
               <Textarea id="styleNotes" rows={2} {...register("styleNotes")} />
             </div>
 
-            {/* Removed Key Features Section */}
-            {/* Removed Detailed Specifications Section */}
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="tag">Product Tag (e.g., "New Arrival", "Best Seller")</Label>
@@ -789,29 +892,8 @@ const ProductsManagement = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-              <div className="space-y-2">
-                <Label htmlFor="newImageFiles">Upload Product Images (Max 5)</Label>
-                <Input
-                  id="newImageFiles"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  {...register("newImageFiles")}
-                />
-                <p className="text-xs text-muted-foreground">Upload up to 5 images. Only the first image will be used for preview.</p>
-              </div>
-              <div className="space-y-2">
-                <Label>Image Preview</Label>
-                <div className="h-24 w-24 rounded-md border flex items-center justify-center overflow-hidden bg-muted">
-                  {imagePreview ? (
-                    <img src={imagePreview} alt="Image Preview" className="h-full w-full object-cover" />
-                  ) : (
-                    <ImageIcon className="h-10 w-10 text-muted-foreground" />
-                  )}
-                </div>
-              </div>
-            </div>
+            {/* Image Gallery Component */}
+            <ImageGallery isEditing={false} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center space-x-2">
@@ -932,9 +1014,6 @@ const ProductsManagement = () => {
               <Textarea id="styleNotes" rows={2} {...register("styleNotes")} />
             </div>
 
-            {/* Removed Key Features Section */}
-            {/* Removed Detailed Specifications Section */}
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="tag">Product Tag (e.g., "New Arrival", "Best Seller")</Label>
@@ -956,29 +1035,8 @@ const ProductsManagement = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-              <div className="space-y-2">
-                <Label htmlFor="newImageFiles">Upload New Product Images (Max 5)</Label>
-                <Input
-                  id="newImageFiles"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  {...register("newImageFiles")}
-                />
-                <p className="text-xs text-muted-foreground">Upload new images to replace existing ones. Only the first image will be used for preview.</p>
-              </div>
-              <div className="space-y-2">
-                <Label>Image Preview</Label>
-                <div className="h-24 w-24 rounded-md border flex items-center justify-center overflow-hidden bg-muted">
-                  {imagePreview ? (
-                    <img src={imagePreview} alt="Image Preview" className="h-full w-full object-cover" />
-                  ) : (
-                    <ImageIcon className="h-10 w-10 text-muted-foreground" />
-                  )}
-                </div>
-              </div>
-            </div>
+            {/* Image Gallery Component */}
+            <ImageGallery isEditing={true} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center space-x-2">
@@ -1024,7 +1082,5 @@ const ProductsManagement = () => {
     </motion.div>
   );
 };
-
-// Removed NestedFieldArray component as it is no longer needed.
 
 export default ProductsManagement;
