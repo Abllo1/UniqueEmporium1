@@ -44,8 +44,6 @@ import {
   Loader2,
   ChevronFirst,
   ChevronLast,
-  Image as ImageIcon,
-  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -53,7 +51,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
-import ImageWithFallback from "@/components/common/ImageWithFallback.tsx"; // Import ImageWithFallback
 
 // Define the AdminCategory interface based on your database structure
 export interface AdminCategory {
@@ -61,7 +58,6 @@ export interface AdminCategory {
   name: string;
   product_count: number; // Changed to snake_case for consistency with DB
   status: "active" | "inactive";
-  image_url?: string | null; // Added image_url
   created_at?: string;
   updated_at?: string;
 }
@@ -87,8 +83,6 @@ const categoryFormSchema = z.object({
   id: z.string().optional(), // For editing
   name: z.string().min(1, "Category Name is required"),
   status: z.enum(["active", "inactive"]).default("active"),
-  image_url: z.string().optional().nullable(), // Existing image URL
-  newImageFile: z.any().optional(), // New file object
 });
 
 type CategoryFormData = z.infer<typeof categoryFormSchema>;
@@ -119,14 +113,10 @@ const CategoriesManagement = () => {
     resolver: zodResolver(categoryFormSchema),
     defaultValues: {
       status: "active", // Default status for new categories
-      image_url: null,
-      newImageFile: undefined,
     }
   });
 
   const currentStatus = watch("status");
-  const currentImageUrl = watch("image_url");
-  const currentNewImageFile = watch("newImageFile");
 
   const fetchCategories = useCallback(async () => {
     setIsLoadingCategories(true);
@@ -143,7 +133,6 @@ const CategoriesManagement = () => {
         name: c.name,
         product_count: c.product_count,
         status: c.status,
-        image_url: c.image_url, // Map new field
         created_at: c.created_at,
         updated_at: c.updated_at,
       }));
@@ -192,11 +181,7 @@ const CategoriesManagement = () => {
   const goToNextPage = () => setCurrentPage(prev => Math.min(totalPages, prev + 1));
 
   const handleAddCategoryClick = () => {
-    reset({
-      status: "active",
-      image_url: null,
-      newImageFile: undefined,
-    }); // Clear form fields
+    reset(); // Clear form fields
     setIsAddModalOpen(true);
   };
 
@@ -206,8 +191,6 @@ const CategoriesManagement = () => {
       id: category.id,
       name: category.name,
       status: category.status,
-      image_url: category.image_url,
-      newImageFile: undefined,
     });
     setIsEditModalOpen(true);
   };
@@ -217,79 +200,14 @@ const CategoriesManagement = () => {
     setIsDeleteAlertOpen(true);
   };
 
-  const handleImageUpload = async (file: File, categoryId: string): Promise<string | null> => {
-    const fileExtension = file.name.split('.').pop();
-    const filePath = `${categoryId}/${Date.now()}.${fileExtension}`;
-
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from('category_images')
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: true,
-      });
-
-    if (uploadError) {
-      console.error("Error uploading category image:", uploadError);
-      toast.error("Failed to upload image.", { description: uploadError.message });
-      return null;
-    }
-
-    const { data: publicUrlData } = supabase.storage.from('category_images').getPublicUrl(uploadData.path);
-    return publicUrlData.publicUrl;
-  };
-
-  const handleDeleteOldImage = async (imageUrl: string) => {
-    if (!imageUrl) return;
-    
-    // Extract path from public URL
-    const urlParts = imageUrl.split('/public/storage/v1/object/public/category_images/');
-    if (urlParts.length > 1) {
-      const filePath = urlParts[1];
-      const { error: deleteError } = await supabase.storage
-        .from('category_images')
-        .remove([filePath]);
-
-      if (deleteError) {
-        console.error("Error deleting old category image:", deleteError);
-        // Do not throw, just log the error
-      }
-    }
-  };
-
   const handleAddOrUpdateCategory = async (data: CategoryFormData) => {
-    const isEditing = !!editingCategory;
-    const categoryId = data.id || data.name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-    let finalImageUrl = data.image_url;
-
-    // 1. Handle Image Upload/Deletion
-    if (data.newImageFile instanceof File) {
-      // If a new file is selected, upload it
-      const uploadToastId = toast.loading("Uploading image...");
-      
-      // Delete old image if it exists and we are replacing it
-      if (isEditing && editingCategory?.image_url) {
-        await handleDeleteOldImage(editingCategory.image_url);
-      }
-
-      finalImageUrl = await handleImageUpload(data.newImageFile, categoryId);
-      toast.dismiss(uploadToastId);
-      if (!finalImageUrl) return; // Stop if upload failed
-    } else if (isEditing && !data.image_url && editingCategory?.image_url) {
-      // If editing, no new file, and image_url was explicitly cleared (set to null/undefined in form)
-      // This case is handled by the form logic below, but we need to delete the file if it was removed.
-      if (editingCategory.image_url !== finalImageUrl) {
-         await handleDeleteOldImage(editingCategory.image_url);
-      }
-    }
-
-
     const categoryPayload = {
       name: data.name,
       status: data.status,
-      image_url: finalImageUrl,
+      // product_count is managed by the database (e.g., via triggers or separate updates)
     };
 
-    if (isEditing) {
+    if (editingCategory) {
       // Update existing category
       const { error } = await supabase
         .from('categories')
@@ -297,7 +215,6 @@ const CategoriesManagement = () => {
         .eq('id', editingCategory.id);
 
       if (error) {
-        console.error("Supabase Update Error:", error);
         toast.error("Failed to update category.", { description: error.message });
       } else {
         toast.success(`Category "${data.name}" updated successfully!`);
@@ -307,17 +224,14 @@ const CategoriesManagement = () => {
       }
     } else {
       // Add new category
+      // Generate a simple slug-based ID for new categories
+      const newId = data.name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
       const { error } = await supabase
         .from('categories')
-        .insert([{ ...categoryPayload, id: categoryId, product_count: 0 }]); // Default product_count to 0
+        .insert([{ ...categoryPayload, id: newId, product_count: 0 }]); // Default product_count to 0
 
       if (error) {
-        console.error("Supabase Insert Error:", error);
-        let description = error.message;
-        if (error.code === '23505') { // PostgreSQL unique violation error code (Primary Key/Unique Constraint)
-            description = `A category with the name/ID "${categoryId}" already exists. Please choose a different name.`;
-        }
-        toast.error("Failed to add category.", { description });
+        toast.error("Failed to add category.", { description: error.message });
       } else {
         toast.success(`Category "${data.name}" added successfully!`);
         setIsAddModalOpen(false);
@@ -328,40 +242,21 @@ const CategoriesManagement = () => {
 
   const confirmDeleteCategory = useCallback(async () => {
     if (deletingCategoryId) {
-      const categoryToDelete = categories.find(c => c.id === deletingCategoryId);
-      const categoryName = categoryToDelete?.name || deletingCategoryId;
-
-      // Attempt to delete the image first
-      if (categoryToDelete?.image_url) {
-        await handleDeleteOldImage(categoryToDelete.image_url);
-      }
-
       const { error } = await supabase
         .from('categories')
         .delete()
         .eq('id', deletingCategoryId);
 
       if (error) {
-        console.error("Supabase Delete Error:", error);
-        let description = error.message;
-        if (error.code === '23503') { // PostgreSQL foreign key violation error code
-            description = `Cannot delete category "${categoryName}". Please ensure all associated products are removed or reassigned first.`;
-        }
-        toast.error("Failed to delete category.", { description });
+        toast.error("Failed to delete category.", { description: error.message });
       } else {
-        toast.info(`Category "${categoryName}" deleted.`);
+        toast.info(`Category ${deletingCategoryId} deleted.`);
         setDeletingCategoryId(null);
         setIsDeleteAlertOpen(false);
         fetchCategories(); // Re-fetch categories to update the list
       }
     }
-  }, [deletingCategoryId, fetchCategories, categories]); // Added 'categories' dependency
-
-  const handleRemoveImage = () => {
-    setValue("image_url", null, { shouldDirty: true });
-    setValue("newImageFile", undefined, { shouldDirty: true });
-    toast.info("Image removed. Save changes to confirm deletion.");
-  };
+  }, [deletingCategoryId, fetchCategories]);
 
   return (
     <motion.div
@@ -431,7 +326,6 @@ const CategoriesManagement = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[80px]">Image</TableHead>
                     <TableHead className="w-[150px]">Category ID</TableHead>
                     <TableHead>Category Name</TableHead>
                     <TableHead>Products Count</TableHead>
@@ -449,14 +343,6 @@ const CategoriesManagement = () => {
                         exit={{ opacity: 0, x: -100 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <TableCell>
-                          <ImageWithFallback
-                            src={category.image_url || undefined}
-                            alt={category.name}
-                            containerClassName="h-10 w-10 rounded-full overflow-hidden border"
-                            fallbackLogoClassName="h-6 w-6"
-                          />
-                        </TableCell>
                         <TableCell className="font-medium text-xs">{category.id}</TableCell>
                         <TableCell className="font-medium">{category.name}</TableCell>
                         <TableCell>{category.product_count}</TableCell>
@@ -585,37 +471,6 @@ const CategoriesManagement = () => {
               {errors.name && <p className="text-destructive text-sm">{errors.name.message}</p>}
             </div>
 
-            {/* Image Upload Section */}
-            <div className="space-y-2">
-              <Label htmlFor="newImageFile" className="flex items-center gap-2">
-                <ImageIcon className="h-4 w-4" /> Category Image (Optional)
-              </Label>
-              <Input
-                id="newImageFile"
-                type="file"
-                accept="image/*"
-                {...register("newImageFile")}
-                onChange={(e) => {
-                  setValue("newImageFile", e.target.files?.[0]);
-                  setValue("image_url", null); // Clear existing URL if a new file is selected
-                }}
-              />
-              {currentImageUrl && (
-                <div className="flex items-center gap-3 mt-2 p-2 border rounded-lg bg-muted/50">
-                  <ImageWithFallback
-                    src={currentImageUrl}
-                    alt="Current Category Image"
-                    containerClassName="h-10 w-10 rounded-full overflow-hidden flex-shrink-0"
-                    fallbackLogoClassName="h-6 w-6"
-                  />
-                  <span className="text-sm text-muted-foreground truncate">Current Image Uploaded</span>
-                  <Button type="button" variant="ghost" size="icon" className="ml-auto h-6 w-6 text-destructive" onClick={handleRemoveImage}>
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
-            </div>
-
             <div className="flex items-center space-x-2">
               <Switch
                 id="status-toggle"
@@ -660,39 +515,6 @@ const CategoriesManagement = () => {
               <Label htmlFor="name">Category Name</Label>
               <Input id="name" {...register("name")} className={cn(errors.name && "border-destructive")} />
               {errors.name && <p className="text-destructive text-sm">{errors.name.message}</p>}
-            </div>
-
-            {/* Image Upload Section (Edit) */}
-            <div className="space-y-2">
-              <Label htmlFor="newImageFile" className="flex items-center gap-2">
-                <ImageIcon className="h-4 w-4" /> Category Image (Optional)
-              </Label>
-              <Input
-                id="newImageFile"
-                type="file"
-                accept="image/*"
-                {...register("newImageFile")}
-                onChange={(e) => {
-                  setValue("newImageFile", e.target.files?.[0]);
-                  setValue("image_url", null); // Clear existing URL if a new file is selected
-                }}
-              />
-              {(currentImageUrl || currentNewImageFile) && (
-                <div className="flex items-center gap-3 mt-2 p-2 border rounded-lg bg-muted/50">
-                  <ImageWithFallback
-                    src={currentImageUrl || (currentNewImageFile instanceof File ? URL.createObjectURL(currentNewImageFile) : undefined)}
-                    alt="Current Category Image"
-                    containerClassName="h-10 w-10 rounded-full overflow-hidden flex-shrink-0"
-                    fallbackLogoClassName="h-6 w-6"
-                  />
-                  <span className="text-sm text-muted-foreground truncate">
-                    {currentNewImageFile instanceof File ? currentNewImageFile.name : "Current Image Uploaded"}
-                  </span>
-                  <Button type="button" variant="ghost" size="icon" className="ml-auto h-6 w-6 text-destructive" onClick={handleRemoveImage}>
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
             </div>
 
             <div className="flex items-center space-x-2">

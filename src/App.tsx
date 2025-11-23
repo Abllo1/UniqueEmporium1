@@ -46,7 +46,6 @@ const AdminLayout = lazy(() => import("./components/admin/AdminLayout.tsx"));
 const AdminDashboardOverview = lazy(() => import("./pages/admin/DashboardOverview.tsx"));
 const AdminOrdersManagement = lazy(() => import("./pages/admin/OrdersManagement.tsx"));
 const AdminProductsManagement = lazy(() => import("./pages/admin/ProductsManagement.tsx"));
-const AdminReviewsManagement = lazy(() => import("./pages/admin/ReviewsManagement.tsx")); // New import
 const AdminCategoriesManagement = lazy(() => import("./pages/admin/CategoriesManagement.tsx"));
 const AdminUsersManagement = lazy(() => import("./pages/admin/UsersManagement.tsx"));
 const AdminAnalyticsDashboard = lazy(() => import("./pages/admin/AnalyticsDashboard.tsx"));
@@ -161,7 +160,6 @@ const MainAppContent = () => {
               <Route index element={<AdminDashboardOverview />} />
               <Route path="orders" element={<AdminOrdersManagement />} />
               <Route path="products" element={<AdminProductsManagement />} />
-              <Route path="reviews" element={<AdminReviewsManagement />} /> {/* New route */}
               <Route path="categories" element={<AdminCategoriesManagement />} />
               <Route path="users" element={<AdminUsersManagement />} />
               <Route path="analytics" element={<AdminAnalyticsDashboard />} />
