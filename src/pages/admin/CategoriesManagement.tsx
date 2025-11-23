@@ -215,6 +215,7 @@ const CategoriesManagement = () => {
         .eq('id', editingCategory.id);
 
       if (error) {
+        console.error("Supabase Update Error:", error);
         toast.error("Failed to update category.", { description: error.message });
       } else {
         toast.success(`Category "${data.name}" updated successfully!`);
@@ -231,7 +232,12 @@ const CategoriesManagement = () => {
         .insert([{ ...categoryPayload, id: newId, product_count: 0 }]); // Default product_count to 0
 
       if (error) {
-        toast.error("Failed to add category.", { description: error.message });
+        console.error("Supabase Insert Error:", error);
+        let description = error.message;
+        if (error.code === '23505') { // PostgreSQL unique violation error code (Primary Key/Unique Constraint)
+            description = `A category with the name/ID "${newId}" already exists. Please choose a different name.`;
+        }
+        toast.error("Failed to add category.", { description });
       } else {
         toast.success(`Category "${data.name}" added successfully!`);
         setIsAddModalOpen(false);
@@ -242,21 +248,28 @@ const CategoriesManagement = () => {
 
   const confirmDeleteCategory = useCallback(async () => {
     if (deletingCategoryId) {
+      const categoryName = categories.find(c => c.id === deletingCategoryId)?.name || deletingCategoryId;
+
       const { error } = await supabase
         .from('categories')
         .delete()
         .eq('id', deletingCategoryId);
 
       if (error) {
-        toast.error("Failed to delete category.", { description: error.message });
+        console.error("Supabase Delete Error:", error);
+        let description = error.message;
+        if (error.code === '23503') { // PostgreSQL foreign key violation error code
+            description = `Cannot delete category "${categoryName}". Please ensure all associated products are removed or reassigned first.`;
+        }
+        toast.error("Failed to delete category.", { description });
       } else {
-        toast.info(`Category ${deletingCategoryId} deleted.`);
+        toast.info(`Category "${categoryName}" deleted.`);
         setDeletingCategoryId(null);
         setIsDeleteAlertOpen(false);
         fetchCategories(); // Re-fetch categories to update the list
       }
     }
-  }, [deletingCategoryId, fetchCategories]);
+  }, [deletingCategoryId, fetchCategories, categories]); // Added 'categories' dependency
 
   return (
     <motion.div
