@@ -477,83 +477,122 @@ const ProductsManagement = () => {
   const ImageGallery = ({ isEditing }: { isEditing: boolean }) => {
     const newFiles = Array.from(currentImageFiles || []);
     const totalImages = currentImages.length + newFiles.length;
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+    const handleAddImageClick = () => {
+      if (totalImages >= 5) {
+        toast.warning("Maximum 5 images allowed per product.");
+        return;
+      }
+      fileInputRef.current?.click();
+    };
 
     return (
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="newImageFiles">Upload Product Images (Max 5)</Label>
+          <Label htmlFor="newImageFiles">Product Images (Max 5)</Label>
+          {/* Hidden file input */}
           <Input
             id="newImageFiles"
             type="file"
             accept="image/*"
             multiple
             {...register("newImageFiles")}
+            ref={fileInputRef}
+            className="hidden" // Hide the default input
+            onChange={(e) => {
+              // Manually handle file list update to append new files to existing ones
+              const existingFiles = Array.from(currentImageFiles || []);
+              const newSelectedFiles = Array.from(e.target.files || []);
+              
+              const combinedFiles = [...existingFiles, ...newSelectedFiles].slice(0, 5);
+
+              // Create a new FileList object
+              const dataTransfer = new DataTransfer();
+              combinedFiles.forEach(file => dataTransfer.items.add(file));
+              
+              setValue("newImageFiles", dataTransfer.files, { shouldDirty: true });
+              
+              // Clear the input value so the same file can be selected again if needed
+              e.target.value = '';
+            }}
           />
           <p className="text-xs text-muted-foreground">
-            Current Images: {totalImages} / 5. Upload new images to replace or add.
+            Total Images: {totalImages} / 5.
           </p>
         </div>
 
-        {(currentImages.length > 0 || newFiles.length > 0) && (
-          <div className="space-y-2">
-            <Label>Image Gallery</Label>
-            <div className="flex flex-wrap gap-3 p-3 border rounded-lg bg-muted/20">
-              {/* Existing Images */}
-              {currentImages.map((url, index) => (
-                <div key={`existing-${index}`} className="relative h-24 w-24 rounded-md border overflow-hidden group">
-                  <ImageWithFallback
-                    src={url}
-                    alt={`Existing image ${index + 1}`}
-                    containerClassName="h-full w-full"
-                  />
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          className="absolute top-1 right-1 h-5 w-5 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => handleRemoveExistingImage(index)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Remove existing image</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-              ))}
+        <div className="space-y-2">
+          <Label>Image Gallery</Label>
+          <div className="flex flex-wrap gap-3 p-3 border rounded-lg bg-muted/20">
+            {/* Existing Images */}
+            {currentImages.map((url, index) => (
+              <div key={`existing-${index}`} className="relative h-24 w-24 rounded-md border overflow-hidden group">
+                <ImageWithFallback
+                  src={url}
+                  alt={`Existing image ${index + 1}`}
+                  containerClassName="h-full w-full"
+                />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-1 right-1 h-5 w-5 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => handleRemoveExistingImage(index)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Remove existing image</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            ))}
 
-              {/* New File Previews */}
-              {newFiles.map((file, index) => (
-                <div key={`new-${index}`} className="relative h-24 w-24 rounded-md border overflow-hidden group">
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt={`New image ${index + 1}`}
-                    className="h-full w-full object-cover"
-                  />
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="icon"
-                          className="absolute top-1 right-1 h-5 w-5 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => handleRemoveNewImage(index)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Remove new file</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-              ))}
-            </div>
+            {/* New File Previews */}
+            {newFiles.map((file, index) => (
+              <div key={`new-${index}`} className="relative h-24 w-24 rounded-md border overflow-hidden group">
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={`New image ${index + 1}`}
+                  className="h-full w-full object-cover"
+                />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="icon"
+                        className="absolute top-1 right-1 h-5 w-5 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => handleRemoveNewImage(index)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Remove new file</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            ))}
+
+            {/* Add Image Button */}
+            {totalImages < 5 && (
+              <motion.button
+                type="button"
+                onClick={handleAddImageClick}
+                className="h-24 w-24 rounded-md border-2 border-dashed border-muted-foreground/50 flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Plus className="h-6 w-6" />
+              </motion.button>
+            )}
           </div>
-        )}
+        </div>
       </div>
     );
   };
