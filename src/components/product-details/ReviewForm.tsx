@@ -67,19 +67,27 @@ const ReviewForm = ({ productId, onReviewSubmitted }: ReviewFormProps) => {
       return;
     }
 
-    // Check if the user is a verified buyer (Conceptual check, actual verification logic is complex)
-    // For simplicity, we will assume the user is a verified buyer if they have a completed order.
-    // NOTE: A real implementation would require a Supabase Edge Function or complex RLS to verify purchase history.
-    
+    // 1. Check if the user is a verified buyer using the Supabase RPC function
+    const { data: isVerified, error: rpcError } = await supabase.rpc('is_verified_buyer', {
+      p_user_id: user.id,
+      p_product_id: productId,
+    });
+
+    if (rpcError) {
+      console.error("Error checking verified buyer status:", rpcError);
+      // Proceed with review submission but assume not verified if check fails
+    }
+
     const newReview = {
       user_id: user.id,
       product_id: productId,
       rating: data.rating,
       title: data.title,
       comment: data.comment,
-      // is_verified_buyer: true, // Set to true for now, assuming we'll implement verification later
+      is_verified_buyer: isVerified || false, // Set based on RPC result, default to false on error
     };
 
+    // 2. Insert the review
     const { error } = await supabase
       .from('product_reviews')
       .insert([newReview]);
