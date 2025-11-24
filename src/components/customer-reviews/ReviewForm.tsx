@@ -8,11 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Star, Loader2, MessageSquarePlus } from "lucide-react";
+import { Star, Loader2, MessageSquarePlus, CheckCircle } from "lucide-react"; // Added CheckCircle
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext.tsx";
 import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom"; // Import Link for sign-in button
 
 // Zod schema for review form
 const reviewFormSchema = z.object({

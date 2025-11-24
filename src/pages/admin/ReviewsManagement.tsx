@@ -92,8 +92,10 @@ const ReviewsManagement = () => {
         title,
         comment,
         is_verified_buyer,
-        created_at
-      `) // Temporarily removed profiles and products joins
+        created_at,
+        profiles(first_name, last_name, email),
+        products(name)
+      `)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -105,9 +107,9 @@ const ReviewsManagement = () => {
         id: review.id,
         user_id: review.user_id,
         product_id: review.product_id,
-        product_name: 'N/A', // Placeholder
-        customer_name: 'N/A', // Placeholder
-        customer_email: 'N/A', // Placeholder
+        product_name: review.products?.name || 'N/A', // Get product name from joined data
+        customer_name: `${review.profiles?.first_name || ''} ${review.profiles?.last_name || ''}`.trim() || 'N/A', // Get customer name from joined data
+        customer_email: review.profiles?.email || 'N/A', // Get customer email from joined data
         rating: review.rating,
         title: review.title,
         comment: review.comment,
