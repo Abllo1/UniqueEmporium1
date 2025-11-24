@@ -80,8 +80,8 @@ export const useAdminProducts = (): UseAdminProductsResult => {
     fetchCategories();
   }, [fetchProducts, fetchCategories]);
 
-  const uploadImages = async (files: FileList | undefined, productId: string): Promise<string[]> => {
-    if (!files || files.length === 0) return [];
+  const uploadImages = async (files: FileList, productId: string): Promise<string[]> => {
+    if (files.length === 0) return [];
 
     const uploadPromises = Array.from(files).map(async (file) => {
       const fileExtension = file.name.split('.').pop();
@@ -137,7 +137,7 @@ export const useAdminProducts = (): UseAdminProductsResult => {
       limited_stock: data.limitedStock,
       short_description: data.shortDescription,
       full_description: data.fullDescription,
-      images: imageUrls,
+      images: imageUrls, // Store all uploaded image URLs
       tag: data.tag,
       tag_variant: data.tagVariant,
       rating: data.rating,
@@ -162,12 +162,13 @@ export const useAdminProducts = (): UseAdminProductsResult => {
   }, [fetchProducts]);
 
   const updateProduct = useCallback(async (id: string, data: ProductFormData): Promise<boolean> => {
-    let imageUrls: string[] = data.images || [];
+    let imageUrls: string[] = data.images || []; // Start with existing images
 
     if (data.newImageFiles && data.newImageFiles.length > 0) {
+      // If new files are uploaded, replace existing images with the new ones
       const uploadedNewImages = await uploadImages(data.newImageFiles, id);
       if (uploadedNewImages.length > 0) {
-        imageUrls = uploadedNewImages; // Replace existing images with new uploads
+        imageUrls = uploadedNewImages;
       }
     }
 
@@ -187,7 +188,7 @@ export const useAdminProducts = (): UseAdminProductsResult => {
       limited_stock: data.limitedStock,
       short_description: data.shortDescription,
       full_description: data.fullDescription,
-      images: imageUrls,
+      images: imageUrls, // Update with new or existing image URLs
       tag: data.tag,
       tag_variant: data.tagVariant,
       rating: data.rating,

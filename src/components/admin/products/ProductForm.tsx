@@ -30,7 +30,7 @@ export const productFormSchema = z.object({
   shortDescription: z.string().max(500, "Concise description cannot exceed 500 characters.").optional(),
   fullDescription: z.string().min(1, "Full Description is required"),
   images: z.array(z.string()).optional(),
-  newImageFiles: z.instanceof(FileList).optional(),
+  newImageFiles: z.instanceof(FileList).optional(), // FileList handles multiple files
   tag: z.string().optional(),
   tagVariant: z.enum(["default", "secondary", "destructive", "outline"]).optional(),
   rating: z.coerce.number().min(0).max(5).default(4.5),
@@ -115,7 +115,7 @@ const ProductForm = ({
   const currentProductStatus = watch("status");
   const currentTagVariant = watch("tagVariant");
 
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]); // Changed to array of URLs
 
   useEffect(() => {
     if (initialData) {
@@ -124,7 +124,7 @@ const ProductForm = ({
         keyFeatures: initialData.keyFeatures || [], // Directly assign, it's already the correct type
         detailedSpecs: initialData.detailedSpecs || [],
       });
-      setImagePreviewUrl(initialData.images?.[0] || null);
+      setImagePreviewUrls(initialData.images || []); // Set initial previews from existing images
     } else {
       reset({
         status: "active",
@@ -143,24 +143,19 @@ const ProductForm = ({
         styleNotes: "",
         detailedSpecs: [],
       });
-      setImagePreviewUrl(null);
+      setImagePreviewUrls([]); // Clear previews for new product
     }
   }, [initialData, reset]);
 
   useEffect(() => {
     if (currentImageFiles && currentImageFiles.length > 0) {
-      const file = currentImageFiles[0];
-      if (file instanceof File) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImagePreviewUrl(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      }
+      const urls = Array.from(currentImageFiles).map(file => URL.createObjectURL(file));
+      setImagePreviewUrls(urls);
+      return () => urls.forEach(url => URL.revokeObjectURL(url)); // Clean up object URLs
     } else if (currentImages && currentImages.length > 0) {
-      setImagePreviewUrl(currentImages[0]);
+      setImagePreviewUrls(currentImages);
     } else {
-      setImagePreviewUrl(null);
+      setImagePreviewUrls([]);
     }
   }, [currentImageFiles, currentImages]);
 
@@ -299,10 +294,10 @@ const ProductForm = ({
 
       <ImageUploadPreview
         register={register}
-        imagePreviewUrl={imagePreviewUrl}
+        imagePreviewUrls={imagePreviewUrls} // Pass the array of URLs
         errors={errors}
         label="Upload Product Images (Max 5)"
-        description="Upload up to 5 images. Only the first image will be used for preview."
+        description="Upload up to 5 images. New uploads will replace existing images."
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
