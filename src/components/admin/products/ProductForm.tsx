@@ -78,7 +78,7 @@ const ProductForm = ({
     resolver: zodResolver(productFormSchema),
     defaultValues: initialData ? {
       ...initialData,
-      keyFeatures: initialData.keyFeatures?.map(f => ({ value: f })) || [], // Map to new structure
+      keyFeatures: initialData.keyFeatures || [], // Directly assign, it's already the correct type
       detailedSpecs: initialData.detailedSpecs || [],
     } : {
       status: "active",
@@ -121,7 +121,7 @@ const ProductForm = ({
     if (initialData) {
       reset({
         ...initialData,
-        keyFeatures: initialData.keyFeatures?.map(f => ({ value: f })) || [], // Map to new structure
+        keyFeatures: initialData.keyFeatures || [], // Directly assign, it's already the correct type
         detailedSpecs: initialData.detailedSpecs || [],
       });
       setImagePreviewUrl(initialData.images?.[0] || null);
