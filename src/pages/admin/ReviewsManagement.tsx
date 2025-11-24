@@ -94,7 +94,7 @@ const ReviewsManagement = () => {
         is_verified_buyer,
         created_at,
         profiles(first_name, last_name, email),
-        products(name) -- Re-adding the products(name) join
+        products!product_reviews_product_id_fkey(name) -- Explicitly specify the foreign key
       `)
       .order('created_at', { ascending: false });
 
