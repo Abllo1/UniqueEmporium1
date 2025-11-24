@@ -82,20 +82,10 @@ const ReviewsManagement = () => {
 
   const fetchReviews = useCallback(async () => {
     setIsLoadingReviews(true);
+    // Temporarily simplify the select statement to debug "Failed to fetch"
     const { data, error } = await supabase
       .from('product_reviews')
-      .select(`
-        id,
-        user_id,
-        product_id,
-        rating,
-        title,
-        comment,
-        is_verified_buyer,
-        created_at,
-        profiles(first_name, last_name, email),
-        products(name)
-      `)
+      .select('*') // Simplified to fetch all columns without joins
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -103,13 +93,14 @@ const ReviewsManagement = () => {
       toast.error("Failed to load reviews.", { description: error.message });
       setReviews([]);
     } else {
+      // For now, we'll map basic data. If this works, we'll re-introduce joins.
       const fetchedReviews: AdminReview[] = data.map((review: any) => ({
         id: review.id,
         user_id: review.user_id,
         product_id: review.product_id,
-        product_name: review.products?.name || 'N/A', // Get product name from joined data
-        customer_name: `${review.profiles?.first_name || ''} ${review.profiles?.last_name || ''}`.trim() || 'N/A', // Get customer name from joined data
-        customer_email: review.profiles?.email || 'N/A', // Get customer email from joined data
+        product_name: review.product_id, // Placeholder
+        customer_name: review.user_id, // Placeholder
+        customer_email: 'N/A', // Placeholder
         rating: review.rating,
         title: review.title,
         comment: review.comment,
