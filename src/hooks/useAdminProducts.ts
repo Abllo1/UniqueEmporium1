@@ -246,8 +246,6 @@ export const useAdminProducts = (): UseAdminProductsResult => {
       return false;
     } else {
       toast.info(`Product ${id} deleted.`);
-      setDeletingProductId(null);
-      setIsDeleteAlertOpen(false);
       fetchProducts();
       return true;
     }

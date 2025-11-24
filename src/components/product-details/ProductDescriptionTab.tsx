@@ -7,7 +7,7 @@ import { CheckCircle2, Sparkles } from "lucide-react"; // Added Sparkles icon
 
 interface ProductDescriptionTabProps {
   description: string;
-  keyFeatures: string[];
+  keyFeatures: { value: string }[]; // Changed to array of objects
   styleNotes: string; // Changed 'applications' to 'styleNotes'
 }
 
@@ -48,7 +48,7 @@ const ProductDescriptionTab = ({ description, keyFeatures, styleNotes }: Product
                 {keyFeatures.map((feature, index) => (
                   <motion.li key={`feature-${index}`} variants={paragraphVariants} className="flex items-start text-sm text-foreground">
                     <CheckCircle2 className="h-4 w-4 text-primary mr-2 flex-shrink-0 mt-1" />
-                    <span>{feature}</span>
+                    <span>{feature.value}</span> {/* Access the value property */}
                   </motion.li>
                 ))}
               </ul>

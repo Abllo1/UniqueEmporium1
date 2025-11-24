@@ -269,7 +269,7 @@ const ProductForm = ({
 
             <div className="space-y-2 pl-4 border-l border-border">
               <Label className="text-sm">Items in Group</Label>
-              <NestedDetailedSpecs control={control as Control<ProductFormData>} name={`detailedSpecs.${groupIndex}.items`} errors={errors} />
+              <NestedDetailedSpecs control={control} name={`detailedSpecs.${groupIndex}.items`} errors={errors} />
             </div>
           </Card>
         ))}
