@@ -122,12 +122,13 @@ const ProductsManagement = () => {
   };
 
   const handleFormSubmit = async (data: ProductFormData, newFiles: File[]) => { // Updated signature
+    let success = false;
     if (editingProduct) {
-      await updateProduct(editingProduct.id, data, newFiles); // Pass newFiles
-      setIsEditModalOpen(false);
+      success = await updateProduct(editingProduct.id, data, newFiles); // Pass newFiles
+      if (success) setIsEditModalOpen(false);
     } else {
-      await addProduct(data, newFiles); // Pass newFiles
-      setIsAddModalOpen(false);
+      success = await addProduct(data, newFiles); // Pass newFiles
+      if (success) setIsAddModalOpen(false);
     }
   };
 
@@ -183,7 +184,7 @@ const ProductsManagement = () => {
             onSubmit={handleFormSubmit}
             onCancel={() => setIsAddModalOpen(false)}
             availableCategories={availableCategories}
-            isSubmitting={false} // isSubmitting will be managed internally by ProductForm
+            // isSubmitting prop removed
           />
         </DialogContent>
       </Dialog>
@@ -204,7 +205,7 @@ const ProductsManagement = () => {
             onSubmit={handleFormSubmit}
             onCancel={() => setIsEditModalOpen(false)}
             availableCategories={availableCategories}
-            isSubmitting={false} // isSubmitting will be managed internally by ProductForm
+            // isSubmitting prop removed
           />
         </DialogContent>
       </Dialog>

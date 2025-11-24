@@ -56,7 +56,7 @@ interface ProductFormProps {
   onSubmit: (data: ProductFormData, newFiles: File[]) => Promise<void>; // Modified onSubmit signature
   onCancel: () => void;
   availableCategories: AdminCategory[];
-  isSubmitting: boolean;
+  // Removed isSubmitting prop, as it's managed internally by react-hook-form
 }
 
 const ProductForm = ({
@@ -64,7 +64,6 @@ const ProductForm = ({
   onSubmit,
   onCancel,
   availableCategories,
-  isSubmitting,
 }: ProductFormProps) => {
   const {
     register,
@@ -73,7 +72,7 @@ const ProductForm = ({
     setValue,
     watch,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting }, // Destructure isSubmitting from formState
   } = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
     defaultValues: initialData ? {
@@ -319,7 +318,7 @@ const ProductForm = ({
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting}> {/* Use isSubmitting here */}
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
