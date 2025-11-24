@@ -16,11 +16,12 @@ export interface Product {
   limitedStock?: boolean;
   minOrderQuantity: number; // Added minOrderQuantity
   status: "active" | "inactive"; // Added status field
+  shortDescription?: string; // Added shortDescription
+  fullDescription?: string; // Added fullDescription
 }
 
 export interface ProductDetails extends Product {
-  shortDescription?: string; // Fix 3: Added shortDescription
-  fullDescription: string;
+  fullDescription: string; // Made required in ProductDetails
   keyFeatures: { value: string }[]; // Changed to array of objects
   styleNotes: string; // New field for fashion styling tips
   detailedSpecs: {
@@ -77,6 +78,8 @@ export const getRandomProducts = async (count: number, excludeId?: string): Prom
     limitedStock: p.limitedStock,
     minOrderQuantity: p.minOrderQuantity,
     status: p.status,
+    shortDescription: p.shortDescription, // Include in mapped product
+    fullDescription: p.fullDescription,   // Include in mapped product
   }));
 };
 
