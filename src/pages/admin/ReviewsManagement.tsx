@@ -88,8 +88,9 @@ const ReviewsManagement = () => {
 
   const fetchReviews = useCallback(async () => {
     setIsLoadingReviews(true);
-    // Updated query using explicit joins to avoid schema cache issues
-    const { data, error } = await supabase
+    
+    // 1. Fetch all reviews
+    const { data: reviewsData, error: reviewsError } = await supabase
       .from('product_reviews')
       .select(`
         id,
@@ -99,40 +100,76 @@ const ReviewsManagement = () => {
         title,
         comment,
         is_verified_buyer,
-        created_at,
-        profiles:user_id (
-          first_name,
-          last_name,
-          email,
-          phone
-        ),
-        products:product_id (
-          name
-        )
+        created_at
       `)
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error("Error fetching reviews:", error);
-      toast.error("Failed to load reviews.", { description: error.message });
+    if (reviewsError) {
+      console.error("Error fetching reviews:", reviewsError);
+      toast.error("Failed to load reviews.", { description: reviewsError.message });
       setReviews([]);
-    } else {
-      const fetchedReviews: AdminReview[] = data.map((review: any) => ({
+      setIsLoadingReviews(false);
+      return;
+    }
+
+    // 2. Extract unique user and product IDs
+    const userIds = [...new Set(reviewsData.map(r => r.user_id))];
+    const productIds = [...new Set(reviewsData.map(r => r.product_id))];
+
+    // 3. Fetch profiles for these users
+    let profilesData: any[] = [];
+    if (userIds.length > 0) {
+      const { data, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, email, phone')
+        .in('id', userIds);
+
+      if (profilesError) {
+        console.error("Error fetching profiles:", profilesError);
+        toast.error("Failed to load customer data.", { description: profilesError.message });
+      } else {
+        profilesData = data;
+      }
+    }
+
+    // 4. Fetch products for these IDs
+    let productsData: any[] = [];
+    if (productIds.length > 0) {
+      const { data, error: productsError } = await supabase
+        .from('products')
+        .select('id, name')
+        .in('id', productIds);
+
+      if (productsError) {
+        console.error("Error fetching products:", productsError);
+        toast.error("Failed to load product data.", { description: productsError.message });
+      } else {
+        productsData = data;
+      }
+    }
+
+    // 5. Combine data
+    const combinedReviews: AdminReview[] = reviewsData.map(review => {
+      const profile = profilesData.find(p => p.id === review.user_id);
+      const product = productsData.find(p => p.id === review.product_id);
+      
+      return {
         id: review.id,
         user_id: review.user_id,
         product_id: review.product_id,
-        product_name: review.products?.name || 'N/A',
-        customer_name: `${review.profiles?.first_name || ''} ${review.profiles?.last_name || ''}`.trim() || 'N/A',
-        customer_email: review.profiles?.email || 'N/A',
-        customer_phone: review.profiles?.phone || 'N/A', // Map the phone number
+        product_name: product?.name || 'N/A',
+        customer_name: `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim() || 'N/A',
+        customer_email: profile?.email || 'N/A',
+        customer_phone: profile?.phone || 'N/A',
         rating: review.rating,
         title: review.title,
         comment: review.comment,
         is_verified_buyer: review.is_verified_buyer,
         created_at: review.created_at,
-      }));
-      setReviews(fetchedReviews);
-    }
+      };
+    });
+
+    setReviews(combinedReviews);
     setIsLoadingReviews(false);
   }, []);
 
