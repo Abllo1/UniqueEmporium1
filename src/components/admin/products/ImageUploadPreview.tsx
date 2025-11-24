@@ -25,7 +25,7 @@ const ImageUploadPreview = ({
   description,
 }: ImageUploadPreviewProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+    <div className="flex flex-col gap-4"> {/* Changed to flex-col for vertical stacking */}
       <div className="space-y-2">
         <Label htmlFor="newImageFiles">{label}</Label>
         <Input
@@ -38,7 +38,7 @@ const ImageUploadPreview = ({
         <p className="text-xs text-muted-foreground">{description}</p>
         {errors.newImageFiles && <p className="text-destructive text-sm">{errors.newImageFiles.message}</p>}
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2"> {/* This is the container for image previews */}
         <Label>Image Previews</Label>
         <div className="flex flex-wrap gap-2">
           {imagePreviewUrls.length > 0 ? (
