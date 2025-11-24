@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useRef } from "react"; // Import useRef
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ImageIcon, XCircle, PlusCircle } from "lucide-react"; // Added PlusCircle icon
-import { Button } from "@/components/ui/button";
+import { ImageIcon, XCircle } from "lucide-react"; // Added XCircle icon
+import { Button } from "@/components/ui/button"; // Import Button
 import { cn } from "@/lib/utils";
 
 interface ImageUploadPreviewProps {
@@ -24,33 +24,21 @@ const ImageUploadPreview = ({
   label,
   description,
 }: ImageUploadPreviewProps) => {
-  const fileInputRef = useRef<HTMLInputElement>(null); // Create a ref for the file input
-
-  const handleAddImagesClick = () => {
-    fileInputRef.current?.click(); // Programmatically click the hidden file input
-  };
-
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4"> {/* Changed to flex-col for vertical stacking */}
       <div className="space-y-2">
         <Label htmlFor="newImageFiles">{label}</Label>
-        {/* Hidden file input, triggered by the button */}
         <Input
           id="newImageFiles"
           type="file"
           accept="image/*"
           multiple
           {...register("newImageFiles")}
-          className="hidden" // Hide the default input visually
-          ref={fileInputRef} // Attach the ref
         />
-        <Button type="button" variant="outline" onClick={handleAddImagesClick} className="w-full">
-          <PlusCircle className="mr-2 h-4 w-4" /> Add Images
-        </Button>
         <p className="text-xs text-muted-foreground">{description}</p>
         {errors.newImageFiles && <p className="text-destructive text-sm">{errors.newImageFiles.message}</p>}
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2"> {/* This is the container for image previews */}
         <Label>Image Previews</Label>
         <div className="flex flex-wrap gap-2">
           {imagePreviewUrls.length > 0 ? (
