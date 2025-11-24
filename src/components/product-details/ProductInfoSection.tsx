@@ -78,7 +78,9 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
   const originalUnitPrice = product.originalPrice ? product.originalPrice / product.minOrderQuantity : undefined;
 
   // Determine which description to display
-  const displayDescription = product.shortDescription || product.fullDescription.split('.')[0] + '.';
+  const displayDescription = product.shortDescription && product.shortDescription.trim() !== ''
+    ? product.shortDescription
+    : product.fullDescription.split('.')[0] + '.';
 
   return (
     <div className="space-y-6">
