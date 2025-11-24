@@ -49,7 +49,7 @@ const ProductsManagement = () => {
   const [filterStockStatus, setFilterStockStatus] = useState("all");
   const [filterProductStatus, setFilterProductStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 10;
+  const productsPerPage = 10; // Define productsPerPage here
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -167,6 +167,8 @@ const ProductsManagement = () => {
         goToPrevPage={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
         goToNextPage={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
         goToLastPage={() => setCurrentPage(totalPages)}
+        totalFilteredProductsCount={filteredProducts.length} // Pass the total filtered count
+        productsPerPage={productsPerPage} // Pass productsPerPage
       />
 
       {/* Add Product Dialog */}
