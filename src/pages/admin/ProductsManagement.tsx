@@ -210,14 +210,13 @@ const ProductsManagement = () => {
       </Dialog>
 
       {/* Delete Product Confirmation Dialog */}
-      <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
-        <DeleteProductAlertDialog
-          isOpen={isDeleteAlertOpen}
-          onOpenChange={setIsDeleteAlertOpen}
-          onConfirm={confirmDeleteProduct}
-          productName={deletingProductName}
-        />
-      </AlertDialog>
+      {/* Removed the outer AlertDialog wrapper */}
+      <DeleteProductAlertDialog
+        isOpen={isDeleteAlertOpen}
+        onOpenChange={setIsDeleteAlertOpen}
+        onConfirm={confirmDeleteProduct}
+        productName={deletingProductName}
+      />
     </motion.div>
   );
 };

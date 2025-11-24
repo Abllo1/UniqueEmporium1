@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  AlertDialogTrigger,
+  // AlertDialogTrigger, // Removed AlertDialogTrigger import
 } from "@/components/ui/alert-dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -221,11 +221,10 @@ const ProductTable = ({
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <AlertDialogTrigger asChild>
-                                  <Button variant="outline" size="icon" onClick={() => onDeleteProduct(product.id, product.name)}>
-                                    <Trash2 className="h-4 w-4 text-red-600" />
-                                  </Button>
-                                </AlertDialogTrigger>
+                                {/* Removed AlertDialogTrigger here */}
+                                <Button variant="outline" size="icon" onClick={() => onDeleteProduct(product.id, product.name)}>
+                                  <Trash2 className="h-4 w-4 text-red-600" />
+                                </Button>
                               </TooltipTrigger>
                               <TooltipContent>Delete Product</TooltipContent>
                             </Tooltip>
