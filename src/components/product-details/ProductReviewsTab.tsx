@@ -24,18 +24,16 @@ interface Review {
 }
 
 interface ProductReviewsTabProps {
+  reviews: Review[];
   productId: string; // productId is now required
-  onReviewCountChange: (count: number) => void; // New prop to report live count for the tab trigger
-  onLiveReviewCountUpdate: (count: number) => void; // New prop to report live count for ProductInfoSection
 }
 
-const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId, onReviewCountChange, onLiveReviewCountUpdate }) => {
+const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId }) => {
   const { user, isLoading: isLoadingAuth } = useAuth();
   const [productReviews, setProductReviews] = useState<Review[]>([]);
   const [isLoadingReviews, setIsLoadingReviews] = useState(true);
   const [userExistingReview, setUserExistingReview] = useState<Review | null>(null);
   const [isEditReviewModalOpen, setIsEditReviewModalOpen] = useState(false);
-  const [liveReviewCount, setLiveReviewCount] = useState(0); // New state for live count
 
   const fetchProductReviews = useCallback(async () => {
     setIsLoadingReviews(true);
@@ -58,9 +56,6 @@ const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId, onRevi
       console.error("Error fetching product reviews:", error);
       toast.error("Failed to load product reviews.");
       setProductReviews([]);
-      setLiveReviewCount(0); // Reset count on error
-      onReviewCountChange(0); // Report 0 reviews to tab trigger
-      onLiveReviewCountUpdate(0); // Report 0 reviews to ProductInfoSection
     } else {
       const fetchedReviews: Review[] = data.map((review: any) => ({
         id: review.id,
@@ -73,9 +68,6 @@ const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId, onRevi
         isVerifiedBuyer: review.is_verified_buyer,
       }));
       setProductReviews(fetchedReviews);
-      setLiveReviewCount(fetchedReviews.length); // Update live count
-      onReviewCountChange(fetchedReviews.length); // Report live count to tab trigger
-      onLiveReviewCountUpdate(fetchedReviews.length); // Report live count to ProductInfoSection
 
       // Check if the current user has an existing review
       if (user) {
@@ -86,7 +78,7 @@ const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId, onRevi
       }
     }
     setIsLoadingReviews(false);
-  }, [productId, user, onReviewCountChange, onLiveReviewCountUpdate]); // Added onLiveReviewCountUpdate to dependencies
+  }, [productId, user]);
 
   useEffect(() => {
     fetchProductReviews();

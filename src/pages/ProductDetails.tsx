@@ -78,16 +78,6 @@ const ProductDetails = () => {
     loadRecentlyViewed();
   }, [recentlyViewedProductIds, product]);
 
-  // New handler to update the review count in the main product state
-  const handleLiveReviewCountUpdate = (newCount: number) => {
-    setProduct(prevProduct => {
-      if (prevProduct) {
-        return { ...prevProduct, reviewCount: newCount };
-      }
-      return prevProduct;
-    });
-  };
-
 
   if (loading) {
     return <ProductDetailsSkeleton />;
@@ -160,7 +150,7 @@ const ProductDetails = () => {
           viewport={{ once: true, amount: 0.1 }}
           transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" as Easing }}
         >
-          <ProductTabs product={product} onLiveReviewCountUpdate={handleLiveReviewCountUpdate} />
+          <ProductTabs product={product} />
         </motion.div>
 
         {/* Recommended Products Section */}
