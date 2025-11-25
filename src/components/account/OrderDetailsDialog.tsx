@@ -4,11 +4,12 @@ import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingBag, Package, CalendarDays, DollarSign, User, List, Copy } from "lucide-react";
+import { ShoppingBag, Package, CalendarDays, DollarSign, User, List, Copy, MessageSquarePlus } from "lucide-react"; // Added MessageSquarePlus icon
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
 import { Order } from "@/pages/account/OrderHistoryPage.tsx"; // Import the Order interface
+import { Link } from "react-router-dom"; // Import Link for navigation
 
 interface OrderDetailsDialogProps {
   order: Order;
@@ -129,6 +130,18 @@ const OrderDetailsDialog = ({ order, isOpen, onClose }: OrderDetailsDialogProps)
                     <p className="text-sm text-muted-foreground">
                       {item.quantity} units @ {formatCurrency(item.unit_price)} / unit
                     </p>
+                    {/* New: Leave a Review Button */}
+                    <Button 
+                      variant="link" 
+                      size="sm" 
+                      asChild 
+                      className="p-0 h-auto text-primary text-xs mt-1"
+                      onClick={onClose} // Close the dialog when this button is clicked
+                    >
+                      <Link to={`/products/${item.product_id}?tab=reviews`}>
+                        <MessageSquarePlus className="h-3 w-3 mr-1" /> Leave a Review
+                      </Link>
+                    </Button>
                   </div>
                   <p className="font-semibold text-foreground text-lg flex-shrink-0">
                     {formatCurrency(item.quantity * item.unit_price)}
