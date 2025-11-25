@@ -6,10 +6,10 @@ import { Link } from "react-router-dom";
 import { Shirt, Baby, Gem, ShoppingBag, LucideIcon } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
+import ImageWithFallback from "@/components/common/ImageWithFallback";
 import { useCategories, Category } from "@/hooks/useCategories"; // Import the new hook
 
-// Map category names to Lucide icons
+// Map category names to Lucide icons (fallback if no image)
 const getCategoryIcon = (categoryName: string): LucideIcon => {
   const lowerName = categoryName.toLowerCase();
   if (lowerName.includes("kid") || lowerName.includes("child")) return Baby;
@@ -135,7 +135,9 @@ const CategoriesSection = () => {
           viewport={{ once: true, amount: 0.3 }}
         >
           {categoriesToDisplay.map((category, index) => {
+            // Use Lucide icon as fallback if no image_url
             const IconComponent = getCategoryIcon(category.name);
+            
             return (
               <motion.div
                 key={`${category.id}-${index}`} // Use category.id for a more stable key
@@ -146,7 +148,16 @@ const CategoriesSection = () => {
               >
                 <Link to={`/products?category=${encodeURIComponent(category.name)}`} className="flex flex-col items-center">
                   <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden shadow-md mb-3 bg-white flex items-center justify-center">
-                    <IconComponent className="h-8 w-8 md:h-10 md:w-10 text-primary" />
+                    {category.image_url ? (
+                      <ImageWithFallback
+                        src={category.image_url}
+                        alt={category.name}
+                        containerClassName="w-full h-full object-cover"
+                        fallbackLogoClassName="h-8 w-8" // Fallback if image fails
+                      />
+                    ) : (
+                      <IconComponent className="h-8 w-8 md:h-10 md:w-10 text-primary" />
+                    )}
                   </div>
                   <p className="text-[10px] md:text-sm lg:text-sm font-bold text-gray-900 text-center mt-2 leading-tight">
                     {category.name.split(' ').map((word, i) => (
