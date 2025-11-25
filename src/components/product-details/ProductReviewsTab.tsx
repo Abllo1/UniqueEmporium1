@@ -25,10 +25,11 @@ interface Review {
 
 interface ProductReviewsTabProps {
   productId: string; // productId is now required
-  onReviewCountChange: (count: number) => void; // New prop to report live count
+  onReviewCountChange: (count: number) => void; // New prop to report live count for the tab trigger
+  onLiveReviewCountUpdate: (count: number) => void; // New prop to report live count for ProductInfoSection
 }
 
-const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId, onReviewCountChange }) => {
+const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId, onReviewCountChange, onLiveReviewCountUpdate }) => {
   const { user, isLoading: isLoadingAuth } = useAuth();
   const [productReviews, setProductReviews] = useState<Review[]>([]);
   const [isLoadingReviews, setIsLoadingReviews] = useState(true);
@@ -58,7 +59,8 @@ const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId, onRevi
       toast.error("Failed to load product reviews.");
       setProductReviews([]);
       setLiveReviewCount(0); // Reset count on error
-      onReviewCountChange(0); // Report 0 reviews
+      onReviewCountChange(0); // Report 0 reviews to tab trigger
+      onLiveReviewCountUpdate(0); // Report 0 reviews to ProductInfoSection
     } else {
       const fetchedReviews: Review[] = data.map((review: any) => ({
         id: review.id,
@@ -72,7 +74,8 @@ const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId, onRevi
       }));
       setProductReviews(fetchedReviews);
       setLiveReviewCount(fetchedReviews.length); // Update live count
-      onReviewCountChange(fetchedReviews.length); // Report live count to parent
+      onReviewCountChange(fetchedReviews.length); // Report live count to tab trigger
+      onLiveReviewCountUpdate(fetchedReviews.length); // Report live count to ProductInfoSection
 
       // Check if the current user has an existing review
       if (user) {
@@ -83,7 +86,7 @@ const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId, onRevi
       }
     }
     setIsLoadingReviews(false);
-  }, [productId, user, onReviewCountChange]); // Added onReviewCountChange to dependencies
+  }, [productId, user, onReviewCountChange, onLiveReviewCountUpdate]); // Added onLiveReviewCountUpdate to dependencies
 
   useEffect(() => {
     fetchProductReviews();
