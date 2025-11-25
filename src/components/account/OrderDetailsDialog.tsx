@@ -4,12 +4,12 @@ import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingBag, Package, CalendarDays, DollarSign, User, List, Copy, MessageSquarePlus } from "lucide-react"; // Added MessageSquarePlus icon
+import { ShoppingBag, Package, CalendarDays, DollarSign, User, List, Copy, MessageSquarePlus } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
-import { Order } from "@/pages/account/OrderHistoryPage.tsx"; // Import the Order interface
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Order } from "@/pages/account/OrderHistoryPage.tsx";
+import { Link } from "react-router-dom";
 
 interface OrderDetailsDialogProps {
   order: Order;
