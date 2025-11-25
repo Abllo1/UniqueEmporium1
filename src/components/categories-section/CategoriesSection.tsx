@@ -126,8 +126,7 @@ const CategoriesSection = () => {
 
         <motion.div
           className="flex overflow-x-auto whitespace-nowrap gap-2 pb-4 no-scrollbar
-                     md:grid md:grid-cols-4 md:gap-4 md:grid-rows-2 md:grid-flow-col md:whitespace-normal
-                     lg:grid-cols-6"
+                     md:grid md:gap-4 md:grid-rows-2 md:grid-flow-col md:whitespace-normal"
           ref={scrollRef}
           onMouseEnter={() => isMobile && setIsPaused(true)}
           onMouseLeave={() => isMobile && setIsPaused(false)}
@@ -144,7 +143,7 @@ const CategoriesSection = () => {
               <motion.div
                 key={`${category.id}-${index}`} // Use category.id for a more stable key
                 variants={itemVariants}
-                className="flex flex-col items-center cursor-pointer min-w-[120px] md:min-w-0"
+                className="flex flex-col items-center cursor-pointer flex-shrink-0 min-w-[120px] md:w-[180px] md:min-w-[180px] lg:w-[200px] lg:min-w-[200px]"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
               >
