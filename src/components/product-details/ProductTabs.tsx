@@ -20,6 +20,11 @@ const tabContentVariants = {
 
 const ProductTabs = ({ product }: ProductTabsProps) => {
   const [activeTab, setActiveTab] = React.useState("description");
+  const [dynamicReviewCount, setDynamicReviewCount] = React.useState(product.reviews.length); // Initialize with static count
+
+  const handleReviewCountChange = (count: number) => {
+    setDynamicReviewCount(count);
+  };
 
   return (
     <Tabs defaultValue="description" onValueChange={setActiveTab} className="w-full">
@@ -49,7 +54,7 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
             "flex-1"
           )}
         >
-          Reviews ({product.reviews.length})
+          Reviews ({dynamicReviewCount}) {/* Use dynamicReviewCount here */}
         </TabsTrigger>
       </TabsList>
       <AnimatePresence mode="wait">
@@ -92,7 +97,7 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
               exit="hidden"
               key="reviews-tab"
             >
-              <ProductReviewsTab reviews={product.reviews} productId={product.id} />
+              <ProductReviewsTab productId={product.id} onReviewCountChange={handleReviewCountChange} /> {/* Pass the callback */}
             </motion.div>
           </TabsContent>
         )}
