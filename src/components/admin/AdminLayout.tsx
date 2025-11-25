@@ -27,8 +27,8 @@ const AdminLayout = () => {
       <AdminSidebar />
 
       {/* Mobile Menu Toggle Button */}
-      {isMobile && (
-        <div className="fixed top-20 left-4 z-50 md:hidden"> {/* Changed top-4 to top-20 */}
+      {/* Changed md:hidden to lg:hidden to make it visible on tablet screens */}
+      <div className="fixed top-20 left-4 z-50 lg:hidden">
           <Button
             variant="outline"
             size="icon"
@@ -38,7 +38,6 @@ const AdminLayout = () => {
             <Menu className="h-5 w-5" />
           </Button>
         </div>
-      )}
 
       {/* Mobile Menu */}
       {isMobile && (
