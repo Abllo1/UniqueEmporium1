@@ -1,15 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingBag, Package, CalendarDays, DollarSign, User, List, Copy, MessageSquarePlus, ReceiptText } from "lucide-react";
+import { ShoppingBag, Package, CalendarDays, DollarSign, User, List, Copy, MessageSquarePlus, ReceiptText, Star } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
 import { Order } from "@/pages/account/OrderHistoryPage.tsx"; // Import the updated Order interface
 import { Link } from "react-router-dom";
+import ReviewForm from "@/components/customer-reviews/ReviewForm.tsx"; // Import ReviewForm
 
 interface OrderDetailsDialogProps {
   order: Order;
@@ -56,11 +57,18 @@ const OrderDetailsDialog = ({ order, isOpen, onClose }: OrderDetailsDialogProps)
     toast.success(`${label} copied!`);
   };
 
+  // Callback to refresh reviews in the ReviewForm
+  const handleReviewSubmitted = () => {
+    // In a real app, you might want to re-fetch the order to update review counts or status
+    // For now, we'll just show a toast.
+    toast.success("Review submitted/updated successfully!");
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-3xl p-6 rounded-xl shadow-lg bg-card/80 backdrop-blur-md border border-border/50 overflow-y-auto max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+          <DialogTitle className="text-xl md:text-2xl font-bold flex items-center gap-2"> {/* Adjusted font size */}
             <ShoppingBag className="h-6 w-6 text-primary" /> Order Details: {order.id}
           </DialogTitle>
           <DialogDescription>
@@ -150,7 +158,7 @@ const OrderDetailsDialog = ({ order, isOpen, onClose }: OrderDetailsDialogProps)
             </h3>
             <div className="space-y-4">
               {order.items.map((item, index) => (
-                <div key={index} className="flex items-center gap-4 border-b pb-3 last:border-b-0 last:pb-0">
+                <div key={index} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 border-b pb-3 last:border-b-0 last:pb-0">
                   <ImageWithFallback
                     src={item.image_url}
                     alt={item.product_name}
@@ -158,14 +166,34 @@ const OrderDetailsDialog = ({ order, isOpen, onClose }: OrderDetailsDialogProps)
                     fallbackLogoClassName="h-8 w-8"
                   />
                   <div className="flex-grow">
-                    <p className="font-medium text-foreground">{item.product_name}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="font-medium text-base text-foreground">{item.product_name}</p> {/* Adjusted font size */}
+                    <p className="text-sm text-muted-foreground"> {/* Adjusted font size */}
                       {item.quantity} units @ {formatCurrency(item.unit_price)} / unit
                     </p>
                   </div>
-                  <p className="font-semibold text-foreground text-lg flex-shrink-0">
-                    {formatCurrency(item.quantity * item.unit_price)}
-                  </p>
+                  <div className="flex items-center gap-2 mt-2 sm:mt-0">
+                    <p className="font-semibold text-base text-foreground flex-shrink-0"> {/* Adjusted font size */}
+                      {formatCurrency(item.quantity * item.unit_price)}
+                    </p>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="ml-2">
+                          <Star className="h-4 w-4 mr-1" /> Review
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[500px] p-6 rounded-xl shadow-lg bg-card/80 backdrop-blur-md border border-border/50 overflow-y-auto max-h-[90vh]">
+                        <DialogHeader>
+                          <DialogTitle className="text-xl md:text-2xl font-bold flex items-center gap-2">
+                            <MessageSquarePlus className="h-6 w-6 text-primary" /> Leave a Review
+                          </DialogTitle>
+                          <DialogDescription>
+                            Share your thoughts on "{item.product_name}".
+                          </DialogDescription>
+                        </DialogHeader>
+                        <ReviewForm productId={item.product_id} onReviewSubmitted={handleReviewSubmitted} />
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </div>
               ))}
             </div>
