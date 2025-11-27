@@ -39,7 +39,7 @@ const Account = lazy(() => import("./pages/Account.tsx"));
 const DashboardHome = lazy(() => import("./pages/account/DashboardHome.tsx"));
 const ProfilePage = lazy(() => import("./pages/account/ProfilePage.tsx"));
 const OrderHistoryPage = lazy(() => import("./pages/account/OrderHistoryPage.tsx"));
-const PaymentReceiptsPage = lazy(() => import("./pages/account/PaymentReceiptsPage.tsx"));
+// Removed: const PaymentReceiptsPage = lazy(() => import("./pages/account/PaymentReceiptsPage.tsx"));
 
 // Admin Dashboard Pages
 const AdminLayout = lazy(() => import("./components/admin/AdminLayout.tsx"));
@@ -153,7 +153,7 @@ const MainAppContent = () => {
               <Route index element={<DashboardHome />} />
               <Route path="profile" element={<ProfilePage />} />
               <Route path="orders" element={<OrderHistoryPage />} />
-              <Route path="receipts" element={<PaymentReceiptsPage />} />
+              {/* Removed: <Route path="receipts" element={<PaymentReceiptsPage />} /> */}
             </Route>
             
             {/* Admin Dashboard Routes (Protected by AdminRoute) */}
