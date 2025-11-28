@@ -17,6 +17,7 @@ export interface Product {
   minOrderQuantity: number; // Added minOrderQuantity
   status: "active" | "inactive"; // Added status field
   isFeatured?: boolean; // New: Added isFeatured field
+  unitType: "pcs" | "sets"; // NEW: Added unitType
 }
 
 // Define the Review interface here to be consistent across the app
@@ -83,6 +84,7 @@ export const getRandomProducts = async (count: number, excludeId?: string): Prom
     minOrderQuantity: p.minOrderQuantity,
     status: p.status,
     isFeatured: p.isFeatured, // New: Include isFeatured
+    unitType: p.unitType, // NEW: Include unitType
   }));
 };
 

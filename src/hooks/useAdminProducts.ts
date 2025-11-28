@@ -57,6 +57,7 @@ export const useAdminProducts = (): UseAdminProductsResult => {
         detailedSpecs: p.detailed_specs || [],
         reviews: p.reviews || [],
         relatedProducts: p.related_products || [],
+        unitType: p.unit_type || 'pcs', // NEW: Map unit_type, default to 'pcs'
       }));
       setProducts(fetchedProducts);
     }
@@ -137,6 +138,7 @@ export const useAdminProducts = (): UseAdminProductsResult => {
       id: newProductId,
       name: data.name,
       category: data.category,
+      unit_type: data.unitType, // NEW: Include unit_type
       price: data.price,
       original_price: data.originalPrice,
       discount_percentage: discountPercentage,
@@ -221,6 +223,7 @@ export const useAdminProducts = (): UseAdminProductsResult => {
     const productPayload = {
       name: data.name,
       category: data.category,
+      unit_type: data.unitType, // NEW: Include unit_type
       price: data.price,
       original_price: data.originalPrice,
       discount_percentage: discountPercentage,

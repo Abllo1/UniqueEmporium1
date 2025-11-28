@@ -53,9 +53,9 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                     <div>
                       <p className="font-medium">{item.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        ₦{item.unitPrice.toLocaleString('en-NG', { minimumFractionDigits: 2 })} / pc
+                        ₦{item.unitPrice.toLocaleString('en-NG', { minimumFractionDigits: 2 })} / {item.unitType === 'pcs' ? 'pc' : 'set'}
                       </p>
-                      <p className="text-xs text-muted-foreground">MOQ: {item.minOrderQuantity} pcs</p>
+                      <p className="text-xs text-muted-foreground">MOQ: {item.minOrderQuantity} {item.unitType}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">

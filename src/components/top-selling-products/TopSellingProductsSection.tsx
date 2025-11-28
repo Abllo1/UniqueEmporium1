@@ -106,6 +106,7 @@ const TopSellingProductsSection = () => {
           limitedStock: p.limited_stock,
           minOrderQuantity: p.min_order_quantity,
           status: p.status,
+          unitType: p.unit_type || 'pcs', // ADDED THIS LINE
         }));
 
         // Sort the fetched products to match the order from the RPC function

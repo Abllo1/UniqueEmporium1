@@ -136,11 +136,11 @@ const ProductInfoSection = ({ product, totalReviewsCount }: ProductInfoSectionPr
 
       {/* MOQ and Wholesale Info */}
       <p className="text-sm text-foreground font-semibold">
-        MOQ: {product.minOrderQuantity} pcs ({formatCurrency(unitPrice)}/pc)
+        MOQ: {product.minOrderQuantity} {product.unitType} ({formatCurrency(unitPrice)}/{product.unitType === 'pcs' ? 'pc' : 'set'})
       </p>
       {product.originalPrice && product.price < product.originalPrice && (
         <p className="text-xs text-muted-foreground italic">
-          Original unit price: {formatCurrency(originalUnitPrice!)}/pc
+          Original unit price: {formatCurrency(originalUnitPrice!)}/{product.unitType === 'pcs' ? 'pc' : 'set'}
         </p>
       )}
       <p className="text-sm text-muted-foreground italic">
@@ -218,7 +218,7 @@ const ProductInfoSection = ({ product, totalReviewsCount }: ProductInfoSectionPr
                 </>
               ) : (
                 <>
-                  <ShoppingCart className="mr-2 h-5 w-5" /> Add {quantity} to Cart
+                  <ShoppingCart className="mr-2 h-5 w-5" /> Add {quantity} {product.unitType} to Cart
                 </>
               )}
             </Button>

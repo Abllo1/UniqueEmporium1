@@ -37,6 +37,7 @@ export async function fetchProductsFromSupabase(): Promise<ProductDetails[]> {
     detailedSpecs: p.detailed_specs || [],
     reviews: p.reviews || [],
     relatedProducts: p.related_products || [],
+    unitType: p.unit_type || 'pcs', // NEW: Map unit_type, default to 'pcs'
   }));
 
   return fetchedProducts;
@@ -81,6 +82,7 @@ export async function fetchProductByIdFromSupabase(id: string): Promise<ProductD
     detailedSpecs: data.detailed_specs || [],
     reviews: data.reviews || [],
     relatedProducts: data.related_products || [],
+    unitType: data.unit_type || 'pcs', // NEW: Map unit_type, default to 'pcs'
   };
 
   return fetchedProduct;

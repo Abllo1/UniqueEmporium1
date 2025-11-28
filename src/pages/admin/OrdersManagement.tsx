@@ -53,13 +53,14 @@ import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
 
-// Define the order interface based on your database structure and joined data
+// Define the order item interface based on your database structure and joined data
 interface OrderItem {
   product_id: string;
   product_name: string;
   quantity: number;
   unit_price: number;
   image_url: string;
+  unit_type: "pcs" | "sets"; // NEW: Added unit_type
 }
 
 export interface AdminOrder {
@@ -238,7 +239,7 @@ const OrderDetailsDialog = ({ order, onClose }: OrderDetailsDialogProps) => {
                 <div className="flex-grow">
                   <p className="font-medium text-foreground">{item.product_name}</p>
                   <p className="text-sm text-muted-foreground">
-                    {item.quantity} units @ {formatCurrency(item.unit_price)} / unit
+                    {item.quantity} {item.unit_type} @ {formatCurrency(item.unit_price)} / {item.unit_type === 'pcs' ? 'pc' : 'set'}
                   </p>
                 </div>
                 <p className="font-semibold text-foreground text-lg flex-shrink-0">
@@ -248,7 +249,7 @@ const OrderDetailsDialog = ({ order, onClose }: OrderDetailsDialogProps) => {
             ))}
           </div>
         </div>
-      </div>
+      </div> {/* Closing tag for the div with space-y-6 py-4 */}
     </DialogContent>
   );
 };
@@ -292,7 +293,14 @@ const OrdersManagement = () => {
         orderDate: new Date(order.created_at).toLocaleDateString(), // Use created_at for order date
         totalAmount: order.total_amount,
         status: order.status,
-        items: order.items,
+        items: order.items.map((item: any) => ({ // Map items to include unit_type
+          product_id: item.product_id,
+          product_name: item.product_name,
+          quantity: item.quantity,
+          unit_price: item.unit_price,
+          image_url: item.image_url,
+          unit_type: item.unit_type || 'pcs', // NEW: Map unit_type
+        })) || [],
         shippingAddress: {
           name: order.shipping_address.name,
           address: order.shipping_address.address,
@@ -560,7 +568,7 @@ const OrdersManagement = () => {
                                 <DialogHeader className="p-4 border-b">
                                   <DialogTitle>Payment Receipt for {order.id}</DialogTitle>
                                   <DialogDescription>
-                                    Viewing the uploaded payment receipt image for this order.
+                                    Viewing the uploaded payment receipt image.
                                   </DialogDescription>
                                 </DialogHeader>
                                 <div className="p-4">

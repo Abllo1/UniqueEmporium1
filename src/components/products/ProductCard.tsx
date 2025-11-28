@@ -30,6 +30,9 @@ export interface Product {
   tagVariant?: "default" | "secondary" | "destructive" | "outline";
   limitedStock?: boolean;
   minOrderQuantity: number; // Added minOrderQuantity
+  status: "active" | "inactive"; // Added status field
+  isFeatured?: boolean; // New: Added isFeatured field
+  unitType: "pcs" | "sets"; // NEW: Added unitType
 }
 
 interface ProductCardProps {
@@ -218,7 +221,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
                   ) : (
                     <>
                       <ShoppingCart className="mr-2 h-4 w-4" />
-                      Add {product.minOrderQuantity} to Cart
+                      Add {product.minOrderQuantity} {product.unitType} to Cart
                     </>
                   )}
                 </Button>
@@ -273,7 +276,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
 
           {/* MOQ Display */}
           <p className="text-xs text-muted-foreground font-medium mb-1">
-            MOQ: {product.minOrderQuantity} pcs
+            MOQ: {product.minOrderQuantity} {product.unitType}
           </p>
 
           {/* Limited Stock Message */}

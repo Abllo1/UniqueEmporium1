@@ -22,6 +22,7 @@ export const productFormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Product Name is required"),
   category: z.string().min(1, "Category is required"),
+  unitType: z.enum(["pcs", "sets"]).default("pcs"), // NEW: Added unitType
   price: z.coerce.number().min(1, "Price is required and must be positive"),
   originalPrice: z.coerce.number().optional().refine((val) => val === undefined || val > 0, "Original Price must be positive if provided"),
   minOrderQuantity: z.coerce.number().min(1, "Minimum Order Quantity is required and must be positive"),
@@ -82,10 +83,12 @@ const ProductForm = ({
       detailedSpecs: initialData.detailedSpecs || [],
       images: initialData.images || [], // Ensure images array is initialized
       isFeatured: initialData.isFeatured || false, // New: Set initial value for isFeatured
+      unitType: initialData.unitType || "pcs", // NEW: Set initial value for unitType
     } : {
       status: "active",
       limitedStock: false,
       isFeatured: false, // New: Default to false for new products
+      unitType: "pcs", // NEW: Default to 'pcs' for new products
       rating: 4.5,
       reviewCount: 0,
       keyFeatures: [],
@@ -116,6 +119,7 @@ const ProductForm = ({
   const currentProductStatus = watch("status");
   const currentTagVariant = watch("tagVariant");
   const currentExistingImageUrls = watch("images") || []; // Watch the 'images' field for existing URLs
+  const currentUnitType = watch("unitType"); // NEW: Watch unitType
 
   const [newlySelectedFiles, setNewlySelectedFiles] = useState<File[]>([]); // State to hold actual File objects
 
@@ -176,6 +180,21 @@ const ProductForm = ({
           </Select>
           {errors.category && <p className="text-destructive text-sm">{errors.category.message}</p>}
         </div>
+      </div>
+
+      {/* NEW: Unit Type Selection */}
+      <div className="space-y-2">
+        <Label htmlFor="unitType">Unit Type</Label>
+        <Select onValueChange={(value) => setValue("unitType", value as "pcs" | "sets")} value={currentUnitType}>
+          <SelectTrigger className={cn(errors.unitType && "border-destructive")}>
+            <SelectValue placeholder="Select unit type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="pcs">Pieces (pcs)</SelectItem>
+            <SelectItem value="sets">Sets (sets)</SelectItem>
+          </SelectContent>
+        </Select>
+        {errors.unitType && <p className="text-destructive text-sm">{errors.unitType.message}</p>}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

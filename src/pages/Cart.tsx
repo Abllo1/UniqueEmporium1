@@ -74,8 +74,8 @@ const Cart = () => {
                     <img src={item.images[0]} alt={item.name} className="h-20 w-20 object-contain rounded-md border" />
                     <div>
                       <h2 className="font-semibold text-sm">{item.name}</h2>
-                      <p className="text-sm text-muted-foreground">₦{item.unitPrice.toLocaleString('en-NG', { minimumFractionDigits: 2 })} / pc</p>
-                      <p className="text-sm text-muted-foreground">MOQ: {item.minOrderQuantity} pcs</p>
+                      <p className="text-sm text-muted-foreground">₦{item.unitPrice.toLocaleString('en-NG', { minimumFractionDigits: 2 })} / {item.unitType === 'pcs' ? 'pc' : 'set'}</p>
+                      <p className="text-sm text-muted-foreground">MOQ: {item.minOrderQuantity} {item.unitType}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 w-full sm:w-auto justify-between">

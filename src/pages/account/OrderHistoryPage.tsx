@@ -21,6 +21,7 @@ interface OrderItem {
   quantity: number;
   unit_price: number;
   image_url: string;
+  unit_type: "pcs" | "sets"; // NEW: Added unit_type
 }
 
 export interface Order { // Exported for use in OrderDetailsDialog
@@ -112,7 +113,14 @@ const OrderHistoryPage = () => {
           status: order.status,
           paymentStatus: order.payment_receipts?.[0]?.status || 'pending', // NEW: Map payment status
           receiptImageUrl: order.payment_receipts?.[0]?.receipt_image_url, // NEW: Map receipt image URL
-          items: order.items || [],
+          items: order.items.map((item: any) => ({ // Map items to include unit_type
+            product_id: item.product_id,
+            product_name: item.product_name,
+            quantity: item.quantity,
+            unit_price: item.unit_price,
+            image_url: item.image_url,
+            unit_type: item.unit_type || 'pcs', // NEW: Map unit_type
+          })) || [],
           shippingAddress: order.shipping_address, // Map from snake_case
           deliveryMethod: order.delivery_method, // Map from snake_case
         }));

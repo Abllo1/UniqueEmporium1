@@ -136,6 +136,7 @@ const Checkout = () => {
             quantity: item.quantity,
             unit_price: item.unitPrice,
             image_url: item.images[0],
+            unit_type: item.unitType, // NEW: Include unit_type
           })),
           shipping_address: {
             name: `${orderData.shipping.firstName} ${orderData.shipping.lastName}`,

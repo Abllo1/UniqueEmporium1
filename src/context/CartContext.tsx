@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client"; // Import supabase cl
 export interface CartItem extends Product {
   quantity: number;
   unitPrice: number;
+  unitType: "pcs" | "sets"; // NEW: Added unitType
 }
 
 // Define the structure for the database table 'cart_items'
@@ -20,6 +21,7 @@ interface CartItemDB {
   product_data: Product; // Store the full product object
   quantity: number;
   unit_price: number;
+  unit_type: "pcs" | "sets"; // NEW: Added unit_type for DB
 }
 
 interface CartContextType {
@@ -51,7 +53,7 @@ export const CartProvider = ({ children, onOpenCartDrawer }: CartProviderProps) 
     setIsLoadingCart(true);
     const { data, error } = await supabase
       .from('cart_items')
-      .select('id, product_id, product_data, quantity, unit_price')
+      .select('id, product_id, product_data, quantity, unit_price, unit_type') // NEW: Fetch unit_type
       .eq('user_id', userId);
 
     if (error) {
@@ -64,6 +66,7 @@ export const CartProvider = ({ children, onOpenCartDrawer }: CartProviderProps) 
         id: item.product_id, // Ensure product_id is used as the main ID for the CartItem
         quantity: item.quantity,
         unitPrice: item.unit_price,
+        unitType: item.unit_type || 'pcs', // NEW: Map unit_type, default to 'pcs'
       }));
       setCartItems(items);
     }
@@ -104,7 +107,7 @@ export const CartProvider = ({ children, onOpenCartDrawer }: CartProviderProps) 
         return updatedItems;
       } else {
         toast.success(`${actualQuantityToAdd} x ${product.name} added to cart!`);
-        return [...prevItems, { ...product, quantity: actualQuantityToAdd, unitPrice }];
+        return [...prevItems, { ...product, quantity: actualQuantityToAdd, unitPrice, unitType: product.unitType }]; // NEW: Include unitType
       }
     });
 
@@ -116,6 +119,7 @@ export const CartProvider = ({ children, onOpenCartDrawer }: CartProviderProps) 
         product_data: product,
         quantity: actualQuantityToAdd,
         unit_price: unitPrice,
+        unit_type: product.unitType, // NEW: Include unit_type for DB
       },
       { onConflict: 'user_id, product_id' } // Conflict on user_id and product_id to update quantity
     );

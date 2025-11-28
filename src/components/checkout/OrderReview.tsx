@@ -152,7 +152,7 @@ const OrderReview = ({ shippingInfo, bankTransferInfo, onPrevious, onPlaceOrder,
                 <div className="flex-grow">
                   <p className="font-medium text-foreground text-sm">{item.name}</p> {/* Added text-sm here */}
                   <p className="text-sm text-muted-foreground">
-                    {item.quantity} x {formatCurrency(item.unitPrice)} / pc
+                    {item.quantity} x {formatCurrency(item.unitPrice)} / {item.unitType === 'pcs' ? 'pc' : 'set'}
                   </p> {/* Display unit price */}
                 </div>
                 <p className="font-semibold text-foreground">{formatCurrency(item.quantity * item.unitPrice)}</p> {/* Use unitPrice */}
@@ -160,37 +160,24 @@ const OrderReview = ({ shippingInfo, bankTransferInfo, onPrevious, onPlaceOrder,
             ))}
           </div>
         </div>
-
-        {/* Total Summary */}
-        <div className="border-t pt-6 space-y-3 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Subtotal</span>
-            <span className="font-medium text-foreground">{formatCurrency(subtotal)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Shipping</span>
-            <span className="font-medium text-foreground">
-              {shippingDisplay}
-            </span>
-          </div>
-          <div className="flex justify-between text-lg font-bold pt-2 border-t mt-3">
-            <span>Grand Total</span>
-            <span>{formatCurrency(total)}</span>
-          </div>
-          <p className="text-sm text-muted-foreground font-normal mt-2">
-            Prices are final — no VAT or hidden charges.
-          </p>
-          {(bankTransferInfo.deliveryMethod === "dispatch-rider" || bankTransferInfo.deliveryMethod === "park-delivery") && (
-            <p className="text-xs text-primary font-medium mt-2">
-              *Actual delivery fees for Dispatch/Park Delivery are negotiated directly with the driver.
-            </p>
-          )}
-        </div>
       </CardContent>
-      <CardFooter>
-        <div className="flex flex-col sm:flex-row justify-between gap-4 w-full">
+      {/* Total Summary */}
+      <CardFooter className="border-t pt-4 flex flex-col items-start text-lg font-bold">
+        <div className="flex justify-between w-full mb-2">
+          <span>Grand Total</span>
+          <span>{formatCurrency(total)}</span>
+        </div>
+        <p className="text-sm text-muted-foreground font-normal mt-2">
+          Prices are final — no VAT or hidden charges.
+        </p>
+        {(bankTransferInfo.deliveryMethod === "dispatch-rider" || bankTransferInfo.deliveryMethod === "park-delivery") && (
+          <p className="text-xs text-primary font-medium mt-2">
+            *Actual delivery fees for Dispatch/Park Delivery are negotiated directly with the driver.
+          </p>
+        )}
+        <div className="flex flex-col sm:flex-row justify-between gap-4 w-full mt-8">
           <Button type="button" variant="outline" onClick={onPrevious} className="w-full sm:w-auto">
-            Back to Payment
+            Back to Shipping
           </Button>
           <Button type="button" className="w-full sm:w-auto" size="lg" onClick={onPlaceOrder} disabled={isPlacingOrder}>
             {isPlacingOrder ? (
