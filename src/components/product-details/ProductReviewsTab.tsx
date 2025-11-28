@@ -1,20 +1,19 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Star, CheckCircle, MessageSquarePlus, Edit, Loader2 } from "lucide-react"; // Added Loader2
+import { Star, CheckCircle, MessageSquarePlus, Edit, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import ReviewForm from "@/components/customer-reviews/ReviewForm.tsx"; // Import the new ReviewForm
-import { useAuth } from "@/context/AuthContext.tsx"; // Import useAuth
-import { supabase } from "@/integrations/supabase/client"; // Import supabase client
+import ReviewForm from "@/components/customer-reviews/ReviewForm.tsx";
+import { useAuth } from "@/context/AuthContext.tsx";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-// Define Review interface locally since it's not exported from products.ts
 interface Review {
   id: string;
-  user_id: string; // Added user_id to check ownership
+  user_id: string;
   author: string;
   rating: number;
   date: string;
@@ -24,7 +23,7 @@ interface Review {
 }
 
 interface ProductReviewsTabProps {
-  productId: string; // productId is now required
+  productId: string;
 }
 
 const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId }) => {
@@ -82,7 +81,6 @@ const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId }) => {
       });
       setProductReviews(fetchedReviews);
 
-      // Check if the current user has an existing review
       if (user) {
         const existing = fetchedReviews.find(review => review.user_id === user.id);
         setUserExistingReview(existing || null);
@@ -98,8 +96,8 @@ const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId }) => {
   }, [fetchProductReviews]);
 
   const handleReviewSubmitted = () => {
-    fetchProductReviews(); // Re-fetch reviews after a new one is submitted
-    setIsEditReviewModalOpen(false); // Close modal if it was an edit
+    fetchProductReviews();
+    setIsEditReviewModalOpen(false);
   };
 
   const renderStars = (rating: number) => {
@@ -124,7 +122,6 @@ const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId }) => {
 
   return (
     <div className="space-y-8">
-      {/* Review Form Section */}
       {userCanReview && (
         <ReviewForm productId={productId} onReviewSubmitted={handleReviewSubmitted} />
       )}
@@ -154,7 +151,6 @@ const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId }) => {
         </div>
       )}
 
-      {/* Display Reviews */}
       {isLoadingReviews ? (
         <div className="flex items-center justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -174,7 +170,7 @@ const ProductReviewsTab: React.FC<ProductReviewsTabProps> = ({ productId }) => {
             </div>
             <div className="mt-2">
               <p className="text-xs text-foreground mb-2 flex items-center">
-                By <span className="font-medium text-xs ml-1">{review.author}</span>  on {new Date(review.date).toLocaleDateString()}
+                By <span className="font-medium text-xs">{review.author}</span>&nbsp;&nbsp;on {new Date(review.date).toLocaleDateString()}
                 {review.isVerifiedBuyer && (
                   <Badge variant="secondary" className="ml-3 text-xs px-2 py-0.5 flex items-center">
                     <CheckCircle className="h-3 w-3 mr-1" /> Verified Buyer
