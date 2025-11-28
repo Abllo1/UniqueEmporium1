@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog"; // NEW: Added DialogTrigger
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingBag, Package, CalendarDays, DollarSign, User, List, Copy, MessageSquarePlus } from "lucide-react";
+import { ShoppingBag, Package, CalendarDays, DollarSign, User, List, Copy, MessageSquarePlus, ReceiptText, Eye } from "lucide-react"; // NEW: Added ReceiptText, Eye
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
-import { Order } from "@/pages/account/OrderHistoryPage.tsx";
+import { Order } from "@/pages/account/OrderHistoryPage.tsx"; // Order interface now includes paymentStatus and receiptImageUrl
 import { Link } from "react-router-dom";
 
 interface OrderDetailsDialogProps {
@@ -27,6 +27,20 @@ const getStatusBadgeVariant = (status: string) => {
       return "outline";
     case "cancelled":
       return "destructive";
+    default:
+      return "outline";
+  }
+};
+
+// NEW: Helper to get color-coded badge classes for Payment Status (copied from OrderHistoryPage)
+const getPaymentStatusBadgeVariant = (status: string) => {
+  switch (status.toLowerCase()) {
+    case "pending":
+      return "secondary"; // Yellowish for pending
+    case "confirmed":
+      return "default"; // Green for confirmed
+    case "declined":
+      return "destructive"; // Red for declined
     default:
       return "outline";
   }
@@ -77,6 +91,50 @@ const OrderDetailsDialog = ({ order, isOpen, onClose }: OrderDetailsDialogProps)
               <div className="space-y-1">
                 <p className="text-muted-foreground">Delivery Method</p>
                 <p className="font-medium text-foreground">{order.deliveryMethod}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* NEW: Payment Information */}
+          <div className="border-b pb-4">
+            <h3 className="font-semibold text-lg mb-3 flex items-center gap-2 text-foreground">
+              <ReceiptText className="h-5 w-5" /> Payment Information
+            </h3>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="space-y-1">
+                <p className="text-muted-foreground">Payment Status</p>
+                <Badge variant={getPaymentStatusBadgeVariant(order.paymentStatus)}>
+                  {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
+                </Badge>
+              </div>
+              <div className="space-y-1">
+                <p className="text-muted-foreground">Receipt</p>
+                {order.receiptImageUrl ? (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="flex items-center gap-1">
+                        <Eye className="h-4 w-4" /> View Receipt
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-3xl p-0">
+                      <DialogHeader className="p-4 border-b">
+                        <DialogTitle>Payment Receipt for {order.id}</DialogTitle>
+                        <DialogDescription>
+                          Viewing the uploaded payment receipt image.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="p-4">
+                        <ImageWithFallback
+                          src={order.receiptImageUrl}
+                          alt={`Payment Receipt for ${order.id}`}
+                          containerClassName="w-full h-auto max-h-[80vh] object-contain"
+                        />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <p className="text-muted-foreground">No receipt uploaded</p>
+                )}
               </div>
             </div>
           </div>

@@ -28,6 +28,8 @@ export interface Order { // Exported for use in OrderDetailsDialog
   orderDate: string; // Changed to camelCase
   totalAmount: number; // Changed to camelCase
   status: string;
+  paymentStatus: string; // NEW: Added paymentStatus
+  receiptImageUrl?: string; // NEW: Added receiptImageUrl
   items: OrderItem[];
   shippingAddress: { // Changed to camelCase
     name: string;
@@ -59,6 +61,20 @@ const getStatusBadgeVariant = (status: string) => {
   }
 };
 
+// NEW: Helper to get color-coded badge classes for Payment Status
+const getPaymentStatusBadgeVariant = (status: string) => {
+  switch (status.toLowerCase()) {
+    case "pending":
+      return "secondary"; // Yellowish for pending
+    case "confirmed":
+      return "default"; // Green for confirmed
+    case "declined":
+      return "destructive"; // Red for declined
+    default:
+      return "outline";
+  }
+};
+
 const OrderHistoryPage = () => {
   const { user, isLoading: isLoadingAuth } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
@@ -74,10 +90,13 @@ const OrderHistoryPage = () => {
       }
 
       setIsLoading(true);
-      // Fetch orders for the logged-in user
+      // Fetch orders for the logged-in user, joining with payment_receipts
       const { data, error } = await supabase
         .from('orders')
-        .select('*')
+        .select(`
+          *,
+          payment_receipts(status, receipt_image_url)
+        `)
         .eq('user_id', user.id)
         .order('order_date', { ascending: false });
 
@@ -86,11 +105,13 @@ const OrderHistoryPage = () => {
         toast.error("Failed to load orders.", { description: error.message });
       } else {
         // Transform the data to match the expected camelCase format
-        const transformedOrders: Order[] = data.map(order => ({
+        const transformedOrders: Order[] = data.map((order: any) => ({ // Explicitly type 'order' as 'any' for safe mapping
           id: order.id,
           orderDate: new Date(order.order_date).toLocaleDateString(), // Map from snake_case
           totalAmount: order.total_amount, // Map from snake_case
           status: order.status,
+          paymentStatus: order.payment_receipts?.[0]?.status || 'pending', // NEW: Map payment status
+          receiptImageUrl: order.payment_receipts?.[0]?.receipt_image_url, // NEW: Map receipt image URL
           items: order.items || [],
           shippingAddress: order.shipping_address, // Map from snake_case
           deliveryMethod: order.delivery_method, // Map from snake_case
@@ -161,6 +182,7 @@ const OrderHistoryPage = () => {
                     <TableHead>Date</TableHead>
                     <TableHead>Items</TableHead>
                     <TableHead>Total</TableHead>
+                    <TableHead>Payment Status</TableHead> {/* NEW: Payment Status Header */}
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -189,6 +211,12 @@ const OrderHistoryPage = () => {
                         </div>
                       </TableCell>
                       <TableCell className="font-semibold">{formatCurrency(order.totalAmount)}</TableCell>
+                      {/* NEW: Payment Status Cell */}
+                      <TableCell>
+                        <Badge variant={getPaymentStatusBadgeVariant(order.paymentStatus)}>
+                          {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
+                        </Badge>
+                      </TableCell>
                       <TableCell>
                         <Badge variant={getStatusBadgeVariant(order.status)}>
                           {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
