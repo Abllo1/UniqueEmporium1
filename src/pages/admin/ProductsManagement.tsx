@@ -47,7 +47,7 @@ const ProductsManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterStockStatus, setFilterStockStatus] = useState("all");
-  const [filterProductStatus, setFilterProductStatus] = useState("all");
+  const [filterProductStatus, setFilterProductStatus] = useState("all"); // Keep this for admin filtering
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 10; // Define productsPerPage here
 
@@ -81,6 +81,7 @@ const ProductsManagement = () => {
       );
     }
 
+    // Keep product status filter for admin panel
     if (filterProductStatus !== "all") {
       filtered = filtered.filter(
         (product) => product.status === filterProductStatus

@@ -31,11 +31,18 @@ const ProductInfoSection = ({ product, totalReviewsCount }: ProductInfoSectionPr
   const { addToCart } = useCart();
   const { addFavorite, removeFavorite, isFavorited } = useFavorites();
 
+  const isOutOfStock = product.status === "inactive"; // Determine if product is out of stock
+
   const handleQuantityChange = (amount: number) => {
+    if (isOutOfStock) return; // Prevent quantity change if out of stock
     setQuantity((prev) => Math.max(product.minOrderQuantity, prev + amount));
   };
 
   const handleAddToCart = async () => {
+    if (isOutOfStock) {
+      toast.error("This product is currently out of stock and cannot be added to cart.");
+      return;
+    }
     setIsAddingToCart(true);
     await new Promise(resolve => setTimeout(resolve, 500));
     addToCart(product, quantity); // Add the current quantity
@@ -88,6 +95,11 @@ const ProductInfoSection = ({ product, totalReviewsCount }: ProductInfoSectionPr
       {product.tag && (
         <Badge variant={product.tagVariant} className="text-sm px-3 py-1">
           {product.tag}
+        </Badge>
+      )}
+      {isOutOfStock && (
+        <Badge variant="destructive" className="text-sm px-3 py-1 flex items-center gap-1 w-fit">
+          <XCircle className="h-4 w-4" /> Out of Stock
         </Badge>
       )}
 
@@ -147,7 +159,7 @@ const ProductInfoSection = ({ product, totalReviewsCount }: ProductInfoSectionPr
         Sold in bundles only. Minimum order applies.
       </p>
 
-      {product.limitedStock && (
+      {product.limitedStock && !isOutOfStock && ( // Only show if not out of stock
         <motion.p
           className="text-sm text-red-500 font-medium flex items-center"
           initial={{ opacity: 0.5 }}
@@ -174,7 +186,7 @@ const ProductInfoSection = ({ product, totalReviewsCount }: ProductInfoSectionPr
                 size="icon"
                 className="h-10 w-10 rounded-r-none"
                 onClick={() => handleQuantityChange(-product.minOrderQuantity)}
-                disabled={quantity <= product.minOrderQuantity}
+                disabled={quantity <= product.minOrderQuantity || isOutOfStock} // Disable if out of stock
               >
                 <Minus className="h-4 w-4" />
               </Button>
@@ -193,12 +205,14 @@ const ProductInfoSection = ({ product, totalReviewsCount }: ProductInfoSectionPr
                 className="w-16 text-center border-y-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none"
                 min={product.minOrderQuantity}
                 step={product.minOrderQuantity}
+                disabled={isOutOfStock} // Disable if out of stock
               />
               <Button
                 variant="outline"
                 size="icon"
                 className="h-10 w-10 rounded-l-none"
                 onClick={() => handleQuantityChange(product.minOrderQuantity)}
+                disabled={isOutOfStock} // Disable if out of stock
               >
                 <Plus className="h-4 w-4" />
               </Button>
@@ -210,11 +224,15 @@ const ProductInfoSection = ({ product, totalReviewsCount }: ProductInfoSectionPr
             <Button
               className="flex-1 w-full h-[52px] bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
               onClick={handleAddToCart}
-              disabled={isAddingToCart}
+              disabled={isAddingToCart || isOutOfStock} // Disable if out of stock
             >
               {isAddingToCart ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Adding...
+                </>
+              ) : isOutOfStock ? (
+                <>
+                  <XCircle className="mr-2 h-5 w-5" /> Out of Stock
                 </>
               ) : (
                 <>

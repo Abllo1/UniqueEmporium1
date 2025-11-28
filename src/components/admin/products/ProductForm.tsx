@@ -26,7 +26,7 @@ export const productFormSchema = z.object({
   price: z.coerce.number().min(1, "Price is required and must be positive"),
   originalPrice: z.coerce.number().optional().refine((val) => val === undefined || val > 0, "Original Price must be positive if provided"),
   minOrderQuantity: z.coerce.number().min(1, "Minimum Order Quantity is required and must be positive"),
-  status: z.enum(["active", "inactive"]).default("active"),
+  status: z.enum(["active", "inactive"]).default("active"), // Keep status in schema, controlled by toggle
   limitedStock: z.boolean().default(false),
   isFeatured: z.boolean().default(false), // New: Added isFeatured field
   shortDescription: z.string().max(500, "Concise description cannot exceed 500 characters.").optional(),
@@ -84,8 +84,9 @@ const ProductForm = ({
       images: initialData.images || [], // Ensure images array is initialized
       isFeatured: initialData.isFeatured || false, // New: Set initial value for isFeatured
       unitType: initialData.unitType || "pcs", // NEW: Set initial value for unitType
+      status: initialData.status || "active", // Ensure status is set
     } : {
-      status: "active",
+      status: "active", // Default to active for new products
       limitedStock: false,
       isFeatured: false, // New: Default to false for new products
       unitType: "pcs", // NEW: Default to 'pcs' for new products
@@ -116,7 +117,7 @@ const ProductForm = ({
 
   const currentLimitedStock = watch("limitedStock");
   const currentIsFeatured = watch("isFeatured"); // New: Watch isFeatured
-  const currentProductStatus = watch("status");
+  const currentProductStatus = watch("status"); // Watch the actual status
   const currentTagVariant = watch("tagVariant");
   const currentExistingImageUrls = watch("images") || []; // Watch the 'images' field for existing URLs
   const currentUnitType = watch("unitType"); // NEW: Watch unitType
@@ -331,18 +332,14 @@ const ProductForm = ({
           />
           <Label htmlFor="isFeatured-toggle">Featured Product: {currentIsFeatured ? "Yes" : "No"}</Label>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="product-status">Product Status</Label>
-          <Select onValueChange={(value) => setValue("status", value as "active" | "inactive")} value={currentProductStatus}>
-            <SelectTrigger className={cn(errors.status && "border-destructive")}>
-              <SelectValue placeholder="Select status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-          {errors.status && <p className="text-destructive text-sm">{errors.status.message}</p>}
+        {/* NEW: Out of Stock Toggle (controls 'status' field) */}
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="outOfStock-toggle"
+            checked={currentProductStatus === "inactive"} // Checked if status is inactive
+            onCheckedChange={(checked) => setValue("status", checked ? "inactive" : "active")} // Set status based on toggle
+          />
+          <Label htmlFor="outOfStock-toggle">Out of Stock: {currentProductStatus === "inactive" ? "Yes" : "No"}</Label>
         </div>
       </div>
 

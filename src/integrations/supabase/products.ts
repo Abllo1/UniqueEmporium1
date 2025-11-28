@@ -5,7 +5,7 @@ export async function fetchProductsFromSupabase(): Promise<ProductDetails[]> {
   const { data, error } = await supabase
     .from('products')
     .select('*')
-    .eq('status', 'active') // Only fetch active products for public display
+    // .eq('status', 'active') // REMOVED: Filter by status is now handled on the frontend
     .order('created_at', { ascending: false }); // Order by creation date, newest first
 
   if (error) {
@@ -48,7 +48,7 @@ export async function fetchProductByIdFromSupabase(id: string): Promise<ProductD
     .from('products')
     .select('*')
     .eq('id', id)
-    .eq('status', 'active') // Only fetch active products
+    // .eq('status', 'active') // REMOVED: Filter by status is now handled on the frontend
     .single();
 
   if (error) {

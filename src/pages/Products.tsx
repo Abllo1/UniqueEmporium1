@@ -65,6 +65,7 @@ const Products = () => {
   useEffect(() => {
     const loadProducts = async () => {
       setIsLoadingProducts(true);
+      // Fetch all products, including inactive ones, as filtering is now done on the frontend
       const products = await fetchProductsFromSupabase();
       setAllAvailableProducts(products);
       setIsLoadingProducts(false);
@@ -114,6 +115,7 @@ const Products = () => {
 
   const filterAndSortProducts = useCallback(() => {
     let filtered = allAvailableProducts.filter((product) => {
+      // Do not filter by product.status here. ProductCard will handle 'inactive' display.
       const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
       const matchesQuery = product.name.toLowerCase().includes(currentQuery.toLowerCase());
       return matchesCategory && matchesQuery;

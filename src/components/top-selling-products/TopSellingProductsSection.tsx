@@ -80,7 +80,7 @@ const TopSellingProductsSection = () => {
           .from('products')
           .select('*')
           .in('id', productIds)
-          .eq('status', 'active'); // Only show active products
+          // .eq('status', 'active'); // REMOVED: Filter by status is now handled on the frontend
 
         if (productsError) {
           console.error("Error fetching top selling product details:", productsError);

@@ -24,6 +24,7 @@ import {
   Loader2,
   ChevronFirst,
   ChevronLast,
+  XCircle, // Added XCircle for 'Out of Stock' badge
 } from "lucide-react";
 import { ProductDetails } from "@/data/products.ts";
 import { cn } from "@/lib/utils";
@@ -39,7 +40,7 @@ interface ProductTableProps {
   onFilterCategoryChange: (value: string) => void;
   filterStockStatus: string;
   onFilterStockStatusChange: (value: string) => void;
-  filterProductStatus: string;
+  filterProductStatus: string; // Keep this for admin filtering
   onFilterProductStatusChange: (value: string) => void;
   availableCategories: AdminCategory[];
   onAddProduct: () => void;
@@ -130,6 +131,7 @@ const ProductTable = ({
                 <SelectItem value="limited-stock">Limited Stock</SelectItem>
               </SelectContent>
             </Select>
+            {/* Keep product status filter for admin panel */}
             <Select value={filterProductStatus} onValueChange={onFilterProductStatusChange}>
               <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Filter by Product Status" />
@@ -206,8 +208,8 @@ const ProductTable = ({
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={product.status === "active" ? "default" : "secondary"}>
-                          {product.status.charAt(0).toUpperCase() + product.status.slice(1)}
+                        <Badge variant={product.status === "active" ? "default" : "destructive"} className="flex items-center gap-1">
+                          {product.status === "active" ? "Active" : <><XCircle className="h-3 w-3" /> Out of Stock</>}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
@@ -215,6 +217,7 @@ const ProductTable = ({
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
+                                {/* Removed AlertDialogTrigger here */}
                                 <Button variant="outline" size="icon" onClick={() => onEditProduct(product)}>
                                   <Edit className="h-4 w-4" />
                                 </Button>

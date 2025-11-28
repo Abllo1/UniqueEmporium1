@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence, Easing, RepeatType } from "framer-motion";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, Heart, ShoppingCart, ChevronLeft, ChevronRight, Shirt, Baby, Gem, Ruler, Palette, Tag, Loader2 } from "lucide-react";
+import { Star, Heart, ShoppingCart, ChevronLeft, ChevronRight, Shirt, Baby, Gem, Ruler, Palette, Tag, Loader2, XCircle } from "lucide-react"; // Added XCircle
 import useEmblaCarousel from "embla-carousel-react";
 import FloatingTag from "@/components/common/FloatingTag.tsx";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,7 @@ import { useCart } from "@/context/CartContext.tsx";
 import { useFavorites } from "@/context/FavoritesContext.tsx";
 import { Skeleton } from "@/components/ui/skeleton";
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx"; // Import ImageWithFallback
+import { toast } from "sonner"; // Import toast
 
 export interface Product {
   id: string;
@@ -80,8 +81,14 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
     ? Math.round(((originalUnitPrice - unitPrice) / originalUnitPrice) * 100)
     : 0;
 
+  const isOutOfStock = product.status === "inactive";
+
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (isOutOfStock) {
+      toast.error("Product is currently out of stock.");
+      return;
+    }
     setIsAddingToCart(true);
     await new Promise(resolve => setTimeout(resolve, 500));
     addToCart(product, product.minOrderQuantity); // Add minOrderQuantity
@@ -124,6 +131,11 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
       <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl shadow-lg">
         {product.tag && (
           <FloatingTag text={product.tag} variant={product.tagVariant} className="absolute top-2 right-2 z-50" />
+        )}
+        {isOutOfStock && (
+          <Badge variant="destructive" className="absolute top-2 left-2 z-50 text-xs px-2 py-0.5 flex items-center gap-1">
+            <XCircle className="h-3 w-3" /> Out of Stock
+          </Badge>
         )}
 
         {/* Product Image Area */}
@@ -212,11 +224,15 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
                 transition={{ duration: 0.2 }}
                 className="absolute inset-0 hidden md:flex items-center justify-center space-x-4 bg-black/60 z-20"
               >
-                <Button className="text-sm font-medium rounded-full" onClick={handleAddToCart} disabled={isAddingToCart}>
+                <Button className="text-sm font-medium rounded-full" onClick={handleAddToCart} disabled={isAddingToCart || isOutOfStock}>
                   {isAddingToCart ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Adding {product.minOrderQuantity}
+                    </>
+                  ) : isOutOfStock ? (
+                    <>
+                      <XCircle className="mr-2 h-4 w-4" /> Out of Stock
                     </>
                   ) : (
                     <>
@@ -231,9 +247,11 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
 
           {/* Mobile "Add to Cart" Button */}
           <div className="md:hidden absolute bottom-2 right-2 z-10">
-            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 rounded-full" onClick={handleAddToCart} disabled={isAddingToCart}>
+            <Button variant="secondary" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 rounded-full" onClick={handleAddToCart} disabled={isAddingToCart || isOutOfStock}>
               {isAddingToCart ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
+              ) : isOutOfStock ? (
+                <XCircle className="h-4 w-4" />
               ) : (
                 <ShoppingCart className="h-4 w-4" />
               )}
@@ -280,7 +298,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
           </p>
 
           {/* Limited Stock Message */}
-          {product.limitedStock && (
+          {product.limitedStock && !isOutOfStock && ( // Only show if not out of stock
             <motion.p
               className="text-xs text-red-500 font-medium mb-1 hidden md:block"
               initial={{ opacity: 0.5 }}
