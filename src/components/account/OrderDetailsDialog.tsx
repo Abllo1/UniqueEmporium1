@@ -8,7 +8,7 @@ import { ShoppingBag, Package, CalendarDays, DollarSign, User, List, Copy, Messa
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
-import { Order } from "@/pages/account/OrderHistoryPage.tsx";
+import { Order } from "@/pages/account/OrderHistoryPage.tsx"; // Import Order interface
 import { Link } from "react-router-dom";
 
 interface OrderDetailsDialogProps {
@@ -60,7 +60,7 @@ const OrderDetailsDialog = ({ order, isOpen, onClose }: OrderDetailsDialogProps)
       <DialogContent className="sm:max-w-3xl p-6 rounded-xl shadow-lg bg-card/80 backdrop-blur-md border border-border/50 overflow-y-auto max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="text-[13px] sm:text-xl font-bold flex items-center gap-2">
-            <ShoppingBag className="h-4 w-4 sm:h-6 sm:w-6 text-primary" /> Order Details: {order.id}
+            <ShoppingBag className="h-4 w-4 sm:h-6 sm:w-6 text-primary" /> Order Details: {order.orderNumber || order.id} {/* NEW: Display orderNumber */}
           </DialogTitle>
           <DialogDescription>
             Comprehensive details for your order.
@@ -109,7 +109,7 @@ const OrderDetailsDialog = ({ order, isOpen, onClose }: OrderDetailsDialogProps)
                     </DialogTrigger>
                     <DialogContent className="max-w-3xl p-0">
                       <DialogHeader className="p-4 border-b">
-                        <DialogTitle>Payment Receipt for {order.id}</DialogTitle>
+                        <DialogTitle>Payment Receipt for {order.orderNumber || order.id}</DialogTitle> {/* NEW: Display orderNumber */}
                         <DialogDescription>
                           Viewing the uploaded payment receipt image.
                         </DialogDescription>

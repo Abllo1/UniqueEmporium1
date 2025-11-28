@@ -148,7 +148,7 @@ const Checkout = () => {
           },
           delivery_method: orderData.bankTransfer.deliveryMethod,
         })
-        .select()
+        .select('id, order_number') // NEW: Select the generated order_number
         .single();
 
       if (orderError) throw orderError;
@@ -195,7 +195,7 @@ const Checkout = () => {
 
       toast.dismiss("place-order-toast");
       toast.success("Order Placed Successfully!", {
-        description: "You will receive an email confirmation shortly.",
+        description: `Your order number is: ${order.order_number || order.id}. You will receive an email confirmation shortly.`, // NEW: Display order_number
       });
 
       clearCart();

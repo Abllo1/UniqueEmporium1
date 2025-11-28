@@ -65,6 +65,7 @@ interface OrderItem {
 
 export interface AdminOrder {
   id: string;
+  orderNumber?: string; // NEW: Added orderNumber
   user_id: string; // Added user_id to link to profiles
   orderDate: string;
   totalAmount: number;
@@ -151,7 +152,7 @@ const OrderDetailsDialog = ({ order, onClose }: OrderDetailsDialogProps) => {
     <DialogContent className="sm:max-w-3xl p-6 rounded-xl shadow-lg bg-card/80 backdrop-blur-md border border-border/50 overflow-y-auto max-h-[90vh]">
       <DialogHeader>
         <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-          <ShoppingBag className="h-6 w-6 text-primary" /> Order Details: {order.id}
+          <ShoppingBag className="h-6 w-6 text-primary" /> Order Details: {order.orderNumber || order.id} {/* NEW: Display orderNumber */}
         </DialogTitle>
         <DialogDescription>
           Comprehensive details for this customer order.
@@ -277,6 +278,7 @@ const OrdersManagement = () => {
       .from('orders')
       .select(`
         *,
+        order_number, -- NEW: Select the custom order_number
         profiles(first_name, last_name, email, phone),
         payment_receipts(id, status, receipt_image_url)
       `)
@@ -289,6 +291,7 @@ const OrdersManagement = () => {
     } else {
       const fetchedOrders: AdminOrder[] = data.map((order: any) => ({
         id: order.id,
+        orderNumber: order.order_number, // NEW: Map order_number
         user_id: order.user_id,
         orderDate: new Date(order.created_at).toLocaleDateString(), // Use created_at for order date
         totalAmount: order.total_amount,
@@ -333,6 +336,7 @@ const OrdersManagement = () => {
       filtered = filtered.filter(
         (order) =>
           order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          order.orderNumber?.toLowerCase().includes(searchTerm.toLowerCase()) || // NEW: Search by orderNumber
           order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
           order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
           order.customerPhone.includes(searchTerm) ||
@@ -522,7 +526,7 @@ const OrdersManagement = () => {
                         exit={{ opacity: 0, x: -100 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <TableCell className="font-medium">{order.id}</TableCell>
+                        <TableCell className="font-medium">{order.orderNumber || order.id}</TableCell> {/* NEW: Display orderNumber */}
                         <TableCell>
                           <Dialog open={isCustomerDetailsModalOpen && selectedOrder?.id === order.id} onOpenChange={setIsCustomerDetailsModalOpen}>
                             <DialogTrigger asChild>
@@ -566,7 +570,7 @@ const OrdersManagement = () => {
                               </TooltipProvider>
                               <DialogContent className="max-w-3xl p-0">
                                 <DialogHeader className="p-4 border-b">
-                                  <DialogTitle>Payment Receipt for {order.id}</DialogTitle>
+                                  <DialogTitle>Payment Receipt for {order.orderNumber || order.id}</DialogTitle> {/* NEW: Display orderNumber */}
                                   <DialogDescription>
                                     Viewing the uploaded payment receipt image.
                                   </DialogDescription>

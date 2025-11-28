@@ -14,7 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import OrderDetailsDialog from "@/components/account/OrderDetailsDialog.tsx"; // Import the new dialog
 
-// Define the order interface based on your database structure
+// Define the order item interface based on your database structure
 interface OrderItem {
   product_id: string;
   product_name: string;
@@ -26,6 +26,7 @@ interface OrderItem {
 
 export interface Order { // Exported for use in OrderDetailsDialog
   id: string;
+  orderNumber?: string; // NEW: Added orderNumber
   orderDate: string; // Changed to camelCase
   totalAmount: number; // Changed to camelCase
   status: string;
@@ -96,6 +97,7 @@ const OrderHistoryPage = () => {
         .from('orders')
         .select(`
           *,
+          order_number, -- NEW: Select the custom order_number
           payment_receipts(status, receipt_image_url)
         `)
         .eq('user_id', user.id)
@@ -108,7 +110,8 @@ const OrderHistoryPage = () => {
         // Transform the data to match the expected camelCase format
         const transformedOrders: Order[] = data.map((order: any) => ({ // Explicitly type 'order' as 'any' for safe mapping
           id: order.id,
-          orderDate: new Date(order.order_date).toLocaleDateString(), // Map from snake_case
+          orderNumber: order.order_number, // NEW: Map order_number
+          orderDate: new Date(order.created_at).toLocaleDateString(), // Use created_at for date
           totalAmount: order.total_amount, // Map from snake_case
           status: order.status,
           paymentStatus: order.payment_receipts?.[0]?.status || 'pending', // NEW: Map payment status
@@ -198,7 +201,7 @@ const OrderHistoryPage = () => {
                 <TableBody>
                   {orders.map((order) => (
                     <TableRow key={order.id}>
-                      <TableCell className="font-medium">{order.id}</TableCell>
+                      <TableCell className="font-medium">{order.orderNumber || order.id}</TableCell> {/* NEW: Display orderNumber */}
                       <TableCell>{order.orderDate}</TableCell>
                       <TableCell>
                         <div className="flex items-center -space-x-2">
