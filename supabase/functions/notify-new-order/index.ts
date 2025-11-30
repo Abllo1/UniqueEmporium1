@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+// The Supabase client is not directly used for database operations in this specific function,
+// but it's often included in Edge Functions for potential future use or consistency.
+// import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,54 +14,92 @@ serve(async (req) => {
   }
 
   try {
-    // This Edge Function is primarily invoked by a database trigger,
-    // so direct user authentication might not be strictly necessary here
-    // unless you also want to allow direct invocation from authenticated clients.
-    // For a trigger, the JWT verification is often bypassed or handled differently.
-
     const payload = await req.json();
-    const order = payload.record; // Assuming the trigger sends the new order record
+    const order = payload.record; // The new order record from the database trigger
 
-    console.log("Received new order for notification:", order.id);
+    console.log("Received new order for WhatsApp notification:", order.id);
 
-    // --- IMPORTANT: Integrate with your chosen notification service here ---
-    // This is where you would use your WhatsApp Business Platform API,
-    // email service API (e.g., SendGrid), or Slack webhook.
-    // You would access your API keys/secrets using Deno.env.get('YOUR_SECRET_NAME').
+    // Retrieve secrets from environment variables
+    const WHATSAPP_TOKEN = Deno.env.get('WHATSAPP_TOKEN');
+    const WHATSAPP_PHONE_NUMBER_ID = Deno.env.get('WHATSAPP_PHONE_NUMBER_ID');
+    const ADMIN_WHATSAPP_NUMBER_1 = Deno.env.get('ADMIN_WHATSAPP_NUMBER_1');
+    const ADMIN_WHATSAPP_NUMBER_2 = Deno.env.get('ADMIN_WHATSAPP_NUMBER_2');
 
-    // Example placeholder for sending a WhatsApp message via a hypothetical API:
-    // const whatsappApiKey = Deno.env.get('WHATSAPP_API_KEY');
-    // const adminPhoneNumber = Deno.env.get('ADMIN_WHATSAPP_NUMBER'); // Admin's number to notify
+    if (!WHATSAPP_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
+      console.error("Missing WhatsApp API credentials. WHATSAPP_TOKEN or WHATSAPP_PHONE_NUMBER_ID not set.");
+      return new Response(JSON.stringify({ error: "WhatsApp API credentials missing." }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
+    }
 
-    // if (whatsappApiKey && adminPhoneNumber) {
-    //   const message = `New Order Placed!
-    //     Order ID: ${order.order_number || order.id}
-    //     Customer: ${order.shipping_address.name}
-    //     Total: ₦${order.total_amount.toLocaleString()}
-    //     Status: ${order.status}
-    //     View in Admin: [Link to Admin Order Page]`; // Replace with actual admin link
+    const adminNumbers = [ADMIN_WHATSAPP_NUMBER_1, ADMIN_WHATSAPP_NUMBER_2].filter(Boolean); // Filter out any undefined/null numbers
 
-    //   // Example fetch call to a WhatsApp BSP API (e.g., Twilio, MessageBird)
-    //   // This is highly dependent on your chosen BSP's API structure.
-    //   // await fetch('https://api.whatsapp.com/v1/messages', {
-    //   //   method: 'POST',
-    //   //   headers: {
-    //   //     'Content-Type': 'application/json',
-    //   //     'Authorization': `Bearer ${whatsappApiKey}`,
-    //   //   },
-    //   //   body: JSON.stringify({
-    //   //     to: adminPhoneNumber,
-    //   //     type: 'text',
-    //   //     text: { body: message },
-    //   //   }),
-    //   // });
-    //   console.log(`Admin notification simulated for order ${order.id}`);
-    // } else {
-    //   console.warn("WhatsApp API key or admin phone number not configured. Skipping WhatsApp notification.");
-    // }
-    // ---------------------------------------------------------------------
+    if (adminNumbers.length === 0) {
+      console.warn("No admin WhatsApp numbers configured. Skipping WhatsApp notification.");
+      return new Response(JSON.stringify({ message: "No admin numbers configured, notification skipped." }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
 
-    return new Response(JSON.stringify({ message: "Admin notification processed." }), {
+    const orderItemsList = order.items.map((item: any) => 
+      `- ${item.product_name} (${item.quantity} ${item.unit_type}) @ ₦${item.unit_price.toLocaleString('en-NG')}`
+    ).join('\n');
+
+    const messageBody = `🚨 NEW ORDER PLACED! 🚨
+Order ID: ${order.order_number || order.id}
+Customer: ${order.shipping_address.name}
+Phone: ${order.shipping_address.phone || order.profiles?.phone || 'N/A'}
+Total Amount: ₦${order.total_amount.toLocaleString('en-NG')}
+Delivery Method: ${order.delivery_method}
+Status: ${order.status}
+
+Items:
+${orderItemsList}
+
+Shipping Address:
+${order.shipping_address.address}, ${order.shipping_address.city}, ${order.shipping_address.state}
+
+Please review and process this order in the admin dashboard.`;
+
+    const whatsappApiUrl = `https://graph.facebook.com/v19.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
+
+    const notificationPromises = adminNumbers.map(async (adminNumber) => {
+      const whatsappPayload = {
+        messaging_product: "whatsapp",
+        to: adminNumber,
+        type: "text",
+        text: {
+          body: messageBody,
+        },
+      };
+
+      console.log(`Attempting to send WhatsApp message to ${adminNumber} for order ${order.id}`);
+      const response = await fetch(whatsappApiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${WHATSAPP_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(whatsappPayload),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error(`Failed to send WhatsApp message to ${adminNumber}:`, response.status, responseData);
+        return { success: false, number: adminNumber, error: responseData };
+      } else {
+        console.log(`WhatsApp message sent successfully to ${adminNumber} for order ${order.id}:`, responseData);
+        return { success: true, number: adminNumber, data: responseData };
+      }
+    });
+
+    const results = await Promise.all(notificationPromises);
+    console.log("WhatsApp notification results:", results);
+
+    return new Response(JSON.stringify({ message: "Admin notification processed.", results }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
