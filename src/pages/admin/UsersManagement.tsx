@@ -18,6 +18,7 @@ import { useAdminUsers, AdminUser, UserFormData } from "@/hooks/useAdminUsers"; 
 import UserTable from "@/components/admin/users/UserTable"; // Import the new UserTable component
 import UserFormDialog from "@/components/admin/users/UserFormDialog"; // Import the new UserFormDialog
 import UserDetailsDialog from "@/components/admin/users/UserDetailsDialog"; // Import the new UserDetailsDialog
+import DeactivateUserAlertDialog from "@/components/admin/users/DeactivateUserAlertDialog"; // NEW: Import DeactivateUserAlertDialog
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -59,9 +60,9 @@ const UsersManagement = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
-  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
-  const [deletingUserName, setDeletingUserName] = useState<string>("");
+  const [isDeactivateAlertOpen, setIsDeactivateAlertOpen] = useState(false); // Renamed from isDeleteAlertOpen
+  const [deactivatingUserId, setDeactivatingUserId] = useState<string | null>(null); // Renamed from deletingUserId
+  const [deactivatingUserName, setDeactivatingUserName] = useState<string>(""); // Renamed from deletingUserName
   const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] = useState(false);
   const [viewingUser, setViewingUser] = useState<AdminUser | null>(null);
   const [isSubmittingForm, setIsSubmittingForm] = useState(false); // For form submission state
@@ -76,10 +77,10 @@ const UsersManagement = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleDeleteUserClick = (userId: string, userName: string) => {
-    setDeletingUserId(userId);
-    setDeletingUserName(userName);
-    setIsDeleteAlertOpen(true);
+  const handleDeactivateUserClick = (userId: string, userName: string) => { // Renamed from handleDeleteUserClick
+    setDeactivatingUserId(userId);
+    setDeactivatingUserName(userName);
+    setIsDeactivateAlertOpen(true);
   };
 
   const handleViewDetailsClick = (user: AdminUser) => {
@@ -104,11 +105,11 @@ const UsersManagement = () => {
   };
 
   const confirmDeactivateUser = async () => {
-    if (deletingUserId) {
-      await deactivateUser(deletingUserId);
-      setIsDeleteAlertOpen(false);
-      setDeletingUserId(null);
-      setDeletingUserName("");
+    if (deactivatingUserId) {
+      await deactivateUser(deactivatingUserId);
+      setIsDeactivateAlertOpen(false);
+      setDeactivatingUserId(null);
+      setDeactivatingUserName("");
       fetchUsers(); // Re-fetch users to update the list
     }
   };
@@ -140,7 +141,7 @@ const UsersManagement = () => {
         onFilterRoleChange={setFilterRole}
         onAddUser={handleAddUserClick}
         onEditUser={handleEditUserClick}
-        onDeleteUser={handleDeleteUserClick}
+        onDeleteUser={handleDeactivateUserClick} {/* Updated prop name */}
         onViewDetails={handleViewDetailsClick}
         currentPage={currentPage}
         totalPages={totalPages}
@@ -177,22 +178,12 @@ const UsersManagement = () => {
       />
 
       {/* Deactivate User Confirmation Dialog */}
-      <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action will deactivate the user "{deletingUserName}". They will no longer be able to log in.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeactivateUser}>
-              Deactivate
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeactivateUserAlertDialog
+        isOpen={isDeactivateAlertOpen}
+        onOpenChange={setIsDeactivateAlertOpen}
+        onConfirm={confirmDeactivateUser}
+        userName={deactivatingUserName}
+      />
     </motion.div>
   );
 };

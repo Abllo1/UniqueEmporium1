@@ -48,7 +48,7 @@ interface UserTableProps {
   onFilterRoleChange: (value: string) => void;
   onAddUser: () => void;
   onEditUser: (user: AdminUser) => void;
-  onDeleteUser: (userId: string, userName: string) => void;
+  onDeleteUser: (userId: string, userName: string) => void; // Renamed from onDeleteUser
   onViewDetails: (user: AdminUser) => void;
   currentPage: number;
   totalPages: number;
@@ -79,7 +79,7 @@ const UserTable = ({
   onFilterRoleChange,
   onAddUser,
   onEditUser,
-  onDeleteUser,
+  onDeleteUser, // Renamed prop
   onViewDetails,
   currentPage,
   totalPages,
@@ -210,34 +210,16 @@ const UserTable = ({
                               <TooltipContent>Edit User</TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
-                          <AlertDialog>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <AlertDialogTrigger asChild>
-                                    <Button variant="outline" size="icon" onClick={() => onDeleteUser(user.id, `${user.first_name} ${user.last_name}`)}>
-                                      <Trash2 className="h-4 w-4 text-red-600" />
-                                    </Button>
-                                  </AlertDialogTrigger>
-                                </TooltipTrigger>
-                                <TooltipContent>Deactivate User</TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This action will deactivate the user "{user.first_name} {user.last_name}". They will no longer be able to log in.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => onDeleteUser(user.id, `${user.first_name} ${user.last_name}`)}>
-                                  Deactivate
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                          <TooltipProvider> {/* Wrap AlertDialogTrigger with TooltipProvider */}
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button variant="outline" size="icon" onClick={() => onDeleteUser(user.id, `${user.first_name} ${user.last_name}`)}>
+                                  <Trash2 className="h-4 w-4 text-red-600" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>Deactivate User</TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                       </TableCell>
                     </motion.tr>
