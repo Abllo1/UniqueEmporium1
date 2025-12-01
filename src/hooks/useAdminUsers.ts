@@ -43,7 +43,7 @@ interface UseAdminUsersResult {
   filterRole: string;
   setFilterRole: (role: string) => void;
   currentPage: number;
-  setCurrentPage: (page: number) => void;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>; // FIX: Updated type to accept function updaters
   totalPages: number;
   totalFilteredUsersCount: number;
   usersPerPage: number;

@@ -141,7 +141,7 @@ const UsersManagement = () => {
         onFilterRoleChange={setFilterRole}
         onAddUser={handleAddUserClick}
         onEditUser={handleEditUserClick}
-        onDeleteUser={handleDeactivateUserClick} {/* Updated prop name */}
+        onDeleteUser={handleDeactivateUserClick}
         onViewDetails={handleViewDetailsClick}
         currentPage={currentPage}
         totalPages={totalPages}
