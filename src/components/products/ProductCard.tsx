@@ -142,14 +142,7 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
         <div className="relative h-[250px] w-full overflow-hidden bg-gray-100">
           <Link to={`/products/${product.id}`} className="absolute inset-0 z-0">
             {product.images.length === 0 ? (
-              <ImageWithFallback 
-                src={undefined} 
-                alt={product.name} 
-                containerClassName="h-full w-full" 
-                width={300} // Optimized width
-                height={250} // Optimized height
-                lazy={true} // Enable lazy loading
-              />
+              <ImageWithFallback src={undefined} alt={product.name} containerClassName="h-full w-full" />
             ) : (
               <div className="embla h-full" ref={emblaRef}>
                 <div className="embla__container flex h-full">
@@ -159,9 +152,6 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
                         src={image}
                         alt={`${product.name} - Image ${index + 1}`}
                         containerClassName="h-full w-full"
-                        width={300} // Optimized width
-                        height={250} // Optimized height
-                        lazy={true} // Enable lazy loading
                       />
                     </div>
                   ))}

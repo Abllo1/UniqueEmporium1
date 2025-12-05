@@ -48,14 +48,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
       {/* Main Image Area */}
       <div className="relative h-[300px] sm:h-[400px] md:h-[500px] bg-muted flex items-center justify-center">
         {images.length === 0 ? (
-          <ImageWithFallback 
-            src={undefined} 
-            alt={productName} 
-            containerClassName="h-full w-full" 
-            width={600} // Optimized width for main image
-            height={500} // Optimized height for main image
-            lazy={false} // Eager load the main image
-          />
+          <ImageWithFallback src={undefined} alt={productName} containerClassName="h-full w-full" />
         ) : (
           <div
             className="embla h-full w-full relative cursor-pointer group"
@@ -69,9 +62,6 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
                     src={image}
                     alt={`Product image ${index + 1} of ${productName}`}
                     containerClassName="h-full w-full"
-                    width={600} // Optimized width for main image
-                    height={500} // Optimized height for main image
-                    lazy={false} // Eager load the main image
                   />
                 </div>
               ))}
@@ -132,9 +122,6 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
                 alt={`Thumbnail ${index + 1} of ${productName}`}
                 containerClassName="h-full w-full"
                 fallbackLogoClassName="h-8 w-8"
-                width={80} // Optimized width for thumbnail
-                height={80} // Optimized height for thumbnail
-                lazy={true} // Lazy load thumbnails
               />
             </motion.button>
           ))}
@@ -149,9 +136,6 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
               src={images[selectedIndex]}
               alt={`Zoomed view of ${productName}`}
               containerClassName="w-full h-full max-h-[90vh]"
-              width={1200} // Large width for zoomed view
-              quality={90} // High quality for zoomed view
-              lazy={false}
             />
           ) : (
             <ImageWithFallback src={undefined} alt={productName} containerClassName="h-[90vh] w-full" />
