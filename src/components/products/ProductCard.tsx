@@ -53,8 +53,8 @@ const getOptimizedImageUrl = (url: string): string => {
     return url;
   }
   
-  // Transformation: f_auto (auto format), q_auto (auto quality), w_auto (responsive width), c_limit (limit crop)
-  const transformation = 'f_auto,q_auto,w_auto,c_limit/';
+  // Transformation: f_auto (auto format), q_auto (auto quality), c_fill (fill container), w_400, h_400, r_20
+  const transformation = 'f_auto,q_auto,c_fill,w_400,h_400,r_20/';
   return parts[0] + '/upload/' + transformation + parts[1];
 };
 

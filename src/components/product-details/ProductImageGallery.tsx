@@ -17,7 +17,7 @@ interface ProductImageGalleryProps {
 }
 
 // Helper function to apply Cloudinary transformations for optimization
-const getOptimizedImageUrl = (url: string): string => {
+const getOptimizedImageUrl = (url: string, type: 'main' | 'thumbnail' = 'main'): string => {
   if (!url || !url.includes('cloudinary.com')) {
     return url; // Return original URL if it's not a Cloudinary URL
   }
@@ -28,8 +28,19 @@ const getOptimizedImageUrl = (url: string): string => {
     return url;
   }
   
-  // Transformation: f_auto (auto format), q_auto (auto quality), w_auto (responsive width), c_limit (limit crop)
-  const transformation = 'f_auto,q_auto,w_auto,c_limit/';
+  let transformation = '';
+
+  if (type === 'main') {
+    // Responsive, max 800x800, rounded corners (r_20), limited crop (c_limit)
+    transformation = 'f_auto,q_auto,w_auto,c_limit,w_800,h_800,r_20/';
+  } else if (type === 'thumbnail') {
+    // Fixed size fill, max 200x200, rounded corners (r_20), fill crop (c_fill)
+    transformation = 'f_auto,q_auto,c_fill,w_200,h_200,r_20/';
+  } else {
+    // Default safe transformation
+    transformation = 'f_auto,q_auto,w_auto,c_limit/';
+  }
+
   return parts[0] + '/upload/' + transformation + parts[1];
 };
 
@@ -76,7 +87,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
               {images.map((image, index) => (
                 <div className="embla__slide relative flex-none w-full h-full" key={index}>
                   <ImageWithFallback
-                    src={getOptimizedImageUrl(image)} // Apply optimization here
+                    src={getOptimizedImageUrl(image, 'main')} // Apply 'main' optimization here
                     alt={`Product image ${index + 1} of ${productName}`}
                     containerClassName="h-full w-full"
                     loading="lazy" // Ensure lazy loading
@@ -136,7 +147,7 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
               whileTap={{ scale: 0.95 }}
             >
               <ImageWithFallback
-                src={getOptimizedImageUrl(image)} // Apply optimization here
+                src={getOptimizedImageUrl(image, 'thumbnail')} // Apply 'thumbnail' optimization here
                 alt={`Thumbnail ${index + 1} of ${productName}`}
                 containerClassName="h-full w-full"
                 fallbackLogoClassName="h-8 w-8"
@@ -152,10 +163,8 @@ const ProductImageGallery = ({ images, productName }: ProductImageGalleryProps) 
         <DialogContent className="max-w-4xl p-0 border-none bg-transparent">
           {images.length > 0 ? (
             <ImageWithFallback
-              // For the zoomed view, we might want a higher quality/larger image, 
-              // so we apply a slightly different transformation (e.g., w_1000) or just use the base optimized URL.
-              // Using the base optimized URL which includes w_auto, c_limit is usually sufficient.
-              src={getOptimizedImageUrl(images[selectedIndex])} 
+              // For the zoomed view, use the 'main' transformation for high quality, max size
+              src={getOptimizedImageUrl(images[selectedIndex], 'main')} 
               alt={`Zoomed view of ${productName}`}
               containerClassName="w-full h-full max-h-[90vh]"
             />
