@@ -41,6 +41,23 @@ interface ProductCardProps {
   disableEntryAnimation?: boolean;
 }
 
+// Helper function to apply Cloudinary transformations for optimization
+const getOptimizedImageUrl = (url: string): string => {
+  if (!url || !url.includes('cloudinary.com')) {
+    return url; // Return original URL if it's not a Cloudinary URL
+  }
+  
+  // Split the URL at '/upload/' and insert the transformation parameters
+  const parts = url.split('/upload/');
+  if (parts.length < 2) {
+    return url;
+  }
+  
+  // Transformation: f_auto (auto format), q_auto (auto quality), w_auto (responsive width), c_limit (limit crop)
+  const transformation = 'f_auto,q_auto,w_auto,c_limit/';
+  return parts[0] + '/upload/' + transformation + parts[1];
+};
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 50, x: -50 },
   visible: { opacity: 1, y: 0, x: 0, transition: { duration: 0.6, ease: "easeOut" as Easing } },
@@ -149,9 +166,10 @@ const ProductCard = ({ product, disableEntryAnimation = false }: ProductCardProp
                   {product.images.map((image, index) => (
                     <div className="embla__slide relative flex-none w-full h-full" key={index}>
                       <ImageWithFallback
-                        src={image}
+                        src={getOptimizedImageUrl(image)} // Apply optimization here
                         alt={`${product.name} - Image ${index + 1}`}
                         containerClassName="h-full w-full"
+                        loading="lazy" // Ensure lazy loading
                       />
                     </div>
                   ))}
