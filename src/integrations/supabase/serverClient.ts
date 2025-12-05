@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
 // Ensure these environment variables are set in your .env file
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseUrl = process.env.VITE_SUPABASE_URL; // Using VITE_SUPABASE_URL for consistency with .env loading in scripts
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY; // Use service role key
 
 // Temporary logs to debug environment variables
