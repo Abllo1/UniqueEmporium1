@@ -40,6 +40,7 @@ const ProductDetails = () => {
     setError(null);
     const loadProductAndReviews = async () => {
       if (productId) {
+        console.log("Attempting to fetch product with ID:", productId); // DEBUG LOG
         const fetchedProduct = await fetchProductByIdFromSupabase(productId);
         if (fetchedProduct) {
           setProduct(fetchedProduct);
