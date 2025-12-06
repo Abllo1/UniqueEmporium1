@@ -308,7 +308,7 @@ const DeliveryBannerManagement = () => {
     switch (type.toLowerCase()) {
       case "delivery": return "secondary";
       case "promo": return "default";
-      case "discount": return "primary";
+      case "discount": return "secondary"; // Changed from "primary" to "secondary"
       case "alert": return "destructive";
       default: return "outline";
     }
