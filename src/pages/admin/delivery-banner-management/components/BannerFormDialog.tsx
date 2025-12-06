@@ -24,7 +24,7 @@ import { BannerFormData, bannerFormSchema, DeliveryBannerMessage } from "@/hooks
 
 interface BannerFormDialogProps {
   isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
+  onClose: () => void; // Changed from onOpenChange to onClose
   initialData?: DeliveryBannerMessage | null;
   onSubmit: (data: BannerFormData) => Promise<void>;
   isSubmitting: boolean;
@@ -32,7 +32,7 @@ interface BannerFormDialogProps {
 
 const BannerFormDialog = ({
   isOpen,
-  onOpenChange,
+  onClose,
   initialData,
   onSubmit,
   isSubmitting,
@@ -86,12 +86,12 @@ const BannerFormDialog = ({
     // 'id' is already omitted from BannerFormData, so 'data' is directly the payload
     await onSubmit(data);
     if (!isSubmitting) { // Only close if submission was successful and not still submitting
-      onOpenChange(false);
+      onClose();
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px] p-6 rounded-xl shadow-lg bg-card/80 backdrop-blur-md border border-border/50">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold flex items-center gap-2">
