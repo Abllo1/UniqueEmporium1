@@ -3,9 +3,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Truck, Megaphone, Gift, AlertTriangle, Info, Shirt, CalendarDays } from 'lucide-react'; // Import various icons
-import * as LucideIcons from 'lucide-react'; // Import all Lucide icons for dynamic rendering
+// Removed: * as LucideIcons from 'lucide-react' is no longer needed here
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { cn, getLucideIconComponent } from '@/lib/utils'; // NEW: Import getLucideIconComponent
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import useEmblaCarousel from 'embla-carousel-react';
@@ -27,17 +27,7 @@ interface BannerMessage {
   icon_name: string | null;
 }
 
-// Helper function to get the Lucide icon component dynamically
-const getLucideIconComponent = (iconName: string | null): React.ElementType => {
-  if (typeof iconName === 'string' && iconName in LucideIcons) {
-    const Icon = (LucideIcons as any)[iconName]; // Use 'as any' to bypass initial type check
-    // Ensure the retrieved value is actually a React component
-    if (typeof Icon === 'function' || (Icon && typeof Icon === 'object' && '$$typeof' in Icon)) {
-      return Icon;
-    }
-  }
-  return LucideIcons.Megaphone; // Default fallback icon
-};
+// Removed: getLucideIconComponent is now in src/lib/utils.ts
 
 const DeliveryBanner: React.FC = () => {
   const [activeBanners, setActiveBanners] = useState<BannerMessage[]>([]);
@@ -142,7 +132,7 @@ const DeliveryBanner: React.FC = () => {
         <div className="embla h-full w-full" ref={emblaRef}>
           <div className="embla__container flex h-full">
             {activeBanners.map((banner, index) => {
-              const IconComponent = getLucideIconComponent(banner.icon_name);
+              const IconComponent = getLucideIconComponent(banner.icon_name); // Use the imported helper
               return (
                 <div key={banner.id} className="embla__slide flex-none w-full h-full">
                   <div
@@ -153,7 +143,7 @@ const DeliveryBanner: React.FC = () => {
                     )}
                   >
                     <div className="flex items-center font-semibold text-sm md:text-base">
-                      {IconComponent && <IconComponent className="h-4 w-4 mr-3" />}
+                      {IconComponent && React.createElement(IconComponent, { className: "h-4 w-4 mr-3" })} {/* Corrected usage */}
                       {banner.content}
                       {banner.link_url && (
                         <Link to={banner.link_url} className="ml-3 underline hover:opacity-80">
