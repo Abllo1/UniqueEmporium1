@@ -42,7 +42,7 @@ const DeliveryBanner: React.FC = () => {
   return (
     <div 
       className={cn(
-        "sticky top-16 z-40 w-full overflow-hidden h-10 flex items-center", // Changed z-index to z-40, removed outer rounded-xl
+        "fixed top-16 z-51 w-full overflow-hidden h-10 flex items-center", // Changed to fixed, top-16, and z-51
       )}
     >
       <motion.div

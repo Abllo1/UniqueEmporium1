@@ -13,6 +13,7 @@ import CheckAuth from "./components/auth/CheckAuth.tsx";
 import ScrollToTop from "./components/common/ScrollToTop.tsx";
 import LoadingPage from "./components/common/LoadingPage.tsx";
 import FloatingWhatsApp from "./components/layout/FloatingWhatsApp.tsx";
+import DeliveryBanner from "./components/common/DeliveryBanner.tsx"; // NEW: Import DeliveryBanner
 import { toast } from "sonner";
 
 // Lazily load page components for code splitting
@@ -122,10 +123,13 @@ const MainAppContent = () => {
     <CartProvider onOpenCartDrawer={() => setIsCartDrawerOpen(true)}>
       <FavoritesProvider>
         {showLayout && (
-          <Header
-            isCartDrawerOpen={isCartDrawerOpen}
-            setIsCartDrawerOpen={setIsCartDrawerOpen}
-          />
+          <>
+            <Header
+              isCartDrawerOpen={isCartDrawerOpen}
+              setIsCartDrawerOpen={setIsCartDrawerOpen}
+            />
+            <DeliveryBanner /> {/* NEW: Render DeliveryBanner here */}
+          </>
         )}
         <Suspense fallback={<LoadingPage />}>
           <Routes>
