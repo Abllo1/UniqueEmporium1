@@ -1,3 +1,5 @@
+"use client";
+
 import { toast } from "sonner";
 
 const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
