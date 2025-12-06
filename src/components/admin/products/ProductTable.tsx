@@ -30,6 +30,7 @@ import { ProductDetails } from "@/data/products.ts";
 import { cn } from "@/lib/utils";
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
 import { AdminCategory } from "@/pages/admin/CategoriesManagement.tsx"; // Corrected import path
+import { getOptimizedImageUrl } from "@/lib/utils"; // NEW: Import getOptimizedImageUrl
 
 interface ProductTableProps {
   products: ProductDetails[];
@@ -190,7 +191,7 @@ const ProductTable = ({
                     >
                       <TableCell>
                         <ImageWithFallback
-                          src={product.images[0]}
+                          src={getOptimizedImageUrl(product.images[0], 'thumbnail')} // NEW: Apply optimization
                           alt={product.name}
                           containerClassName="h-10 w-10 rounded-md overflow-hidden border"
                           fallbackLogoClassName="h-6 w-6"

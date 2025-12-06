@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useCart } from "@/context/CartContext.tsx";
 import { Plus, Minus, Trash2, CreditCard, Loader2, ShoppingBag } from "lucide-react";
 import { motion, AnimatePresence, Easing } from "framer-motion";
+import { getOptimizedImageUrl } from "@/lib/utils"; // NEW: Import getOptimizedImageUrl
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 50 },
@@ -71,7 +72,7 @@ const Cart = () => {
                   className="flex flex-col sm:flex-row items-center justify-between border rounded-lg p-4 shadow-sm"
                 >
                   <div className="flex items-center gap-4 mb-4 sm:mb-0 w-full sm:w-auto">
-                    <img src={item.images[0]} alt={item.name} className="h-20 w-20 object-contain rounded-md border" />
+                    <img src={getOptimizedImageUrl(item.images[0], 'thumbnail')} alt={item.name} className="h-20 w-20 object-contain rounded-md border" />
                     <div>
                       <h2 className="font-semibold text-sm">{item.name}</h2>
                       <p className="text-sm text-muted-foreground">₦{item.unitPrice.toLocaleString('en-NG', { minimumFractionDigits: 2 })} / {item.unitType === 'pcs' ? 'pc' : 'set'}</p>

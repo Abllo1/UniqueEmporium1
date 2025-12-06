@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
 import { Order } from "@/pages/account/OrderHistoryPage.tsx"; // Import Order interface
 import { Link } from "react-router-dom";
+import { getOptimizedImageUrl } from "@/lib/utils"; // NEW: Import getOptimizedImageUrl
 
 interface OrderDetailsDialogProps {
   order: Order;
@@ -116,7 +117,7 @@ const OrderDetailsDialog = ({ order, isOpen, onClose }: OrderDetailsDialogProps)
                       </DialogHeader>
                       <div className="p-4">
                         <ImageWithFallback
-                          src={order.receiptImageUrl}
+                          src={getOptimizedImageUrl(order.receiptImageUrl, 'main')} // NEW: Apply optimization
                           alt={`Payment Receipt for ${order.id}`}
                           containerClassName="w-full h-auto max-h-[80vh] object-contain"
                         />
@@ -169,7 +170,7 @@ const OrderDetailsDialog = ({ order, isOpen, onClose }: OrderDetailsDialogProps)
               {order.items.map((item, index) => (
                 <div key={index} className="flex items-center gap-4 border-b pb-3 last:border-b-0 last:pb-0">
                   <ImageWithFallback
-                    src={item.image_url}
+                    src={getOptimizedImageUrl(item.image_url, 'thumbnail')} // NEW: Apply optimization
                     alt={item.product_name}
                     containerClassName="h-16 w-16 object-contain rounded-md border flex-shrink-0"
                     fallbackLogoClassName="h-8 w-8"

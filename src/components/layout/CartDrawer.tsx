@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingBag, Plus, Minus, Trash2, CreditCard, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "@/context/CartContext.tsx";
+import { getOptimizedImageUrl } from "@/lib/utils"; // NEW: Import getOptimizedImageUrl
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -49,7 +50,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
               {cartItems.map((item) => (
                 <div key={item.id} className="flex items-center justify-between border-b pb-2">
                   <div className="flex items-center gap-3">
-                    <img src={item.images[0]} alt={item.name} className="h-12 w-12 object-contain rounded-md border" />
+                    <img src={getOptimizedImageUrl(item.images[0], 'thumbnail')} alt={item.name} className="h-12 w-12 object-contain rounded-md border" />
                     <div>
                       <p className="font-medium">{item.name}</p>
                       <p className="text-sm text-muted-foreground">

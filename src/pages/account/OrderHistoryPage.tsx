@@ -13,6 +13,7 @@ import { useAuth } from "@/context/AuthContext.tsx";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import OrderDetailsDialog from "@/components/account/OrderDetailsDialog.tsx"; // Import the new dialog
+import { getOptimizedImageUrl } from "@/lib/utils"; // NEW: Import getOptimizedImageUrl
 
 // Define the order item interface based on your database structure
 interface OrderItem {
@@ -208,7 +209,7 @@ const OrderHistoryPage = () => {
                           {order.items.slice(0, 3).map((item, index) => (
                             <ImageWithFallback
                               key={index}
-                              src={item.image_url}
+                              src={getOptimizedImageUrl(item.image_url, 'thumbnail')} // NEW: Apply optimization
                               alt={item.product_name}
                               containerClassName="h-8 w-8 rounded-full border-2 border-background"
                               className="object-cover"

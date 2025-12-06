@@ -18,6 +18,8 @@ import { useAuth } from "@/context/AuthContext.tsx";
 import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx";
 import { cn } from "@/lib/utils";
 import { useCategories } from "@/hooks/useCategories"; // Import the new hook
+import { getOptimizedImageUrl } from "@/lib/utils"; // NEW: Import getOptimizedImageUrl
+import ImageWithFallback from "@/components/common/ImageWithFallback"; // NEW: Import ImageWithFallback
 
 interface HeaderProps {
   isCartDrawerOpen: boolean;
@@ -118,7 +120,16 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
                           className="flex items-center gap-2 cursor-pointer w-full h-full p-2"
                           onClick={closeMobileMenu} // Close menu on click
                         >
-                          <IconComponent className="h-4 w-4 flex-shrink-0" />
+                          {category.image_url ? (
+                            <ImageWithFallback
+                              src={getOptimizedImageUrl(category.image_url, 'category')} // NEW: Apply optimization
+                              alt={category.name}
+                              containerClassName="h-6 w-6 rounded-full overflow-hidden flex-shrink-0"
+                              fallbackLogoClassName="h-4 w-4"
+                            />
+                          ) : (
+                            <IconComponent className="h-6 w-6 flex-shrink-0" />
+                          )}
                           <span className="truncate">{category.name}</span>
                         </Link>
                       </DropdownMenuItem>

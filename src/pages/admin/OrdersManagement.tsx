@@ -52,6 +52,7 @@ import { toast } from "sonner";
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
+import { getOptimizedImageUrl } from "@/lib/utils"; // NEW: Import getOptimizedImageUrl
 
 // Define the order item interface based on your database structure and joined data
 interface OrderItem {
@@ -232,7 +233,7 @@ const OrderDetailsDialog = ({ order, onClose }: OrderDetailsDialogProps) => {
             {order.items.map((item, index) => (
               <div key={index} className="flex items-center gap-4 border-b pb-3 last:border-b-0 last:pb-0">
                 <ImageWithFallback
-                  src={item.image_url}
+                  src={getOptimizedImageUrl(item.image_url, 'thumbnail')} // NEW: Apply optimization
                   alt={item.product_name}
                   containerClassName="h-16 w-16 object-contain rounded-md border flex-shrink-0"
                   fallbackLogoClassName="h-8 w-8"
@@ -578,7 +579,7 @@ const OrdersManagement = () => {
                                 <div className="p-4">
                                   {order.receiptImageUrl ? (
                                     <ImageWithFallback
-                                      src={order.receiptImageUrl}
+                                      src={getOptimizedImageUrl(order.receiptImageUrl, 'main')} // NEW: Apply optimization
                                       alt={`Payment Receipt for ${order.id}`}
                                       containerClassName="w-full h-auto max-h-[80vh] object-contain"
                                     />

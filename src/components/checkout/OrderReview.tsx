@@ -11,6 +11,7 @@ import type { ShippingFormData } from "@/components/checkout/ShippingForm.tsx";
 import type { BankTransferFormData } from "@/components/checkout/BankTransferPaymentForm.tsx"; // New import
 import ImageWithFallback from "@/components/common/ImageWithFallback.tsx"; // Import ImageWithFallback
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"; // Import Dialog components
+import { getOptimizedImageUrl } from "@/lib/utils"; // NEW: Import getOptimizedImageUrl
 
 interface OrderReviewProps {
   shippingInfo: ShippingFormData;
@@ -126,7 +127,7 @@ const OrderReview = ({ shippingInfo, bankTransferInfo, onPrevious, onPlaceOrder,
                     </DialogHeader>
                     <div className="p-4">
                       <ImageWithFallback
-                        src={bankTransferInfo.receiptImageUrl}
+                        src={getOptimizedImageUrl(bankTransferInfo.receiptImageUrl, 'main')} // Apply optimization
                         alt="Payment Receipt"
                         containerClassName="w-full h-auto max-h-[80vh] object-contain"
                       />
@@ -148,7 +149,7 @@ const OrderReview = ({ shippingInfo, bankTransferInfo, onPrevious, onPlaceOrder,
           <div className="space-y-4">
             {cartItems.map((item) => (
               <div key={item.id} className="flex items-center gap-4 border-b pb-3 last:border-b-0 last:pb-0">
-                <img src={item.images[0]} alt={item.name} className="h-16 w-16 object-contain rounded-md border" />
+                <img src={getOptimizedImageUrl(item.images[0], 'thumbnail')} alt={item.name} className="h-16 w-16 object-contain rounded-md border" />
                 <div className="flex-grow">
                   <p className="font-medium text-foreground text-sm">{item.name}</p> {/* Added text-sm here */}
                   <p className="text-sm text-muted-foreground">
