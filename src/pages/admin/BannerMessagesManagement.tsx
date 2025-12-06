@@ -47,8 +47,8 @@ import {
   CalendarIcon,
   Eye,
 } from "lucide-react";
-// Removed: * as LucideIcons from 'lucide-react' is no longer needed here
-import { cn, getLucideIconComponent } from "@/lib/utils"; // NEW: Import getLucideIconComponent
+import * as LucideIcons from "lucide-react"; // Import all Lucide icons for dynamic rendering
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -110,6 +110,14 @@ const bannerMessageFormSchema = z.object({
 
 type BannerMessageFormData = z.infer<typeof bannerMessageFormSchema>;
 
+// Type guard to check if a string is a valid Lucide icon key
+const isLucideIconKey = (key: string): keyof typeof LucideIcons => {
+  if (key && key in LucideIcons) {
+    return key as keyof typeof LucideIcons;
+  }
+  return "Megaphone"; // Default fallback icon
+};
+
 const messageTypes = [
   "Delivery Info",
   "Promotion",
@@ -158,7 +166,6 @@ const BannerMessagesManagement = () => {
   const currentStartDate = watch("start_date");
   const currentEndDate = watch("end_date");
   const currentMessageType = watch("message_type");
-  const currentIconName = watch("icon_name"); // Watch icon_name for preview
 
   const fetchBannerMessages = useCallback(async () => {
     setIsLoadingMessages(true);
@@ -305,19 +312,16 @@ const BannerMessagesManagement = () => {
     }
   }, [deletingMessageId, fetchBannerMessages]);
 
-  const getStatusBadgeVariant = (isActive: boolean): "default" | "secondary" | "destructive" | "outline" => {
+  const getStatusBadgeVariant = (isActive: boolean) => {
     return isActive ? "default" : "secondary";
   };
 
-  // FIX for Error 4: Ensure this function returns only valid Badge variants
-  const getMessageTypeBadgeVariant = (type: string): "default" | "secondary" | "destructive" | "outline" => {
+  const getMessageTypeBadgeVariant = (type: string) => {
     switch (type) {
-      case "Delivery Info": return "outline"; // Changed to outline for a neutral look
-      case "Promotion": return "default"; // Changed to default
+      case "Delivery Info": return "default";
+      case "Promotion": return "primary";
       case "Warning": return "destructive";
-      case "General Announcement": return "secondary"; // Changed to secondary
-      case "Holiday Special": return "default";
-      case "New Collection": return "default"; // Changed to default
+      case "Holiday Special": return "accent";
       default: return "outline";
     }
   };
@@ -405,7 +409,7 @@ const BannerMessagesManagement = () => {
                 <TableBody>
                   <AnimatePresence>
                     {currentMessages.map((message) => {
-                      const IconComponent = getLucideIconComponent(message.icon_name); // Use the imported helper
+                      const IconComponent = LucideIcons[isLucideIconKey(message.icon_name || "Megaphone")] as React.ElementType;
                       const isActiveNow = message.is_active &&
                         (!message.start_date || new Date(message.start_date) <= new Date()) &&
                         (!message.end_date || new Date(message.end_date) >= new Date());
@@ -420,7 +424,7 @@ const BannerMessagesManagement = () => {
                         >
                           <TableCell>
                             <Badge variant={getMessageTypeBadgeVariant(message.message_type)} className="flex items-center gap-1 w-fit">
-                              {IconComponent && React.createElement(IconComponent, { className: "h-3 w-3" })} {/* Corrected usage */}
+                              {IconComponent && <IconComponent className="h-3 w-3" />}
                               {message.message_type}
                             </Badge>
                           </TableCell>
@@ -484,7 +488,7 @@ const BannerMessagesManagement = () => {
                                   <AlertDialogHeader>
                                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                      This action will permanently delete this banner message.
+                                      This action will permanently delete the banner message: "{message.content}".
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
@@ -729,7 +733,7 @@ const BannerMessagesManagement = () => {
               />
               {watch("icon_name") && (
                 <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                  Preview: {React.createElement(getLucideIconComponent(watch("icon_name")), { className: "h-4 w-4" })} {/* Corrected usage */}
+                  Preview: {React.createElement(LucideIcons[isLucideIconKey(watch("icon_name"))] as React.ElementType, { className: "h-4 w-4" })}
                   <span>{watch("icon_name")}</span>
                 </div>
               )}

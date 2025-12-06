@@ -1,6 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import * as LucideIcons from "lucide-react"; // Import all Lucide icons
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -45,19 +44,4 @@ export const getOptimizedImageUrl = (url: string | undefined, type: 'main' | 'th
   }
 
   return parts[0] + '/upload/' + transformation + parts[1];
-};
-
-/**
- * Helper function to get the Lucide icon component dynamically by its name.
- * @param iconName The string name of the Lucide icon (e.g., 'Truck', 'Megaphone').
- * @returns The Lucide icon React component, or Megaphone as a fallback.
- */
-export const getLucideIconComponent = (iconName: string | null): React.ElementType => {
-  if (typeof iconName === 'string' && iconName in LucideIcons) {
-    const Icon = (LucideIcons as any)[iconName];
-    if (typeof Icon === 'function' || (Icon && typeof Icon === 'object' && '$$typeof' in Icon)) {
-      return Icon;
-    }
-  }
-  return LucideIcons.Megaphone; // Default fallback icon
 };
