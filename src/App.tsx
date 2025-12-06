@@ -50,8 +50,7 @@ const AdminProductsManagement = lazy(() => import("./pages/admin/ProductsManagem
 const AdminCategoriesManagement = lazy(() => import("./pages/admin/CategoriesManagement.tsx"));
 const AdminUsersManagement = lazy(() => import("./pages/admin/UsersManagement.tsx"));
 const AdminAnalyticsDashboard = lazy(() => import("./pages/admin/AnalyticsDashboard.tsx"));
-const AdminReviewsManagement = lazy(() => import("./pages/admin/ReviewsManagement.tsx"));
-const BannerMessagesManagement = lazy(() => import("./pages/admin/BannerMessagesManagement.tsx")); // NEW: Import BannerMessagesManagement
+const AdminReviewsManagement = lazy(() => import("./pages/admin/ReviewsManagement.tsx")); // New import
 
 const queryClient = new QueryClient();
 
@@ -166,10 +165,9 @@ const MainAppContent = () => {
               <Route index element={<AdminDashboardOverview />} />
               <Route path="orders" element={<AdminOrdersManagement />} />
               <Route path="products" element={<AdminProductsManagement />} />
-              <Route path="reviews" element={<AdminReviewsManagement />} />
+              <Route path="reviews" element={<AdminReviewsManagement />} /> {/* New route */}
               <Route path="categories" element={<AdminCategoriesManagement />} />
               <Route path="users" element={<AdminUsersManagement />} />
-              <Route path="banner-messages" element={<BannerMessagesManagement />} /> {/* NEW: Added Banner Messages route */}
               <Route path="analytics" element={<AdminAnalyticsDashboard />} />
             </Route>
             
