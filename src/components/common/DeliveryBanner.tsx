@@ -42,8 +42,7 @@ const DeliveryBanner: React.FC = () => {
   return (
     <div 
       className={cn(
-        "sticky top-16 z-20 w-full overflow-hidden h-10 flex items-center",
-        "rounded-xl" // Outer container rounding remains to clip the scrolling content
+        "sticky top-16 z-40 w-full overflow-hidden h-10 flex items-center", // Changed z-index to z-40, removed outer rounded-xl
       )}
     >
       <motion.div
