@@ -6,8 +6,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { BellRing, Loader2 } from "lucide-react";
 import { useBanners, DeliveryBannerMessage, BannerFormData } from "./delivery-banner-management/hooks/useBanners";
 import { BannerFilters } from "./delivery-banner-management/components/BannerFilters";
-import BannerFormDialog from "./delivery-banner-management/components/BannerFormDialog"; // Updated import to default
 import { BannerTable } from "./delivery-banner-management/components/BannerTable";
+import { BannerFormDialog } from "./delivery-banner-management/components/BannerFormDialog";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -182,8 +182,8 @@ const DeliveryBannerManagement = () => {
               goToNextPage={goToNextPage}
               totalFilteredBanners={filteredBanners.length}
               bannersPerPage={bannersPerPage}
-              indexOfFirstBanner={indexOfFirstBanner}
-              indexOfLastBanner={indexOfLastBanner}
+              indexOfFirstBanner={indexOfFirstBanner} // Pass the prop
+              indexOfLastBanner={indexOfLastBanner}   // Pass the prop
             />
           )}
         </CardContent>
@@ -191,7 +191,7 @@ const DeliveryBannerManagement = () => {
 
       <BannerFormDialog
         isOpen={isFormModalOpen}
-        onClose={() => setIsFormModalOpen(false)} // Pass the correct onClose prop
+        onClose={() => setIsFormModalOpen(false)}
         editingBanner={editingBanner}
         onSubmit={handleFormSubmit}
         isSubmitting={isSubmittingForm}
