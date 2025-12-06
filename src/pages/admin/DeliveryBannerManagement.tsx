@@ -197,7 +197,7 @@ const DeliveryBannerManagement = () => {
 
     if (error) {
       console.error("Error fetching banner messages:", error);
-      toast.error("Failed to load banner messages.");
+      toast.error("Failed to load banner messages.", { description: error.message });
       setBannerMessages([]);
     } else {
       setBannerMessages(data as DeliveryBannerMessage[]);
