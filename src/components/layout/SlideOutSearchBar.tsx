@@ -10,6 +10,7 @@ import { Product } from "@/data/products";
 import ImageWithFallback from "@/components/common/ImageWithFallback";
 import { cn } from "@/lib/utils";
 import { fetchProductsFromSupabase } from "@/integrations/supabase/products";
+import { getOptimizedImageUrl } from "@/lib/utils"; // NEW: Import getOptimizedImageUrl
 
 interface SlideOutSearchBarProps {
   isOpen: boolean;
@@ -142,7 +143,7 @@ const SlideOutSearchBar = ({ isOpen, onClose }: SlideOutSearchBarProps) => {
                         onClick={() => handleSuggestionClick(product.id)}
                       >
                         <ImageWithFallback
-                          src={product.images[0]}
+                          src={getOptimizedImageUrl(product.images[0], 'thumbnail')} // Apply optimization here
                           alt={product.name}
                           containerClassName="h-10 w-10 rounded-full overflow-hidden flex-shrink-0 mr-3"
                           fallbackLogoClassName="h-6 w-6"
