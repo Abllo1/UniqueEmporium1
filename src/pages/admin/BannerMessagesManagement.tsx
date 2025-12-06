@@ -110,8 +110,6 @@ const bannerMessageFormSchema = z.object({
 
 type BannerMessageFormData = z.infer<typeof bannerMessageFormSchema>;
 
-// Removed: isLucideIconKey is no longer needed here
-
 const messageTypes = [
   "Delivery Info",
   "Promotion",
@@ -314,12 +312,12 @@ const BannerMessagesManagement = () => {
   // FIX for Error 4: Ensure this function returns only valid Badge variants
   const getMessageTypeBadgeVariant = (type: string): "default" | "secondary" | "destructive" | "outline" => {
     switch (type) {
-      case "Delivery Info": return "default";
-      case "Promotion": return "secondary"; // Changed from "primary" to "secondary"
+      case "Delivery Info": return "outline"; // Changed to outline for a neutral look
+      case "Promotion": return "default"; // Changed to default
       case "Warning": return "destructive";
-      case "General Announcement": return "outline";
-      case "Holiday Special": return "default"; // Changed from "accent" to "default"
-      case "New Collection": return "secondary";
+      case "General Announcement": return "secondary"; // Changed to secondary
+      case "Holiday Special": return "default";
+      case "New Collection": return "default"; // Changed to default
       default: return "outline";
     }
   };

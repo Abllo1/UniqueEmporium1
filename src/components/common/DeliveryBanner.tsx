@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Truck, Megaphone, Gift, AlertTriangle, Info, Shirt, CalendarDays } from 'lucide-react'; // Import various icons
-// Removed: * as LucideIcons from 'lucide-react' is no longer needed here
+import * as LucideIcons from 'lucide-react'; // Import all Lucide icons for dynamic rendering
 import { Badge } from '@/components/ui/badge';
 import { cn, getLucideIconComponent } from '@/lib/utils'; // NEW: Import getLucideIconComponent
 import { supabase } from '@/integrations/supabase/client';
@@ -26,8 +26,6 @@ interface BannerMessage {
   text_color: string | null;
   icon_name: string | null;
 }
-
-// Removed: getLucideIconComponent is now in src/lib/utils.ts
 
 const DeliveryBanner: React.FC = () => {
   const [activeBanners, setActiveBanners] = useState<BannerMessage[]>([]);
@@ -118,7 +116,7 @@ const DeliveryBanner: React.FC = () => {
           )}
         >
           <div className="flex items-center font-semibold text-sm md:text-base">
-            {React.createElement(getLucideIconComponent(activeBanners[0].icon_name), { className: "h-4 w-4 mr-3" })}
+            {React.createElement(getLucideIconComponent(activeBanners[0].icon_name), { className: "h-4 w-4 mr-3 flex-shrink-0" })}
             {activeBanners[0].content}
             {activeBanners[0].link_url && (
               <Link to={activeBanners[0].link_url} className="ml-3 underline hover:opacity-80">
@@ -143,7 +141,7 @@ const DeliveryBanner: React.FC = () => {
                     )}
                   >
                     <div className="flex items-center font-semibold text-sm md:text-base">
-                      {IconComponent && React.createElement(IconComponent, { className: "h-4 w-4 mr-3" })} {/* Corrected usage */}
+                      {IconComponent && React.createElement(IconComponent, { className: "h-4 w-4 mr-3 flex-shrink-0" })} {/* Corrected usage */}
                       {banner.content}
                       {banner.link_url && (
                         <Link to={banner.link_url} className="ml-3 underline hover:opacity-80">
