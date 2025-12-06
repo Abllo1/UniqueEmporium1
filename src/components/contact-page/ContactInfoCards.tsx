@@ -16,7 +16,7 @@ const contactInfos: ContactInfo[] = [
   {
     icon: Mail,
     title: "Email Us",
-    details: ["support@uniqueemporium.com", "We typically respond within 24 hours."],
+    details: ["Contact@uniqueemporium.com.ng", "We typically respond within 24 hours."],
   },
   {
     icon: Phone,
@@ -68,6 +68,8 @@ const ContactInfoCards = () => {
                 className="h-6 w-6 md:h-8 md:w-8 mx-auto mb-3 text-primary"
                 animate={{
                   y: [0, -5, 0],
+                  rotateX: [0, 5, 0],
+                  rotateZ: [0, 2, 0],
                 }}
                 transition={{
                   duration: 3,

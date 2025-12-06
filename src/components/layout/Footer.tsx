@@ -76,10 +76,10 @@ const Footer = () => {
             </p>
             <div className="space-y-2 text-sm text-primary-foreground/80">
               <a 
-                href="mailto:support@uniqueemporium.com" 
+                href="mailto:Contact@uniqueemporium.com.ng" 
                 className="flex items-center hover:text-primary-foreground/60 transition-colors"
               >
-                <Mail className="mr-2 h-4 w-4" /> support@uniqueemporium.com
+                <Mail className="mr-2 h-4 w-4" /> Contact@uniqueemporium.com.ng
               </a>
               <a 
                 href="tel:+2349065545572" 
