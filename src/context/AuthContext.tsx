@@ -94,7 +94,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signInWithEmail = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    if (error) {
+      toast.error("Sign In Failed", { description: error.message });
+      throw error; // Re-throw to allow AuthForm to handle loading state
+    } else {
+      toast.success("Signed in successfully!", { description: "Welcome back to Unique Emporium!" });
+    }
   };
 
   const signUpWithEmail = async (email: string, password: string, firstName: string, lastName: string) => {
@@ -105,12 +110,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         data: { first_name: firstName, last_name: lastName }
       }
     });
-    if (error) throw error;
+    if (error) {
+      toast.error("Sign Up Failed", { description: error.message });
+      throw error; // Re-throw to allow AuthForm to handle loading state
+    } else {
+      toast.success("Account created!", { description: "Please check your email to confirm your account, then sign in." });
+    }
   };
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    if (error) {
+      toast.error("Sign Out Failed", { description: error.message });
+      throw error;
+    } else {
+      toast.info("You have been signed out.", { description: "See you again soon!" });
+    }
     navigate('/');
   };
 

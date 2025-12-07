@@ -120,9 +120,9 @@ export default function AuthForm() {
     setIsSigningIn(true);
     try {
       await signInWithEmail(signInEmail, signInPassword);
-      // Redirection is now handled by CheckAuth
+      // Redirection is now handled by CheckAuth and toast by AuthContext
     } catch (error) {
-      // Error handled by toast in AuthContext
+      // Error is already toasted by AuthContext, just handle loading state
     } finally {
       setIsSigningIn(false);
     }
@@ -133,9 +133,9 @@ export default function AuthForm() {
     setIsSigningUp(true);
     try {
       await signUpWithEmail(signUpEmail, signUpPassword, signUpFirstName, signUpLastName);
-      // Redirection is now handled by CheckAuth
+      // Redirection is now handled by CheckAuth and toast by AuthContext
     } catch (error) {
-      // Error handled by toast in AuthContext
+      // Error is already toasted by AuthContext, just handle loading state
     } finally {
       setIsSigningUp(false);
     }
