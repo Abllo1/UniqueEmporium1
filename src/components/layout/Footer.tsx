@@ -163,7 +163,7 @@ const Footer = () => {
               <Input
                 type="email"
                 placeholder="Your email"
-                className="flex-1 bg-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/60 focus:border-primary-foreground/50"
+                className="flex-1 bg-primary-foreground/10 text-primary-foreground placeholder:text-primary-foreground/60 focus:border-primary-foreground/50 text-base md:text-sm"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
