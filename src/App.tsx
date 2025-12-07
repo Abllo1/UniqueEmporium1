@@ -174,7 +174,7 @@ const MainAppContent = () => {
             </Route>
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Suspense>
         {showLayout && <FloatingWhatsApp />}
