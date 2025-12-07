@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { FaTiktok, FaTelegram, FaWhatsapp } from "react-icons/fa"; // Import FaWhatsapp
 import UniqueEmporiumLogo from "@/components/logo/UniqueEmporiumLogo.tsx";
+import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
+import { toast } from "sonner"; // Import toast for notifications
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -41,12 +43,38 @@ const Footer = () => {
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    setEmail(""); // Clear email after submission
-    setTimeout(() => setIsSubmitted(false), 3000); // Hide success message after 3 seconds
+    setIsSubmitted(false); // Reset submitted state on new attempt
+
+    if (!email) {
+      toast.error("Please enter your email address.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscriptions')
+        .insert([{ email: email }]);
+
+      if (error) {
+        if (error.code === '23505') { // Unique constraint violation code
+          toast.info("You're already subscribed!", { description: "This email address is already on our list." });
+        } else {
+          toast.error("Failed to subscribe.", { description: error.message });
+          console.error("Supabase subscription error:", error);
+        }
+      } else {
+        toast.success("Subscribed successfully!", { description: "Thank you for joining our newsletter!" });
+        setIsSubmitted(true);
+        setEmail(""); // Clear email after successful submission
+        setTimeout(() => setIsSubmitted(false), 3000); // Hide success message after 3 seconds
+      }
+    } catch (err: any) {
+      toast.error("An unexpected error occurred.", { description: err.message });
+      console.error("Newsletter submission unexpected error:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // URL-encoded address for Google Maps search
