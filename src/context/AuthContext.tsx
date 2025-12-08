@@ -13,6 +13,7 @@ interface CustomUser extends User {
   custom_user_id?: string;
   phone?: string;
   status?: string;
+  avatar_url?: string; // NEW: Add avatar_url to CustomUser interface
 }
 
 interface AuthContextType {
@@ -51,27 +52,75 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (currentSession) {
         const { data: profile, error } = await supabase
           .from('profiles')
-          .select('first_name, last_name, role, custom_user_id, phone, status')
+          .select('first_name, last_name, role, custom_user_id, phone, status, avatar_url') // NEW: Select avatar_url
           .eq('id', currentSession.user.id)
           .single();
 
         if (!isMounted) return;
 
-        if (error && error.code !== 'PGRST116') { // Ignore "no rows" error
-          console.error('Profile fetch error during auth change:', error);
-          setAuthState(currentSession, { ...currentSession.user } as CustomUser);
-        } else if (profile) {
-          setAuthState(currentSession, {
-            ...currentSession.user,
-            first_name: profile.first_name,
-            last_name: profile.last_name,
-            role: profile.role,
-            custom_user_id: profile.custom_user_id,
-            phone: profile.phone,
-            status: profile.status,
-          });
+        const userMetadata = currentSession.user.user_metadata;
+        let profileToUpdate = { ...profile }; // Start with fetched profile or empty object
+
+        // If profile exists, check for updates from OAuth metadata.
+        if (profile) {
+            let needsUpdate = false;
+            const updatePayload: { [key: string]: any } = {};
+
+            // Check first_name
+            const oauthFirstName = userMetadata?.first_name || (userMetadata?.full_name?.split(' ')[0]);
+            if (oauthFirstName && profile.first_name !== oauthFirstName) {
+                updatePayload.first_name = oauthFirstName;
+                needsUpdate = true;
+            }
+
+            // Check last_name
+            const oauthLastName = userMetadata?.last_name || (userMetadata?.full_name?.split(' ').slice(1).join(' '));
+            if (oauthLastName && profile.last_name !== oauthLastName) {
+                updatePayload.last_name = oauthLastName;
+                needsUpdate = true;
+            }
+
+            // Check avatar_url
+            const oauthAvatarUrl = userMetadata?.avatar_url;
+            if (oauthAvatarUrl && profile.avatar_url !== oauthAvatarUrl) {
+                updatePayload.avatar_url = oauthAvatarUrl;
+                needsUpdate = true;
+            }
+
+            if (needsUpdate) {
+                const { data: updatedProfile, error: updateError } = await supabase
+                    .from('profiles')
+                    .update(updatePayload)
+                    .eq('id', currentSession.user.id)
+                    .select('first_name, last_name, role, custom_user_id, phone, status, avatar_url') // Select avatar_url
+                    .single();
+
+                if (updateError) {
+                    console.error('Error updating profile with OAuth data:', updateError);
+                    toast.error("Failed to update profile with new OAuth data.");
+                } else if (updatedProfile) {
+                    profileToUpdate = updatedProfile;
+                    console.log("Profile updated with OAuth data.");
+                }
+            }
+        }
+
+        if (error && error.code !== 'PGRST116') {
+            console.error('Profile fetch error during auth change:', error);
+            setAuthState(currentSession, { ...currentSession.user } as CustomUser);
+        } else if (profileToUpdate) {
+            setAuthState(currentSession, {
+                ...currentSession.user,
+                first_name: profileToUpdate.first_name,
+                last_name: profileToUpdate.last_name,
+                role: profileToUpdate.role,
+                custom_user_id: profileToUpdate.custom_user_id,
+                phone: profileToUpdate.phone,
+                status: profileToUpdate.status,
+                avatar_url: profileToUpdate.avatar_url, // NEW: Include avatar_url in AuthContext user state
+            });
         } else {
-          setAuthState(currentSession, { ...currentSession.user } as CustomUser);
+            setAuthState(currentSession, { ...currentSession.user } as CustomUser);
         }
       } else {
         setAuthState(null, null);

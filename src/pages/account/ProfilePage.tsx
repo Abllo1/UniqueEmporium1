@@ -6,10 +6,11 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { User, Mail, Phone, Lock, Loader2, KeyRound } from "lucide-react"; // Added KeyRound icon
+import { User, Mail, Phone, Lock, Loader2, KeyRound, Image as ImageIcon } from "lucide-react"; // Added ImageIcon
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext.tsx";
 import { supabase } from "@/integrations/supabase/client";
+import ImageWithFallback from "@/components/common/ImageWithFallback.tsx"; // Import ImageWithFallback
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -21,14 +22,15 @@ const ProfilePage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [formData, setFormData] = useState({
-    customUserId: "", // NEW: Add customUserId to form data
+    customUserId: "",
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
-    newEmail: "", // New field for email change
-    confirmNewEmail: "", // New field for email change confirmation
-    currentPassword: "", // For password change (not directly used for Supabase password update)
+    avatarUrl: "", // NEW: Add avatarUrl to form data
+    newEmail: "",
+    confirmNewEmail: "",
+    currentPassword: "",
     newPassword: "",
     confirmNewPassword: "",
   });
@@ -42,7 +44,7 @@ const ProfilePage = () => {
     setIsLoadingProfile(true);
     const { data, error } = await supabase
       .from('profiles')
-      .select('first_name, last_name, email, phone, custom_user_id') // NEW: Select custom_user_id
+      .select('first_name, last_name, email, phone, custom_user_id, avatar_url') // NEW: Select avatar_url
       .eq('id', user.id)
       .single();
 
@@ -52,19 +54,21 @@ const ProfilePage = () => {
       setFormData((prev) => ({
         ...prev,
         email: user.email || "",
-        customUserId: user.custom_user_id || "", // NEW: Set customUserId from auth context
+        customUserId: user.custom_user_id || "",
+        avatarUrl: user.avatar_url || "", // NEW: Set avatarUrl from auth context
       }));
     } else if (data) {
       setFormData((prev) => ({
         ...prev,
-        customUserId: data.custom_user_id || "", // NEW: Set customUserId from fetched data
+        customUserId: data.custom_user_id || "",
         firstName: data.first_name || "",
         lastName: data.last_name || "",
         email: data.email || user.email || "",
         phone: data.phone || "",
-        newEmail: "", // Clear new email fields on load
+        avatarUrl: data.avatar_url || "", // NEW: Set avatarUrl from fetched data
+        newEmail: "",
         confirmNewEmail: "",
-        currentPassword: "", // Clear password fields on load
+        currentPassword: "",
         newPassword: "",
         confirmNewPassword: "",
       }));
@@ -102,6 +106,7 @@ const ProfilePage = () => {
         first_name: formData.firstName,
         last_name: formData.lastName,
         phone: formData.phone,
+        // avatar_url is updated via OAuth, not directly editable here for now
       })
       .eq('id', user.id);
 
@@ -182,10 +187,6 @@ const ProfilePage = () => {
     setIsSaving(true);
     toast.loading("Sending password reset link...", { id: "password-reset" });
 
-    // Supabase's `updateUser` with `password` field is for *authenticated* users changing their own password.
-    // If the user forgot their password, they would use the "Forgot password?" flow on the login page.
-    // For simplicity in this profile page, we'll simulate a password change for an authenticated user.
-    // In a real app, you might require the `currentPassword` for security.
     const { error } = await supabase.auth.updateUser({ password: formData.newPassword });
 
     if (error) {
@@ -237,8 +238,31 @@ const ProfilePage = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSaveProfile} className="space-y-6">
+            <div className="flex items-center gap-4">
+              <div className="relative h-24 w-24 rounded-full overflow-hidden border-2 border-primary/50 flex-shrink-0">
+                {formData.avatarUrl ? (
+                  <ImageWithFallback
+                    src={formData.avatarUrl}
+                    alt="Profile Avatar"
+                    containerClassName="h-full w-full"
+                    fallbackLogoClassName="h-12 w-12"
+                  />
+                ) : (
+                  <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground">
+                    <ImageIcon className="h-12 w-12" />
+                  </div>
+                )}
+              </div>
+              <div className="space-y-1">
+                <Label className="text-base">Profile Picture</Label>
+                <p className="text-sm text-muted-foreground">
+                  {formData.avatarUrl ? "Fetched from your sign-in provider." : "No profile picture available."}
+                </p>
+              </div>
+            </div>
+
             <div className="space-y-2">
-              <Label htmlFor="customUserId">Unique User ID</Label> {/* NEW: Display custom_user_id */}
+              <Label htmlFor="customUserId">Unique User ID</Label>
               <Input id="customUserId" name="customUserId" value={formData.customUserId} disabled />
               <p className="text-xs text-muted-foreground">Your unique identifier in the system.</p>
             </div>
