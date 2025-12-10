@@ -61,7 +61,7 @@ const generateWeightedPool = (banners: DeliveryBannerMessage[]): DeliveryBannerM
   return pool;
 };
 
-const SWITCH_INTERVAL_MS = 10000; // Switch content every 10 seconds
+const SWITCH_INTERVAL_MS = 70000; // Switch content every 70 seconds
 
 const DeliveryBanner: React.FC = () => {
   const [activeBanners, setActiveBanners] = useState<DeliveryBannerMessage[]>([]);
