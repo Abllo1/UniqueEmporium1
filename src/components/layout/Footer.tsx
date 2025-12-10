@@ -276,7 +276,7 @@ const Footer = () => {
           <p>&copy; 2019-2025 Unique Emporium. All rights reserved.</p>
           <p>
             <a
-              href="https://www.web-aura.com/"
+              href="https://www.instagram.com/reel/DSFy8qxjRQ_/?utm_source=ig_web_copy_link&igsh=NTc4MTIwNjQ2YQ=="
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-primary-foreground transition-colors"
