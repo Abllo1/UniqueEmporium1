@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async"; // Import HelmetProvider
 import Header from "./components/layout/Header.tsx";
 import Footer from "./components/layout/Footer.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
@@ -13,7 +14,7 @@ import CheckAuth from "./components/auth/CheckAuth.tsx";
 import ScrollToTop from "./components/common/ScrollToTop.tsx";
 import LoadingPage from "./components/common/LoadingPage.tsx";
 import FloatingWhatsApp from "./components/layout/FloatingWhatsApp.tsx";
-import DeliveryBanner from "./components/common/DeliveryBanner.tsx"; // NEW: Import DeliveryBanner
+import DeliveryBanner from "./components/common/DeliveryBanner.tsx";
 import { toast } from "sonner";
 
 // Lazily load page components for code splitting
@@ -51,7 +52,7 @@ const AdminCategoriesManagement = lazy(() => import("./pages/admin/CategoriesMan
 const AdminUsersManagement = lazy(() => import("./pages/admin/UsersManagement.tsx"));
 const AdminAnalyticsDashboard = lazy(() => import("./pages/admin/AnalyticsDashboard.tsx"));
 const AdminReviewsManagement = lazy(() => import("./pages/admin/ReviewsManagement.tsx"));
-const AdminDeliveryBannerManagement = lazy(() => import("./pages/admin/DeliveryBannerManagement.tsx")); // NEW: Import DeliveryBannerManagement
+const AdminDeliveryBannerManagement = lazy(() => import("./pages/admin/DeliveryBannerManagement.tsx"));
 
 const queryClient = new QueryClient();
 
@@ -129,7 +130,7 @@ const MainAppContent = () => {
               isCartDrawerOpen={isCartDrawerOpen}
               setIsCartDrawerOpen={setIsCartDrawerOpen}
             />
-            <DeliveryBanner /> {/* NEW: Render DeliveryBanner here */}
+            <DeliveryBanner />
           </>
         )}
         <Suspense fallback={<LoadingPage />}>
@@ -170,7 +171,7 @@ const MainAppContent = () => {
               <Route path="categories" element={<AdminCategoriesManagement />} />
               <Route path="users" element={<AdminUsersManagement />} />
               <Route path="analytics" element={<AdminAnalyticsDashboard />} />
-              <Route path="delivery-banners" element={<AdminDeliveryBannerManagement />} /> {/* NEW: Admin Delivery Banner Management Route */}
+              <Route path="delivery-banners" element={<AdminDeliveryBannerManagement />} />
             </Route>
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
@@ -194,7 +195,9 @@ const App = () => {
           <ScrollToTop />
           <AuthProvider>
             <CheckAuth>
-              <MainAppContent />
+              <HelmetProvider> {/* Added HelmetProvider here */}
+                <MainAppContent />
+              </HelmetProvider>
             </CheckAuth>
           </AuthProvider>
         </BrowserRouter>

@@ -13,7 +13,8 @@ import RecommendedProductsSection from "@/components/recommended-products/Recomm
 import RecentlyViewedProductsSection from "@/components/product-details/RecentlyViewedProductsSection.tsx";
 import ProductCardSkeleton from "@/components/products/ProductCardSkeleton.tsx";
 import { fetchProductsFromSupabase } from "@/integrations/supabase/products";
-import { useCategories } from "@/hooks/useCategories"; // Import the new hook
+import { useCategories } from "@/hooks/useCategories";
+import SeoHelmet from "@/components/common/SeoHelmet.tsx"; // Import SeoHelmet
 
 const categories = [
   { name: "All Categories", value: "all" },
@@ -60,7 +61,7 @@ const Products = () => {
   const [allAvailableProducts, setAllAvailableProducts] = useState<ProductDetails[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   
-  const { categories: dynamicCategories, isLoading: isLoadingCategories } = useCategories(); // Use the new hook
+  const { categories: dynamicCategories, isLoading: isLoadingCategories } = useCategories();
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -171,6 +172,16 @@ const Products = () => {
 
   return (
     <div className="max-w-7xl mx-auto py-12 pt-8 px-4 sm:px-6 lg:px-8">
+      <SeoHelmet
+        title="Shop All Products | Unique Emporium Wholesale Nigeria"
+        description="Browse all wholesale fashion products in Nigeria. Bulk SHEIN gowns, kidswear, vintage shirts, and curated bundles for resellers and boutiques."
+        canonicalUrl="https://uniqueemporium.com.ng/products"
+        ogTitle="Shop All Wholesale Fashion | Unique Emporium"
+        ogDescription="Access Nigeria’s top wholesale fashion products. Perfect for resellers and boutique owners looking for quality and value."
+        ogUrl="https://uniqueemporium.com.ng/products"
+        twitterTitle="Shop All Wholesale Fashion | Unique Emporium"
+        twitterDescription="Bulk fashion products including SHEIN gowns, kidswear, vintage shirts, and curated bundles."
+      />
       {/* Header Section */}
       <motion.div
         variants={staggerContainer}
@@ -209,7 +220,7 @@ const Products = () => {
             <Input
               type="text"
               placeholder="Search unique wears..."
-              className="w-full pl-9 rounded-full"
+              className="w-full pl-9 pr-10 rounded-full"
               value={currentQuery}
               onChange={handleSearchChange}
             />
