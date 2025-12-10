@@ -27,7 +27,6 @@ const ProfilePage = () => {
     lastName: "",
     email: "",
     phone: "",
-    avatarUrl: "", // NEW: Add avatarUrl to form data
     newEmail: "",
     confirmNewEmail: "",
     currentPassword: "",
@@ -44,7 +43,7 @@ const ProfilePage = () => {
     setIsLoadingProfile(true);
     const { data, error } = await supabase
       .from('profiles')
-      .select('first_name, last_name, email, phone, custom_user_id, avatar_url') // NEW: Select avatar_url
+      .select('first_name, last_name, email, phone, custom_user_id') // Removed avatar_url from select
       .eq('id', user.id)
       .single();
 
@@ -55,7 +54,6 @@ const ProfilePage = () => {
         ...prev,
         email: user.email || "",
         customUserId: user.custom_user_id || "",
-        avatarUrl: user.avatar_url || "", // NEW: Set avatarUrl from auth context
       }));
     } else if (data) {
       setFormData((prev) => ({
@@ -65,7 +63,6 @@ const ProfilePage = () => {
         lastName: data.last_name || "",
         email: data.email || user.email || "",
         phone: data.phone || "",
-        avatarUrl: data.avatar_url || "", // NEW: Set avatarUrl from fetched data
         newEmail: "",
         confirmNewEmail: "",
         currentPassword: "",
@@ -106,7 +103,6 @@ const ProfilePage = () => {
         first_name: formData.firstName,
         last_name: formData.lastName,
         phone: formData.phone,
-        // avatar_url is updated via OAuth, not directly editable here for now
       })
       .eq('id', user.id);
 
@@ -238,28 +234,7 @@ const ProfilePage = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSaveProfile} className="space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="relative h-24 w-24 rounded-full overflow-hidden border-2 border-primary/50 flex-shrink-0">
-                {formData.avatarUrl ? (
-                  <ImageWithFallback
-                    src={formData.avatarUrl}
-                    alt="Profile Avatar"
-                    containerClassName="h-full w-full"
-                    fallbackLogoClassName="h-12 w-12"
-                  />
-                ) : (
-                  <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground">
-                    <ImageIcon className="h-12 w-12" />
-                  </div>
-                )}
-              </div>
-              <div className="space-y-1">
-                <Label className="text-base">Profile Picture</Label>
-                <p className="text-sm text-muted-foreground">
-                  {formData.avatarUrl ? "Fetched from your sign-in provider." : "No profile picture available."}
-                </p>
-              </div>
-            </div>
+            {/* Removed Avatar Display Section */}
 
             <div className="space-y-2">
               <Label htmlFor="customUserId">Unique User ID</Label>
