@@ -91,24 +91,14 @@ const Header = ({ isCartDrawerOpen, setIsCartDrawerOpen }: HeaderProps) => {
               Shop All
             </NavLink>
 
-            {/* NEW: Top-level Categories Link */}
-            <NavLink
-              to="/categories"
-              className={({ isActive }) =>
-                `transition-colors duration-200 ${isActive ? "text-primary font-semibold" : "hover:text-primary/80"}`
-              }
-            >
-              Categories
-            </NavLink>
-
-            {/* Categories Dropdown (Desktop) - Kept for direct category access */}
+            {/* Categories Dropdown (Desktop) */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   className="flex items-center gap-1 text-foreground hover:bg-secondary/80 rounded-full"
                 >
-                  Browse <ChevronDown className="h-4 w-4" />
+                  Categories <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="slow-dropdown w-96 p-2 grid grid-cols-2 gap-2 bg-card border rounded-xl shadow-lg max-h-[70vh] overflow-y-auto">

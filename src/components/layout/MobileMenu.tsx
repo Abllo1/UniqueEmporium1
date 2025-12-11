@@ -30,9 +30,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useCategories } from "@/hooks/useCategories"; // NEW: Import useCategories
-import { getOptimizedImageUrl } from "@/lib/utils"; // NEW: Import getOptimizedImageUrl
-import ImageWithFallback from "@/components/common/ImageWithFallback"; // NEW: Import ImageWithFallback
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -41,15 +38,16 @@ interface MobileMenuProps {
   itemCount: number;
 }
 
-// Map category names to Lucide icons (fallback if no image)
-const getCategoryIcon = (categoryName: string) => {
-  const lowerName = categoryName.toLowerCase();
-  if (lowerName.includes("kid") || lowerName.includes("child")) return Baby;
-  if (lowerName.includes("men") || lowerName.includes("shirt")) return Shirt;
-  if (lowerName.includes("amazon")) return ShoppingBag;
-  if (lowerName.includes("shein") || lowerName.includes("gown")) return Shirt;
-  return Gem; // Default icon
-};
+const categories = [
+  { name: "Kids", icon: Baby, link: "/products?category=Kids" },
+  { name: "Kids Patpat", icon: Baby, link: "/products?category=Kids Patpat" },
+  { name: "Children Jeans", icon: Baby, link: "/products?category=Children Jeans" },
+  { name: "Children Shirts", icon: Baby, link: "/products?category=Children Shirts" },
+  { name: "Men Vintage Shirts", icon: Shirt, link: "/products?category=Men Vintage Shirts" },
+  { name: "Amazon Ladies", icon: ShoppingBag, link: "/products?category=Amazon Ladies" },
+  { name: "SHEIN Gowns", icon: Shirt, link: "/products?category=SHEIN Gowns" },
+  { name: "Others", icon: Gem, link: "/products?category=Others" },
+];
 
 const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuProps) => {
   const navigate = useNavigate();
@@ -57,7 +55,6 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
   const { totalItems } = useCart();
   const { totalFavorites } = useFavorites();
   const { user, isAdmin, signOut } = useAuth(); // Use AuthContext
-  const { categories, isLoading: isLoadingCategories } = useCategories(); // NEW: Use categories hook
 
   const handleLinkClick = (path: string, state?: any) => { // Updated signature to accept state
     onClose();
@@ -77,10 +74,8 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="left" className="w-[80vw] max-w-sm flex flex-col bg-secondary text-secondary-foreground border-r border-border rounded-tr-3xl rounded-br-3xl">
-        <SheetHeader className="flex items-center justify-center py-[5px]">
-          <Link to="/" onClick={() => handleLinkClick("/")}>
-            <UniqueEmporiumLogo className="h-[130px]" />
-          </Link>
+        <SheetHeader className="flex items-center justify-center py-[5px] bg-white rounded-b-3xl">
+          <UniqueEmporiumLogo className="h-[130px]" />
         </SheetHeader>
         <motion.nav
           className="flex flex-col space-y-1 py-0 overflow-y-auto"
@@ -128,51 +123,28 @@ const MobileMenu = ({ isOpen, onClose, favoriteCount, itemCount }: MobileMenuPro
             )
           )}
 
-          {/* NEW: Top-level Categories Link */}
-          <Button variant="ghost" className="justify-start text-base py-1 text-foreground hover:bg-primary/70 rounded-full" onClick={() => handleLinkClick("/categories")}>
-            <List className="mr-2 h-5 w-5" /> Categories
-          </Button>
-
-          {/* Categories Dropdown (Mobile) - Kept for direct category access */}
+          {/* 3. Categories Accordion */}
           <div>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="categories" className="border-b-0">
                 <AccordionTrigger className="flex items-center justify-between px-4 py-1 text-base font-semibold text-foreground hover:no-underline">
                   <div className="flex items-center">
-                    <List className="mr-2 h-5 w-5" /> Browse by Type
+                    <List className="mr-2 h-5 w-5" /> Categories
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="pb-0">
                   <div className="grid grid-cols-2 gap-2 px-2">
-                    {isLoadingCategories ? (
-                      <div className="col-span-2 text-center py-2 text-muted-foreground">Loading...</div>
-                    ) : categories.length === 0 ? (
-                      <div className="col-span-2 text-center py-2 text-muted-foreground">No categories</div>
-                    ) : (
-                      categories.map((category) => {
-                        const IconComponent = getCategoryIcon(category.name);
-                        return (
-                          <Button
-                            key={category.id}
-                            variant="ghost"
-                            className="flex flex-col h-auto py-3 justify-center items-center text-center text-xs text-foreground hover:bg-primary/70 rounded-full"
-                            onClick={() => handleLinkClick(`/products?category=${encodeURIComponent(category.name)}`)}
-                          >
-                            {category.image_url ? (
-                              <ImageWithFallback
-                                src={getOptimizedImageUrl(category.image_url, 'category')}
-                                alt={category.name}
-                                containerClassName="h-6 w-6 rounded-full overflow-hidden flex-shrink-0 mb-1"
-                                fallbackLogoClassName="h-4 w-4"
-                              />
-                            ) : (
-                              <IconComponent className="h-5 w-5 mb-1" />
-                            )}
-                            {category.name}
-                          </Button>
-                        );
-                      })
-                    )}
+                    {categories.map((category) => (
+                      <Button
+                        key={category.name}
+                        variant="ghost"
+                        className="flex flex-col h-auto py-3 justify-center items-center text-center text-xs text-foreground hover:bg-primary/70 rounded-full"
+                        onClick={() => handleLinkClick(category.link)}
+                      >
+                        <category.icon className="h-5 w-5 mb-1" />
+                        {category.name}
+                      </Button>
+                    ))}
                   </div>
                 </AccordionContent>
               </AccordionItem>

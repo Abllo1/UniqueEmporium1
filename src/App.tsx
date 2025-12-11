@@ -35,7 +35,6 @@ const Privacy = lazy(() => import("./pages/Privacy.tsx"));
 const Terms = lazy(() => import("./pages/Terms.tsx"));
 const Checkout = lazy(() => import("./pages/Checkout.tsx"));
 const Auth = lazy(() => import("./pages/Auth.tsx"));
-const CategoriesPage = lazy(() => import("./pages/CategoriesPage.tsx")); // NEW: Lazy load CategoriesPage
 
 // Account Dashboard Pages
 const Account = lazy(() => import("./pages/Account.tsx"));
@@ -139,7 +138,6 @@ const MainAppContent = () => {
             <Route path="/" element={<Index />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/:productId" element={<ProductDetails />} />
-            <Route path="/categories" element={<CategoriesPage />} /> {/* NEW: Categories Page Route */}
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
