@@ -117,10 +117,10 @@ const DeliveryBanner: React.FC = () => {
     return () => clearInterval(interval);
   }, [weightedPool]);
 
-  // Animation variants for continuous horizontal slide (KEEP AS IS)
+  // Animation variants for continuous horizontal slide (COMING FROM RIGHT)
   const slide = {
     animate: {
-      x: ["-100%", "100%"], 
+      x: ["100%", "-100%"], // Reversed direction: starts at right, ends at left
       transition: {
         x: {
           duration: 70, // 70 seconds for extremely slow speed
@@ -167,7 +167,7 @@ const DeliveryBanner: React.FC = () => {
       <motion.div
         className="h-full flex items-center whitespace-nowrap"
         variants={slide as any}
-        initial={{ x: "-100%" }}
+        initial={{ x: "100%" }} // Match the start of the animation (right side)
         animate="animate"
         // Key is crucial: when currentBanner changes, the motion.div content updates instantly, 
         // but the animation continues seamlessly.
